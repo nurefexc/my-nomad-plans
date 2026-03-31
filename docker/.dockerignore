@@ -1,0 +1,15 @@
+# Files and folders not needed in Docker build context
+.git
+.idea
+.run
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+instance/
+migrations/
+.env
+.env.*
+README.md
+seed_demo.py

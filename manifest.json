@@ -1,0 +1,8 @@
+{
+  "name": "Nomad Planner",
+  "version": "1.0.0",
+  "description": "A digital nomad trip planning application with interactive mapping and statistics.",
+  "author": "nurefexc",
+  "repository": "https://github.com/nurefexc/my-nomad-plans",
+  "license": "MIT"
+}

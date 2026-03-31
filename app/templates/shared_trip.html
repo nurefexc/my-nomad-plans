@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12 text-center">
+        <h2 class="fw-bold mb-4">Shared Journey</h2>
+        <div id="shared-map" class="map-container shadow-sm mb-5"></div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="row">
+            {% for trip in trips %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center pt-3">
+                        <span class="badge rounded-pill {% if trip.status == 'visited' %}bg-secondary{% elif trip.status == 'planned' %}bg-success{% else %}bg-info text-dark{% endif %} px-3">
+                            {{ trip.status.capitalize() }}
+                        </span>
+                        <small class="text-muted fw-bold text-uppercase">{{ trip.country }}</small>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title fw-bold text-primary">{{ trip.destination }}</h4>
+                        <h6 class="card-subtitle mb-3 text-muted">
+                            <i class="bi bi-calendar"></i> {{ trip.start_date.strftime('%b %d, %Y') }} - {{ trip.end_date.strftime('%b %d, %Y') }}
+                        </h6>
+                        <hr>
+                        {% if trip.transport_mode %}
+                        <p class="mb-1 small"><strong>Transport:</strong> {{ trip.transport_mode }} {% if trip.flight_number %}({{ trip.flight_number }}){% endif %}</p>
+                        {% endif %}
+                        {% if trip.visa_required %}
+                        <p class="mb-1 small text-danger fw-bold">⚠️ Visa Required</p>
+                        {% endif %}
+                        <hr>
+                        {% if trip.attractions %}
+                        <h6 class="fw-bold">Attractions / Plans:</h6>
+                        <p class="text-dark">{{ trip.attractions }}</p>
+                        {% endif %}
+                        {% if trip.notes %}
+                        <h6 class="fw-bold">Travel Notes:</h6>
+                        <p class="text-muted small">{{ trip.notes }}</p>
+                        {% endif %}
+
+                        {% if trip.checklist %}
+                        <hr>
+                        <h6 class="fw-bold">Checklist / Events:</h6>
+                        <ul class="list-unstyled small">
+                            {% for item in trip.checklist %}
+                            <li class="mb-1">
+                                {% if item.is_done %}✅{% else %}⬜{% endif %}
+                                <span class="{% if item.is_done %}text-decoration-line-through text-muted{% endif %}">
+                                    {{ item.item }}
+                                    {% if item.start_date %}
+                                    <small class="d-block text-muted opacity-75 ms-4">
+                                        ⏰ {{ item.start_date.strftime('%Y-%m-%d') }} 
+                                        {% if item.end_date %}to {{ item.end_date.strftime('%Y-%m-%d') }}{% endif %}
+                                    </small>
+                                    {% endif %}
+                                </span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <p class="text-muted small">This is a publicly shared view. Sensitive data (exact accommodation, budget) are hidden.</p>
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-4">Create Your Own Travel Plan</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var map = L.map('shared-map').setView([20, 0], 2);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        var markers = [];
+        var visitedPoints = [];
+        var plannedPoints = [];
+
+        {% for trip in trips %}
+            {% if trip.latitude and trip.longitude %}
+                var color = "{{ '#6c757d' if trip.status == 'visited' else ('#2ec4b6' if trip.status == 'planned' else '#4361ee') }}";
+                var marker = L.circleMarker([{{ trip.latitude }}, {{ trip.longitude }}], {
+                    radius: 8,
+                    fillColor: color,
+                    color: "#fff",
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).addTo(map);
+                
+                marker.bindPopup("<b>{{ trip.destination }}</b><br>{{ trip.country }}");
+                markers.push([{{ trip.latitude }}, {{ trip.longitude }}]);
+
+                {% if trip.status == 'visited' %}
+                    visitedPoints.push([{{ trip.latitude }}, {{ trip.longitude }}]);
+                {% elif trip.status == 'planned' %}
+                    plannedPoints.push([{{ trip.latitude }}, {{ trip.longitude }}]);
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        if (visitedPoints.length > 1) {
+            L.polyline(visitedPoints, {color: '#6c757d', weight: 4, dashArray: '10, 10', opacity: 0.6}).addTo(map);
+        }
+        if (plannedPoints.length > 1) {
+            L.polyline(plannedPoints, {color: '#2ec4b6', weight: 4, dashArray: '1, 12', opacity: 0.6}).addTo(map);
+        }
+
+        if (markers.length > 0) {
+            map.fitBounds(markers);
+        }
+    });
+</script>
+{% endblock %}

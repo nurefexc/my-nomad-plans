@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nomad-planner
+    ports:
+      - "5000:5000"
+    volumes:
+      - ../instance:/app/instance
+      - ../seed_demo.py:/app/seed_demo.py
+    environment:
+      - DEMO=0
+    env_file:
+      - .env
+    restart: unless-stopped

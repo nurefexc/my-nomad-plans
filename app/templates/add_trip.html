@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h3 class="text-center fw-bold mb-4">Plan Your Next Adventure</h3>
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="search-box" class="form-label fw-bold">Search Location</label>
+                            <div class="input-group">
+                                <input type="text" id="search-box" class="form-control" placeholder="Search city or country...">
+                                <button class="btn btn-outline-secondary" type="button" id="search-btn">Search</button>
+                            </div>
+                            <small class="text-muted">Type and click Search to find on map</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Map Preview</label>
+                            <div id="add-trip-map" class="map-container" style="height: 200px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="country" class="form-label fw-bold">Select Country</label>
+                            <select name="country" class="form-select" id="country" required>
+                                <option value="" disabled selected>Select a country...</option>
+                                {% for country in countries %}
+                                <option value="{{ country }}">{{ country }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="destination" class="form-label fw-bold">Select City</label>
+                            <select name="destination" class="form-select" id="destination" required disabled>
+                                <option value="" disabled selected>Select a country first...</option>
+                            </select>
+                            <div class="mt-2">
+                                <small class="text-muted">Or type manually if not in list:</small>
+                                <input type="text" id="manual_destination" class="form-control form-control-sm mt-1" placeholder="Type city name...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden lat/lng fields -->
+                    <input type="hidden" name="latitude" id="latitude">
+                    <input type="hidden" name="longitude" id="longitude">
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="start_date" class="form-label fw-bold">Departure</label>
+                            <input type="date" name="start_date" class="form-control" id="start_date">
+                            <small class="text-muted opacity-75">Required for Planned/Visited</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="end_date" class="form-label fw-bold">Arrival</label>
+                            <input type="date" name="end_date" class="form-control" id="end_date">
+                            <small class="text-muted opacity-75">Required for Visited</small>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="status" class="form-label fw-bold">Status</label>
+                            <select name="status" class="form-select" id="status">
+                                <option value="draft">Draft</option>
+                                <option value="planned" selected>Planned</option>
+                                <option value="visited">Visited</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="budget" class="form-label fw-bold">Budget (optional)</label>
+                            <input type="number" step="0.01" name="budget" class="form-control" id="budget">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="accommodation" class="form-label fw-bold">Accommodation Info</label>
+                        <input type="text" name="accommodation" class="form-control" id="accommodation" placeholder="e.g. Hotel, Airbnb address... (Private)">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="transport_mode" class="form-label fw-bold">Transport Mode</label>
+                            <select name="transport_mode" class="form-select" id="transport_mode">
+                                <option value="">Select...</option>
+                                <option value="Flight">Flight</option>
+                                <option value="Train">Train</option>
+                                <option value="Bus">Bus</option>
+                                <option value="Car">Car</option>
+                                <option value="Ferry">Ferry</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="flight_number" class="form-label fw-bold">Flight/Ticket #</label>
+                            <input type="text" name="flight_number" class="form-control" id="flight_number" placeholder="e.g. LH1234">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="visa_required" id="visa_required">
+                            <label class="form-check-label fw-bold" for="visa_required">Visa Required?</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="attractions" class="form-label fw-bold">Attractions / Plans</label>
+                        <textarea name="attractions" class="form-control" id="attractions" rows="2" placeholder="What do you want to see?"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="packing_list" class="form-label fw-bold">Packing List</label>
+                        <textarea name="packing_list" class="form-control" id="packing_list" rows="2" placeholder="What to bring?"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="expense_estimate" class="form-label fw-bold">Expense Breakdown</label>
+                        <textarea name="expense_estimate" class="form-control" id="expense_estimate" rows="2" placeholder="Expected costs..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="notes" class="form-label fw-bold">Notes</label>
+                        <textarea name="notes" class="form-control" id="notes" rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 py-2 fw-bold shadow-sm">Save Adventure</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var map = L.map('add-trip-map').setView([20, 0], 2);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        var marker;
+        const countrySelect = document.getElementById('country');
+        const destinationSelect = document.getElementById('destination');
+        const manualDest = document.getElementById('manual_destination');
+
+        function updateMarker(lat, lng, name, country) {
+            if (marker) map.removeLayer(marker);
+            marker = L.marker([lat, lng]).addTo(map);
+            map.setView([lat, lng], 10);
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
+        }
+
+        countrySelect.addEventListener('change', function() {
+            const country = this.value;
+            destinationSelect.disabled = false;
+            destinationSelect.innerHTML = '<option value="" disabled selected>Loading cities...</option>';
+            
+            // Fetch cities from Overpass API (faster than Nominatim for lists)
+            const query = `[out:json];area["name"="${country}"]->.searchArea;(node["place"="city"](area.searchArea);node["place"="town"](area.searchArea););out body;`;
+            fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    destinationSelect.innerHTML = '<option value="" disabled selected>Select a city...</option>';
+                    const cities = data.elements
+                        .map(e => e.tags.name)
+                        .filter((v, i, a) => v && a.indexOf(v) === i)
+                        .sort();
+                    
+                    cities.forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city;
+                        option.textContent = city;
+                        destinationSelect.appendChild(option);
+                    });
+                })
+                .catch(err => {
+                    destinationSelect.innerHTML = '<option value="" disabled selected>Error loading cities</option>';
+                    console.error(err);
+                });
+        });
+
+        destinationSelect.addEventListener('change', function() {
+            const city = this.value;
+            const country = countrySelect.value;
+            searchLocation(`${city}, ${country}`);
+        });
+
+        manualDest.addEventListener('change', function() {
+            if (this.value) {
+                const country = countrySelect.value;
+                searchLocation(`${this.value}, ${country}`);
+                // Create hidden input to override select value if necessary or just set select value
+                const opt = document.createElement('option');
+                opt.value = this.value;
+                opt.textContent = this.value;
+                opt.selected = true;
+                destinationSelect.appendChild(opt);
+            }
+        });
+
+        function searchLocation(query) {
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        updateMarker(parseFloat(data[0].lat), parseFloat(data[0].lon));
+                    }
+                });
+        }
+
+        document.getElementById('search-btn').addEventListener('click', function() {
+            var query = document.getElementById('search-box').value;
+            if (!query) return;
+            searchLocation(query);
+        });
+
+        map.on('click', function(e) {
+            updateMarker(e.latlng.lat, e.latlng.lng);
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.address) {
+                        var country = data.address.country;
+                        if (country) {
+                            // Try to match country in select
+                            for (let i = 0; i < countrySelect.options.length; i++) {
+                                if (countrySelect.options[i].value === country) {
+                                    countrySelect.selectedIndex = i;
+                                    countrySelect.dispatchEvent(new Event('change'));
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
+        });
+    });
+</script>
+{% endblock %}

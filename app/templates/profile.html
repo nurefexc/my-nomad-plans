@@ -1,0 +1,365 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div id="main-map" class="map-container shadow-sm"></div>
+    </div>
+</div>
+
+<div class="row mb-4 g-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-primary text-white h-100 p-2">
+            <div class="card-body text-center">
+                <h5 class="card-title opacity-75">Visited Countries</h5>
+                <p class="card-text display-4 fw-bold mb-0">{{ stats.visited_count }}</p>
+                <small>of {{ stats.world_total }} countries</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-info text-white h-100 p-2">
+            <div class="card-body text-center">
+                <h5 class="card-title opacity-75">World Explorer</h5>
+                <p class="card-text display-4 fw-bold mb-0">{{ stats.visited_percent }}%</p>
+                <div class="progress mt-2" style="height: 6px; background-color: rgba(255,255,255,0.2);">
+                    <div class="progress-bar bg-white" role="progressbar" style="width: {{ stats.visited_percent }}%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-warning text-dark h-100 p-2">
+            <div class="card-body text-center">
+                <h5 class="card-title opacity-75">Next Destinations</h5>
+                <p class="card-text display-4 fw-bold mb-0">{{ stats.planned_count }}</p>
+                <small>Future plans</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-success text-white h-100 p-2">
+            <div class="card-body text-center">
+                <h5 class="card-title opacity-75">Remaining</h5>
+                <p class="card-text display-4 fw-bold mb-0">{{ stats.unvisited_count }}</p>
+                <small>Countries to explore</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form action="{{ url_for('main.share_trips') }}" method="POST">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <h3 class="fw-bold mb-0">Your Nomad Journey</h3>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-light filter-btn active" data-filter="all">All</button>
+            <button type="button" class="btn btn-light filter-btn" data-filter="visited">Visited</button>
+            <button type="button" class="btn btn-light filter-btn" data-filter="planned">Planned</button>
+            <button type="button" class="btn btn-light filter-btn" data-filter="draft">Draft</button>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-outline-primary shadow-sm me-2">Share Selected</button>
+            <a href="{{ url_for('main.add_trip') }}" class="btn btn-success shadow-sm">Plan New Trip</a>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for trip in trips %}
+        <div class="col-md-6 col-lg-4 mb-4 trip-card-wrapper" data-status="{{ trip.status }}">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center pt-4 px-4">
+                    <div class="d-flex align-items-center">
+                        <input type="checkbox" name="trip_ids" value="{{ trip.id }}" class="form-check-input me-3" style="width: 1.2rem; height: 1.2rem;">
+                        <span class="badge {% if trip.status == 'visited' %}bg-secondary{% elif trip.status == 'planned' %}bg-success{% else %}bg-info text-dark{% endif %}">
+                            {{ trip.status.capitalize() }}
+                        </span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <small class="text-muted fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 0.75rem;">{{ trip.country }}</small>
+                        <button type="button" class="btn btn-link p-0 text-decoration-none" data-bs-toggle="collapse" data-bs-target="#checklistCollapse{{ trip.id }}">
+                            📝
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    <h4 class="card-title fw-bold mb-2">{{ trip.destination }}</h4>
+                    <h6 class="card-subtitle mb-4 text-muted small">
+                        📅 {% if trip.start_date %}{{ trip.start_date.strftime('%b %d, %Y') }}{% else %}TBD{% endif %} 
+                        - {% if trip.end_date %}{{ trip.end_date.strftime('%b %d, %Y') }}{% else %}TBD{% endif %}
+                    </h6>
+                    
+                    <div class="collapse mb-3" id="checklistCollapse{{ trip.id }}">
+                        <div class="p-3 bg-light rounded-3 small">
+                            <h6 class="fw-bold mb-2">Checklist / Events</h6>
+                            <ul class="list-unstyled mb-2 checklist-list" data-trip-id="{{ trip.id }}">
+                                {% for item in trip.checklist %}
+                                <li class="d-flex align-items-center mb-1 gap-2">
+                                    <input type="checkbox" class="form-check-input checklist-toggle" data-item-id="{{ item.id }}" {% if item.is_done %}checked{% endif %}>
+                                    <span class="flex-grow-1 {% if item.is_done %}text-decoration-line-through text-muted{% endif %}">
+                                        {{ item.item }}
+                                        {% if item.start_date %}
+                                        <small class="d-block text-muted opacity-75">
+                                            ⏰ {{ item.start_date.strftime('%Y-%m-%d') }} 
+                                            {% if item.end_date %}to {{ item.end_date.strftime('%Y-%m-%d') }}{% endif %}
+                                        </small>
+                                        {% endif %}
+                                    </span>
+                                    {% if trip.status != 'visited' %}
+                                    <button type="button" class="btn btn-link p-0 text-danger btn-sm checklist-delete" data-item-id="{{ item.id }}">×</button>
+                                    {% endif %}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% if trip.status != 'visited' %}
+                            <div class="input-group input-group-sm">
+                                <input type="text" class="form-control checklist-input" placeholder="Add item...">
+                                <button class="btn btn-outline-primary checklist-add" type="button">Add</button>
+                            </div>
+                            <div class="checklist-dates d-none mt-2">
+                                <input type="date" class="form-control form-control-sm mb-1 checklist-start" placeholder="Start date">
+                                <input type="date" class="form-control form-control-sm checklist-end" placeholder="End date (opt)">
+                            </div>
+                            <small class="text-primary mt-1 d-inline-block cursor-pointer toggle-checklist-dates" style="cursor: pointer;">+ Add dates</small>
+                            {% else %}
+                            <p class="text-muted small mb-0 mt-2"><em>Adventure completed. Checklist is read-only (but you can still mark as done!).</em></p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="card-text mb-4">
+                        {% if trip.transport_mode %}
+                        <p class="mb-1 small"><strong>Transport:</strong> {{ trip.transport_mode }} {% if trip.flight_number %}({{ trip.flight_number }}){% endif %}</p>
+                        {% endif %}
+                        {% if trip.visa_required %}
+                        <p class="mb-1 small text-danger fw-bold">⚠️ Visa Required</p>
+                        {% endif %}
+                        {% if trip.budget %}
+                        <p class="mb-1 small"><strong>Budget:</strong> ${{ trip.budget }}</p>
+                        {% endif %}
+                        <p class="mb-1 small"><strong>Stay:</strong> {{ trip.accommodation if trip.accommodation else 'Not set' }}</p>
+                        {% if trip.attractions %}
+                        <p class="mb-1 small"><strong>Plans:</strong><br><span class="text-secondary">{{ trip.attractions|truncate(100) }}</span></p>
+                        {% endif %}
+                        {% if trip.packing_list %}
+                        <p class="mb-1 small text-muted italic"><strong>Packing:</strong> {{ trip.packing_list|truncate(50) }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="d-grid gap-2">
+                        {% if trip.status == 'draft' %}
+                        <button type="submit" formaction="{{ url_for('main.set_planned', trip_id=trip.id) }}" class="btn btn-sm btn-success rounded-pill shadow-sm mb-1">Mark as Planned</button>
+                        {% endif %}
+                        {% if trip.status == 'planned' %}
+                        <button type="button" class="btn btn-sm btn-outline-success rounded-pill shadow-sm mb-1" data-bs-toggle="modal" data-bs-target="#visitedModal{{ trip.id }}">Mark as Visited</button>
+                        {% endif %}
+
+                        {% if trip.status != 'visited' %}
+                        <a href="{{ url_for('main.edit_trip', trip_id=trip.id) }}" class="btn btn-sm btn-primary rounded-pill">Edit Details</a>
+                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trip.id }}">Delete Trip</button>
+                        {% else %}
+                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill disabled">Visited - Read Only</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visited Modal -->
+        <div class="modal fade" id="visitedModal{{ trip.id }}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <form action="{{ url_for('main.mark_visited', trip_id=trip.id) }}" method="POST" class="modal-content border-0 shadow-lg rounded-4">
+                    <div class="modal-header border-0 pt-4 px-4">
+                        <h5 class="modal-title fw-bold">Finish Adventure</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body px-4">
+                        <p>Awesome! When did you finish your trip to <span class="fw-bold">{{ trip.destination }}</span>?</p>
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold">End Date</label>
+                            <input type="date" name="end_date" class="form-control" required value="{{ now_date }}">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 pb-4 px-4">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success rounded-pill px-4">It was Amazing!</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Delete Modal -->
+        <div class="modal fade" id="deleteModal{{ trip.id }}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg rounded-4">
+                    <div class="modal-header border-0 pt-4 px-4">
+                        <h5 class="modal-title fw-bold">Delete Trip</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body px-4">
+                        Are you sure you want to delete your trip to <span class="fw-bold">{{ trip.destination }}</span>? This action cannot be undone.
+                    </div>
+                    <div class="modal-footer border-0 pb-4 px-4">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" formaction="{{ url_for('main.delete_trip', trip_id=trip.id) }}" class="btn btn-danger rounded-pill px-4">Delete Adventure</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="text-center p-5 bg-white rounded-4 shadow-sm border">
+                <p class="text-muted mb-0 fs-5">No trips found. Time to start your first adventure!</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Filtering logic
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.trip-card-wrapper');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.getAttribute('data-filter');
+                filterButtons.forEach(b => {
+                    b.classList.remove('active', 'btn-primary');
+                    b.classList.add('btn-light');
+                });
+                btn.classList.remove('btn-light');
+                btn.classList.add('active', 'btn-primary');
+
+                cards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-status') === filter) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Map setup
+        var map = L.map('main-map').setView([20, 0], 2);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        var markers = [];
+        var visitedPoints = [];
+        var plannedPoints = [];
+
+        {% for trip in trips %}
+            {% if trip.latitude and trip.longitude %}
+                var lat = {{ trip.latitude }};
+                var lng = {{ trip.longitude }};
+                var status = "{{ trip.status }}";
+                var color = status === 'visited' ? '#6c757d' : (status === 'planned' ? '#2ec4b6' : '#3584e4');
+                
+                var marker = L.circleMarker([lat, lng], {
+                    radius: 8,
+                    fillColor: color,
+                    color: "#fff",
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).addTo(map);
+                
+                var popupContent = `<b>{{ trip.destination }}</b><br>Status: ${status.charAt(0).toUpperCase() + status.slice(1)}<br>`;
+                popupContent += `<a href="{{ url_for("main.edit_trip", trip_id=trip.id) }}" class="btn btn-sm btn-primary mt-2 py-1 px-3 text-white" style="font-size: 0.7rem;">Edit</a>`;
+                
+                marker.bindPopup(popupContent);
+                markers.push([lat, lng]);
+
+                if (status === 'visited') visitedPoints.push([lat, lng]);
+                else if (status === 'planned') plannedPoints.push([lat, lng]);
+            {% endif %}
+        {% endfor %}
+
+        if (visitedPoints.length > 1) {
+            L.polyline(visitedPoints, {color: '#6c757d', weight: 4, dashArray: '10, 10', opacity: 0.6}).addTo(map);
+        }
+        if (plannedPoints.length > 1) {
+            L.polyline(plannedPoints, {color: '#2ec4b6', weight: 4, dashArray: '1, 12', opacity: 0.6, lineCap: 'round'}).addTo(map);
+        }
+        if (markers.length > 0) map.fitBounds(markers);
+
+        // Checklist AJAX
+        document.querySelectorAll('.toggle-checklist-dates').forEach(el => {
+            el.addEventListener('click', () => {
+                const datesDiv = el.previousElementSibling;
+                datesDiv.classList.toggle('d-none');
+                el.innerText = datesDiv.classList.contains('d-none') ? '+ Add dates' : '- Hide dates';
+            });
+        });
+
+        document.querySelectorAll('.checklist-add').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const container = btn.closest('.collapse');
+                const input = container.querySelector('.checklist-input');
+                const startInput = container.querySelector('.checklist-start');
+                const endInput = container.querySelector('.checklist-end');
+                const tripId = container.querySelector('.checklist-list').dataset.tripId;
+
+                if (!input.value) return;
+
+                const formData = new FormData();
+                formData.append('item', input.value);
+                formData.append('start_date', startInput.value);
+                formData.append('end_date', endInput.value);
+
+                const response = await fetch(`/trip/${tripId}/checklist/add`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const list = container.querySelector('.checklist-list');
+                    let dateHtml = '';
+                    if (data.start_date) {
+                        dateHtml = `<small class="d-block text-muted opacity-75">⏰ ${data.start_date} ${data.end_date ? 'to ' + data.end_date : ''}</small>`;
+                    }
+                    
+                    const li = document.createElement('li');
+                    li.className = 'd-flex align-items-center mb-1 gap-2';
+                    li.innerHTML = `
+                        <input type="checkbox" class="form-check-input checklist-toggle" data-item-id="${data.id}">
+                        <span class="flex-grow-1">${data.item}${dateHtml}</span>
+                        <button type="button" class="btn btn-link p-0 text-danger btn-sm checklist-delete" data-item-id="${data.id}">×</button>
+                    `;
+                    list.appendChild(li);
+                    input.value = '';
+                    startInput.value = '';
+                    endInput.value = '';
+                    bindChecklistEvents(li);
+                }
+            });
+        });
+
+        function bindChecklistEvents(element) {
+            const toggle = element.querySelector('.checklist-toggle');
+            const delBtn = element.querySelector('.checklist-delete');
+
+            toggle.addEventListener('change', async () => {
+                const response = await fetch(`/checklist/toggle/${toggle.dataset.itemId}`, {method: 'POST'});
+                if (response.ok) {
+                    const span = toggle.nextElementSibling;
+                    if (toggle.checked) span.classList.add('text-decoration-line-through', 'text-muted');
+                    else span.classList.remove('text-decoration-line-through', 'text-muted');
+                }
+            });
+
+            delBtn.addEventListener('click', async () => {
+                const response = await fetch(`/checklist/delete/${delBtn.dataset.itemId}`, {method: 'POST'});
+                if (response.ok) element.remove();
+            });
+        }
+
+        document.querySelectorAll('.checklist-list li').forEach(bindChecklistEvents);
+    });
+</script>
+{% endblock %}

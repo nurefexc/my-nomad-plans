@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-md-5">
+        <div class="card p-5 border-0 shadow-lg">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='icon/icon.png') }}" alt="Logo" width="64" height="64" class="mb-3 rounded-circle shadow-sm">
+                <h2 class="fw-bold">Member Login</h2>
+            </div>
+            <form method="POST" action="{{ url_for('auth.login_post') }}">
+                <div class="mb-3">
+                    <label for="email" class="form-label fw-bold">Email address</label>
+                    <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label fw-bold">Password</label>
+                    <input type="password" name="password" class="form-control" id="password" placeholder="Your secret password" required>
+                </div>
+                <div class="mb-4 form-check">
+                    <input type="checkbox" name="remember" class="form-check-input" id="remember">
+                    <label class="form-check-label" for="remember">Keep me signed in</label>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-3 shadow-sm">Login to Nomad Travels</button>
+            </form>
+            <div class="mt-5 p-4 bg-light rounded-4 border-0 text-center">
+                <p class="small text-muted mb-2"><strong>Quick Access (Demo Mode)</strong></p>
+                <p class="small text-muted mb-3">Email: <code>demo@example.com</code><br>Pass: <code>demo123</code></p>
+                <div class="alert alert-warning py-2 small mb-0 border-0">
+                    If demo data is missing, run:<br><code>flask seed-demo</code>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
