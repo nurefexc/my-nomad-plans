@@ -84,7 +84,7 @@
                             <div class="bg-white p-3 rounded-3 shadow-sm border border-light">
                                 <div class="small text-muted mb-1">{{ _('Longest Trip') }}</div>
                                 <div class="fw-bold">{{ stats.longest_trip.destination }}</div>
-                                <div class="text-primary small fw-bold">{{ (stats.longest_trip.end_date - stats.longest_trip.start_date).days }} {{ _('days') }}</div>
+                                <div class="text-primary small fw-bold">{{ stats.longest_trip_days or 0 }} {{ _('days') }}</div>
                             </div>
                             {% endif %}
                             
@@ -92,7 +92,7 @@
                             <div class="bg-white p-3 rounded-3 shadow-sm border border-light">
                                 <div class="small text-muted mb-1">{{ _('Shortest Trip') }}</div>
                                 <div class="fw-bold">{{ stats.shortest_trip.destination }}</div>
-                                <div class="text-primary small fw-bold">{{ (stats.shortest_trip.end_date - stats.shortest_trip.start_date).days }} {{ _('days') }}</div>
+                                <div class="text-primary small fw-bold">{{ stats.shortest_trip_days or 0 }} {{ _('days') }}</div>
                             </div>
                             {% endif %}
                         </div>

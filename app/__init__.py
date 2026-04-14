@@ -4,11 +4,18 @@ from flask import Flask, session
 from .translations import TRANSLATIONS
 from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import MetaData, inspect
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_babel import Babel, _
 
-db = SQLAlchemy()
+db = SQLAlchemy(metadata=MetaData(naming_convention={
+    "ix": "ix_%(table_name)s_%(column_0_name)s",
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s",
+}))
 login_manager = LoginManager()
 migrate = Migrate()
 babel = Babel()
@@ -86,71 +93,46 @@ def create_app():
     # Add zip filter to Jinja2
     app.jinja_env.filters['zip'] = zip
     
-    # Auto-apply migrations and seed initial data
+    # Seed badges only after tables exist; schema migration is handled by entrypoint/CLI.
     with app.app_context():
-        import sys
-        
-        # Don't run auto-migration when executing CLI commands (like db init)
-        is_cli = len(sys.argv) > 1 and sys.argv[1] in ('db', 'create-user', 'seed-demo', 'sync-badges')
-        
-        if not is_cli:
-            try:
-                # Ensure migrations directory exists before attempting upgrade
-                migrations_path = os.path.join(app.root_path, '..', 'migrations')
-                if os.path.exists(migrations_path):
-                    from flask_migrate import upgrade
-                    upgrade()
-                else:
-                    app.logger.warning("Migrations directory not found, skipping auto-upgrade. Attempting to create tables if they don't exist.")
-                    db.create_all()
-                
-                # Seed mandatory data (Badges)
-                from .models import Badge, UserBadge
+        try:
+            if inspect(db.engine).has_table('badge'):
+                from .models import Badge
                 import json
-                
+
                 badges_json_path = os.path.join(app.root_path, 'badges.json')
-                badge_defs = []
                 if os.path.exists(badges_json_path):
                     with open(badges_json_path, 'r') as f:
                         badge_defs = json.load(f)
                 else:
-                    # Fallback to hardcoded list if JSON is missing
-                    badge_defs = [
-                        {'code': 'EARLY_BIRD', 'title': 'Early Bird', 'icon': '🐣', 'description': 'Congratulations on creating your first travel plan!'},
-                        {'code': 'FIRST_STEPS', 'title': 'First Steps', 'icon': '🎒', 'description': 'The ice is broken, the exploration of the world has begun!'},
-                        {'code': 'WORLD_EXPLORER', 'title': 'World Explorer', 'icon': '🌍', 'description': 'You are already considered a seasoned traveler in the world.'},
-                        {'code': 'EURO_TRAVELER', 'title': 'Euro-Traveler', 'icon': '🇪🇺', 'description': 'The gates of Europe are open before you.'},
-                        {'code': 'EU_MASTER', 'title': 'EU Master', 'icon': '👑', 'description': 'You are the uncrowned king of the European Union!'}
-                    ]
-                
+                    badge_defs = []
+
                 changed = False
                 for b_def in badge_defs:
                     existing_badge = Badge.query.filter_by(code=b_def['code']).first()
                     if not existing_badge:
-                        badge = Badge(
-                            code=b_def['code'], 
-                            title=b_def['title'], 
-                            icon=b_def['icon'], 
-                            description=b_def['description']
-                        )
-                        db.session.add(badge)
+                        db.session.add(Badge(
+                            code=b_def['code'],
+                            title=b_def['title'],
+                            icon=b_def['icon'],
+                            description=b_def['description'],
+                        ))
                         changed = True
-                    else:
-                        # Update existing badges if title or icon or description changed in code
-                        if existing_badge.title != b_def['title'] or \
-                           existing_badge.icon != b_def['icon'] or \
-                           existing_badge.description != b_def['description']:
-                            existing_badge.title = b_def['title']
-                            existing_badge.icon = b_def['icon']
-                            existing_badge.description = b_def['description']
-                            changed = True
-                
+                    elif (
+                        existing_badge.title != b_def['title']
+                        or existing_badge.icon != b_def['icon']
+                        or existing_badge.description != b_def['description']
+                    ):
+                        existing_badge.title = b_def['title']
+                        existing_badge.icon = b_def['icon']
+                        existing_badge.description = b_def['description']
+                        changed = True
+
                 if changed:
                     db.session.commit()
-                    
-            except Exception as e:
-                app.logger.error(f"Failed to auto-upgrade database or seed badges: {e}")
-            
+        except Exception as e:
+            app.logger.error(f"Failed to seed badges: {e}")
+
     # Extract SQLite database path from URI to ensure parent directory exists
     db_uri = app.config.get('SQLALCHEMY_DATABASE_URI', '')
     if db_uri.startswith('sqlite:///'):

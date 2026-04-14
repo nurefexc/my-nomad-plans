@@ -62,7 +62,7 @@ class ShareToken(db.Model):
     expires_at = db.Column(db.DateTime)
     view_count = db.Column(db.Integer, default=0)
     unique_view_count = db.Column(db.Integer, default=0)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # Optional backref to owner
+    user_id = db.Column(db.Integer, nullable=True) # Optional owner id for filtering user's share links
 
     @staticmethod
     def generate_token():

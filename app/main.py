@@ -385,7 +385,7 @@ def badges():
 def stats():
     trips = current_user.trips
     visited_trips = [t for t in trips if t.status == 'visited']
-    visited_countries = set([t.country for t in visited_trips])
+    visited_countries = {t.country for t in visited_trips if t.country}
     
     # Advanced Stats: Percentage of world visited (calculated from country_list)
     available_countries = countries_for_language('en')
@@ -394,7 +394,7 @@ def stats():
     unvisited_countries_count = world_countries_count - len(visited_countries)
 
     # More metrics
-    total_budget = 0
+    total_budget = 0.0
     trips_by_year = {}
     longest_trip = None
     shortest_trip = None
@@ -407,6 +407,8 @@ def stats():
             trips_by_year[year] = trips_by_year.get(year, 0) + 1
             if t.end_date:
                 duration = (t.end_date - t.start_date).days
+                if duration < 0:
+                    continue
                 if duration > max_duration:
                     max_duration = duration
                     longest_trip = t
@@ -414,8 +416,11 @@ def stats():
                     min_duration = duration
                     shortest_trip = t
 
-        if t.budget:
-            total_budget += t.budget
+        if t.budget is not None:
+            try:
+                total_budget += float(t.budget)
+            except (TypeError, ValueError):
+                pass
 
     # Detailed travel history
     monthly_stats = {}
@@ -445,11 +450,15 @@ def stats():
     for t in visited_trips:
         mode = getattr(t, 'transport_mode', getattr(t, 'transport', None))
         if mode:
-            mode = mode.lower()
+            mode = str(mode).strip().lower()
+        if mode:
             transport_counts[mode] = transport_counts.get(mode, 0) + 1
     
     sorted_transport = sorted(transport_counts.items(), key=lambda x: x[1], reverse=True)[:5]
     top_countries = sorted(countries_by_trips.items(), key=lambda x: x[1], reverse=True)[:5]
+
+    longest_trip_days = max_duration if max_duration >= 0 else None
+    shortest_trip_days = min_duration if min_duration != 99999 else None
 
     planned_trips = [t for t in trips if t.status == 'planned']
 
@@ -470,7 +479,9 @@ def stats():
         'top_transport': sorted_transport,
         'top_countries': top_countries,
         'longest_trip': longest_trip,
+        'longest_trip_days': longest_trip_days,
         'shortest_trip': shortest_trip,
+        'shortest_trip_days': shortest_trip_days,
         'trips_by_year': sorted(trips_by_year.items(), reverse=True)
     }
 
@@ -768,13 +779,13 @@ def shares_list():
     if not user_shares_query:
         all_shares = ShareToken.query.filter(ShareToken.user_id == None).all()
         for share in all_shares:
-            share_trip_ids = [int(tid) for tid in share.trip_ids.split(',')]
+            share_trip_ids = [int(tid) for tid in share.trip_ids.split(',') if tid.strip()]
             if any(tid in user_trips_ids for tid in share_trip_ids):
                 user_shares_query.append(share)
 
     user_shares_data = []
     for share in user_shares_query:
-        share_trip_ids = [int(tid) for tid in share.trip_ids.split(',')]
+        share_trip_ids = [int(tid) for tid in share.trip_ids.split(',') if tid.strip()]
         trips = Trip.query.filter(Trip.id.in_(share_trip_ids)).all()
         user_shares_data.append({
             'id': share.id,
@@ -785,7 +796,8 @@ def shares_list():
             'title': share.title,
             'description': share.description,
             'expires_at': share.expires_at,
-            'view_count': share.view_count
+            'view_count': share.view_count,
+            'unique_view_count': share.unique_view_count
         })
             
     return render_template('shares.html', shares=user_shares_data, all_user_trips=current_user.trips)
@@ -796,7 +808,7 @@ def edit_share(share_id):
     share = ShareToken.query.get_or_404(share_id)
     # Check ownership
     if share.user_id != current_user.id:
-        share_trip_ids_orig = [int(tid) for tid in share.trip_ids.split(',')]
+        share_trip_ids_orig = [int(tid) for tid in share.trip_ids.split(',') if tid.strip()]
         user_trips_ids = [t.id for t in current_user.trips]
         if not any(tid in user_trips_ids for tid in share_trip_ids_orig):
             abort(403)
@@ -833,7 +845,7 @@ def edit_share(share_id):
 def delete_share(share_id):
     share = ShareToken.query.get_or_404(share_id)
     # Check ownership (at least one trip must belong to user)
-    share_trip_ids = [int(tid) for tid in share.trip_ids.split(',')]
+    share_trip_ids = [int(tid) for tid in share.trip_ids.split(',') if tid.strip()]
     user_trips_ids = [t.id for t in current_user.trips]
     if not any(tid in user_trips_ids for tid in share_trip_ids):
         abort(403)
@@ -866,7 +878,7 @@ def shared_view(token):
         
     db.session.commit()
     
-    trip_ids = [int(tid) for tid in share_token.trip_ids.split(',')]
+    trip_ids = [int(tid) for tid in share_token.trip_ids.split(',') if tid.strip()]
     trips = Trip.query.filter(Trip.id.in_(trip_ids)).all()
     # Sort shared trips by start_date
     trips = sorted(trips, key=lambda x: (x.start_date is None, x.start_date))
