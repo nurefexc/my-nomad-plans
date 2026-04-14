@@ -1,6 +1,65 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% if next_trip %}
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card border-0 shadow-lg bg-white overflow-hidden next-trip-card" style="border-radius: 28px;">
+            <div class="card-body p-0">
+                <div class="row g-0">
+                    <!-- Left Side: Destination Info -->
+                    <div class="col-md-7 p-4 p-md-5 d-flex flex-column justify-content-center">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2 fw-bold text-uppercase next-trip-badge-dest">
+                                <i class="bi bi-rocket-takeoff me-1"></i> {{ _('Next Adventure') }}
+                            </span>
+                            <span class="badge rounded-pill bg-light text-muted px-3 py-2 border border-light-subtle shadow-sm next-trip-badge-date">
+                                <i class="bi bi-calendar3 me-1"></i> {{ next_trip.start_date.strftime('%B %d, %Y') }}
+                            </span>
+                        </div>
+                        
+                        <h1 class="display-4 fw-bold text-dark mb-2 next-trip-dest-title">{{ next_trip.destination }}</h1>
+                        
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            {% set next_ccode = get_country_code(next_trip.country) %}
+                            <div class="d-flex align-items-center bg-light rounded-pill px-3 py-2 border border-light-subtle shadow-sm">
+                                {% if next_ccode %}
+                                    <span class="fi fi-{{ next_ccode }} rounded-1 me-2 shadow-sm" style="width: 20px;"></span>
+                                {% endif %}
+                                <span class="fw-medium text-secondary">{{ next_trip.country }}</span>
+                            </div>
+                            
+                    <div id="weather-info" class="d-none align-items-center bg-info bg-opacity-10 text-info rounded-pill px-3 py-2 border-info border-opacity-10 shadow-sm weather-badge" data-lat="{{ next_trip.latitude }}" data-lon="{{ next_trip.longitude }}">
+                        <i class="bi bi-cloud-sun me-2"></i>
+                        <span class="fw-bold" id="weather-temp">--°C</span>
+                        <span class="ms-2 small opacity-75 d-none d-sm-inline" id="weather-desc">Loading...</span>
+                    </div>
+                        </div>
+
+                        <div class="mt-auto d-flex gap-2">
+                            <a href="{{ url_for('main.edit_trip', trip_id=next_trip.id) }}" class="btn btn-outline-dark rounded-pill px-4 py-2 fw-bold shadow-sm d-inline-flex align-items-center gap-2">
+                                <i class="bi bi-pencil-square"></i> {{ _('Edit Trip') }}
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Side: Countdown -->
+                    <div id="countdown-card" class="col-md-5 bg-dark text-white p-4 p-md-5 d-flex flex-column align-items-center justify-content-center text-center transition-all countdown-card-style">
+                        <div class="mb-2 opacity-50 text-uppercase fw-bold small countdown-wrapper-text">{{ _('Adventure Begins In') }}</div>
+                        <div class="d-flex align-items-baseline gap-2 mb-3">
+                            <span class="display-1 fw-bold countdown-days" id="countdown-days">--</span>
+                            <span class="h4 fw-normal opacity-50">{{ _('days') }}</span>
+                        </div>
+                        
+                        <div id="countdown-wrapper" data-date="{{ next_trip.start_date.strftime('%Y-%m-%dT%H:%M:%S') }}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <div class="row mb-4">
     <div class="col-12">
         <div id="main-map" class="map-container shadow-sm"></div>
@@ -11,19 +70,19 @@
     <div class="col-md-3">
         <div class="card border-0 shadow-sm bg-primary text-white h-100 p-2">
             <div class="card-body text-center">
-                <h5 class="card-title opacity-75">Visited Countries</h5>
+                <h5 class="card-title opacity-75">{{ _('Visited Countries') }}</h5>
                 <p class="card-text display-4 fw-bold mb-0">{{ stats.visited_count }}</p>
-                <small>of {{ stats.world_total }} countries</small>
+                <small>{{ _('%(visited)s of %(total)s countries', visited=stats.visited_count, total=stats.world_total) }}</small>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card border-0 shadow-sm bg-info text-white h-100 p-2">
             <div class="card-body text-center">
-                <h5 class="card-title opacity-75">World Explorer</h5>
+                <h5 class="card-title opacity-75">{{ _('World Explorer') }}</h5>
                 <p class="card-text display-4 fw-bold mb-0">{{ stats.visited_percent }}%</p>
-                <div class="progress mt-2" style="height: 6px; background-color: rgba(255,255,255,0.2);">
-                    <div class="progress-bar bg-white" role="progressbar" style="width: {{ stats.visited_percent }}%"></div>
+                <div class="progress mt-2 stats-visited-progress">
+                    <div class="progress-bar bg-white" role="progressbar" style="width: {{ stats.visited_percent }}%;"></div>
                 </div>
             </div>
         </div>
@@ -31,22 +90,92 @@
     <div class="col-md-3">
         <div class="card border-0 shadow-sm bg-warning text-dark h-100 p-2">
             <div class="card-body text-center">
-                <h5 class="card-title opacity-75">Next Destinations</h5>
+                <h5 class="card-title opacity-75">{{ _('Next Destinations') }}</h5>
                 <p class="card-text display-4 fw-bold mb-0">{{ stats.planned_count }}</p>
-                <small>Future plans</small>
+                <small>{{ _('Future plans') }}</small>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card border-0 shadow-sm bg-success text-white h-100 p-2">
             <div class="card-body text-center">
-                <h5 class="card-title opacity-75">Remaining</h5>
+                <h5 class="card-title opacity-75">{{ _('Remaining') }}</h5>
                 <p class="card-text display-4 fw-bold mb-0">{{ stats.unvisited_count }}</p>
-                <small>Countries to explore</small>
+                <small>{{ _('Countries to explore') }}</small>
             </div>
         </div>
     </div>
 </div>
+
+{% if badges %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm p-4" style="border-radius: 28px;">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                    <i class="bi bi-award text-primary"></i>
+                    {{ _('Your Achievements') }}
+                    {% if new_badges_count > 0 %}
+                    <span class="badge bg-danger rounded-pill pulse-badge" style="font-size: 0.6rem;">{{ new_badges_count }} {{ _('NEW') }}</span>
+                    {% endif %}
+                </h5>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('main.badges') }}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold">
+                        <i class="bi bi-award me-1 text-primary"></i> {{ _('All Achievements') }}
+                    </a>
+                    <a href="{{ url_for('main.stats') }}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold">
+                        <i class="bi bi-bar-chart-line me-1 text-primary"></i> {{ _('Detailed Statistics') }}
+                    </a>
+                </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-3">
+                {% for b in badges %}
+                <div class="badge-item bg-light rounded-4 p-3 d-flex flex-column gap-2 position-relative {% if b.is_new %}border-primary border-2 shadow-sm{% endif %} {% if not b.awarded %}opacity-75 grayscale{% endif %}" style="min-width: 220px; border: 1px solid rgba(0,0,0,0.05); transition: all 0.3s ease;">
+                    {% if b.is_new %}
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem; z-index: 1;">{{ _('NEW') }}</span>
+                    {% endif %}
+                    
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="fs-2">{{ b.icon }}</span>
+                        <div class="flex-grow-1">
+                            <div class="fw-bold text-dark d-flex align-items-center justify-content-between">
+                                {{ _(b.title) }}
+                                {% if b.awarded %}
+                                <i class="bi bi-patch-check-fill text-primary ms-1"></i>
+                                {% endif %}
+                            </div>
+                            <div class="text-muted small" style="font-size: 0.7rem; line-height: 1.2;">{{ _(b.description) }}</div>
+                        </div>
+                    </div>
+
+                    {% if not b.awarded or b.is_new %}
+                    <div class="mt-2">
+                        <div class="progress badge-progress">
+                            <div class="progress-bar {% if b.awarded %}bg-success{% else %}bg-primary{% endif %} {% if not b.awarded %}progress-bar-striped progress-bar-animated{% endif %}" role="progressbar" style="width: {{ b.progress }}%;"></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2" style="font-size: 0.7rem;">
+                            <span class="text-muted fw-bold">
+                                {{ b.current|int if b.current is number else b.current }} / {{ b.target|int if b.target is number else b.target }}
+                            </span>
+                            <span class="badge bg-primary bg-opacity-10 text-primary fw-bold rounded-pill px-2">{{ b.progress|round|int }}%</span>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="mt-auto pt-2 d-flex justify-content-end">
+                        <span class="badge bg-success bg-opacity-10 text-success fw-bold rounded-pill px-2 badge-item-completed-badge">
+                            <i class="bi bi-check2-circle me-1"></i> {{ _('Completed') }}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
 
 <form action="{{ url_for('main.share_trips') }}" method="POST">
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
@@ -58,8 +187,47 @@
             <button type="button" class="btn btn-light filter-btn" data-filter="draft">Draft</button>
         </div>
         <div>
-            <button type="submit" class="btn btn-outline-primary shadow-sm me-2">Share Selected</button>
+            <button type="button" class="btn btn-outline-primary shadow-sm me-2" data-bs-toggle="modal" data-bs-target="#shareCollectionModal">Share Selected</button>
             <a href="{{ url_for('main.add_trip') }}" class="btn btn-success shadow-sm">Plan New Trip</a>
+        </div>
+    </div>
+
+    <!-- Enhanced Share Modal -->
+    <div class="modal fade" id="shareCollectionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content border-0 shadow-lg modal-24px">
+                <div class="modal-header border-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold">Share Your Journey</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4">
+                    <p class="text-muted small mb-4">Create a beautiful, interactive page to share your selected trips with others.</p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Link Title</label>
+                        <input type="text" name="title" class="form-control rounded-3" placeholder="e.g. My Summer in Europe">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Description (Optional)</label>
+                        <textarea name="description" class="form-control rounded-3" rows="2" placeholder="Tell the story behind these trips..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Expiration Date (Optional)</label>
+                        <input type="date" name="expires_at" class="form-control rounded-3">
+                        <div class="form-text small">The link will automatically stop working after this date.</div>
+                    </div>
+
+                    <div class="alert alert-info py-2 px-3 rounded-3 mb-0">
+                        <small><i class="bi bi-info-circle me-1"></i> Trips selected on the dashboard will be included.</small>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pb-4 px-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Generate Link</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -69,24 +237,35 @@
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center pt-4 px-4">
                     <div class="d-flex align-items-center">
-                        <input type="checkbox" name="trip_ids" value="{{ trip.id }}" class="form-check-input me-3" style="width: 1.2rem; height: 1.2rem;">
-                        <span class="badge {% if trip.status == 'visited' %}bg-secondary{% elif trip.status == 'planned' %}bg-success{% else %}bg-info text-dark{% endif %}">
+                        <input type="checkbox" name="trip_ids" value="{{ trip.id }}" class="form-check-input me-3 trip-card-checkbox">
+                        <span class="badge {% if trip.status == 'visited' %}bg-secondary{% elif trip.status == 'planned' %}bg-success{% else %}bg-info text-dark{% endif %} shadow-sm">
                             {{ trip.status.capitalize() }}
                         </span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <small class="text-muted fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 0.75rem;">{{ trip.country }}</small>
-                        <button type="button" class="btn btn-link p-0 text-decoration-none" data-bs-toggle="collapse" data-bs-target="#checklistCollapse{{ trip.id }}">
-                            📝
+                        <small class="text-muted fw-bold text-uppercase opacity-75 trip-card-country">{{ trip.country }}</small>
+                        {% set ccode = get_country_code(trip.country) %}
+                        {% if ccode %}
+                        <span class="flag-wrapper ms-1">
+                            <span class="fi fi-{{ ccode }} me-1"></span>
+                            <span class="small fw-bold opacity-75">{{ ccode|upper }}</span>
+                        </span>
+                        {% endif %}
+                        <button type="button" class="btn btn-light p-1 ms-1 trip-card-btn-list" data-bs-toggle="collapse" data-bs-target="#checklistCollapse{{ trip.id }}">
+                            <i class="bi bi-list-check"></i>
                         </button>
                     </div>
                 </div>
                 <div class="card-body px-4 pb-4">
-                    <h4 class="card-title fw-bold mb-2">{{ trip.destination }}</h4>
-                    <h6 class="card-subtitle mb-4 text-muted small">
-                        📅 {% if trip.start_date %}{{ trip.start_date.strftime('%b %d, %Y') }}{% else %}TBD{% endif %} 
-                        - {% if trip.end_date %}{{ trip.end_date.strftime('%b %d, %Y') }}{% else %}TBD{% endif %}
-                    </h6>
+                    <h4 class="card-title fw-bold mb-3">{{ trip.destination }}</h4>
+                    <div class="mb-4">
+                        <span class="date-range">
+                            <i class="bi bi-calendar3"></i>
+                            {% if trip.start_date %}{{ trip.start_date.strftime('%b %d, %Y') }}{% else %}<span class="opacity-50 small italic">{{ _('Flexible') }}</span>{% endif %} 
+                            <i class="bi bi-arrow-right mx-1 small opacity-50"></i>
+                            {% if trip.end_date %}{{ trip.end_date.strftime('%b %d, %Y') }}{% else %}<span class="opacity-50 small italic">{{ _('Flexible') }}</span>{% endif %}
+                        </span>
+                    </div>
                     
                     <div class="collapse mb-3" id="checklistCollapse{{ trip.id }}">
                         <div class="p-3 bg-light rounded-3 small">
@@ -218,6 +397,41 @@
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Combined Countdown & Color Logic
+        const countdownWrapper = document.getElementById('countdown-wrapper');
+        const daysEl = document.getElementById('countdown-days');
+        const countdownCard = document.getElementById('countdown-card');
+
+        if (countdownWrapper && countdownWrapper.dataset.date) {
+            const targetDate = new Date(countdownWrapper.dataset.date).getTime();
+
+            function updateCountdown() {
+                const currentTime = new Date().getTime();
+                const diff = targetDate - currentTime;
+                const d = Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
+                
+                if (daysEl) daysEl.innerText = d;
+
+                // Color coding based on remaining days
+                if (countdownCard) {
+                    if (d <= 1) {
+                        countdownCard.style.backgroundColor = '#e01b24'; // Adwaita Red
+                    } else if (d <= 5) {
+                        countdownCard.style.backgroundColor = '#f5c211'; // Adwaita Yellow
+                        countdownCard.classList.remove('text-white');
+                        countdownCard.classList.add('text-dark');
+                    } else {
+                        countdownCard.style.backgroundColor = '#241f31'; // Adwaita Dark
+                        countdownCard.classList.remove('text-dark');
+                        countdownCard.classList.add('text-white');
+                    }
+                }
+            }
+
+            updateCountdown();
+            setInterval(updateCountdown, 3600000); // Update every hour
+        }
+
         // Filtering logic
         const filterButtons = document.querySelectorAll('.filter-btn');
         const cards = document.querySelectorAll('.trip-card-wrapper');
@@ -244,8 +458,10 @@
 
         // Map setup
         var map = L.map('main-map').setView([20, 0], 2);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20
         }).addTo(map);
 
         var markers = [];
@@ -287,7 +503,47 @@
         }
         if (markers.length > 0) map.fitBounds(markers);
 
-        // Checklist AJAX
+        // Weather AJAX
+        const weatherEl = document.getElementById('weather-info');
+        if (weatherEl && weatherEl.dataset.lat && weatherEl.dataset.lat !== 'None') {
+            const lat = weatherEl.dataset.lat;
+            const lon = weatherEl.dataset.lon;
+            
+            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
+                .then(res => res.json())
+                .then(data => {
+                    const temp = Math.round(data.current_weather.temperature);
+                    const code = data.current_weather.weathercode;
+                    let iconClass = 'bi-sun-fill';
+                    let desc = 'Clear';
+                    
+                    if (code > 0) { iconClass = 'bi-cloud-sun-fill'; desc = 'Partly Cloudy'; }
+                    if (code > 2) { iconClass = 'bi-cloud-fill'; desc = 'Cloudy'; }
+                    if (code > 50) { iconClass = 'bi-cloud-rain-fill'; desc = 'Rainy'; }
+                    if (code > 70) { iconClass = 'bi-snow'; desc = 'Snowy'; }
+                    if (code > 90) { iconClass = 'bi-cloud-lightning-rain-fill'; desc = 'Stormy'; }
+                    
+                    const tempEl = document.getElementById('weather-temp');
+                    const descEl = document.getElementById('weather-desc');
+                    const iconEl = weatherEl.querySelector('i');
+                    
+                    if (tempEl) tempEl.innerText = `${temp}°C`;
+                    if (descEl) {
+                        descEl.innerText = desc;
+                        descEl.classList.remove('d-none');
+                    }
+                    if (iconEl) {
+                        iconEl.className = `bi ${iconClass} me-2`;
+                    }
+                    
+                    weatherEl.classList.remove('d-none');
+                    weatherEl.classList.add('d-inline-flex');
+                })
+                .catch(() => {
+                    weatherEl.classList.add('d-none');
+                });
+        }
+
         document.querySelectorAll('.toggle-checklist-dates').forEach(el => {
             el.addEventListener('click', () => {
                 const datesDiv = el.previousElementSibling;
@@ -341,22 +597,27 @@
         });
 
         function bindChecklistEvents(element) {
+            if (!element) return;
             const toggle = element.querySelector('.checklist-toggle');
             const delBtn = element.querySelector('.checklist-delete');
 
-            toggle.addEventListener('change', async () => {
-                const response = await fetch(`/checklist/toggle/${toggle.dataset.itemId}`, {method: 'POST'});
-                if (response.ok) {
-                    const span = toggle.nextElementSibling;
-                    if (toggle.checked) span.classList.add('text-decoration-line-through', 'text-muted');
-                    else span.classList.remove('text-decoration-line-through', 'text-muted');
-                }
-            });
+            if (toggle) {
+                toggle.addEventListener('change', async () => {
+                    const response = await fetch(`/checklist/toggle/${toggle.dataset.itemId}`, {method: 'POST'});
+                    if (response.ok) {
+                        const span = toggle.nextElementSibling;
+                        if (toggle.checked) span.classList.add('text-decoration-line-through', 'text-muted');
+                        else span.classList.remove('text-decoration-line-through', 'text-muted');
+                    }
+                });
+            }
 
-            delBtn.addEventListener('click', async () => {
-                const response = await fetch(`/checklist/delete/${delBtn.dataset.itemId}`, {method: 'POST'});
-                if (response.ok) element.remove();
-            });
+            if (delBtn) {
+                delBtn.addEventListener('click', async () => {
+                    const response = await fetch(`/checklist/delete/${delBtn.dataset.itemId}`, {method: 'POST'});
+                    if (response.ok) element.remove();
+                });
+            }
         }
 
         document.querySelectorAll('.checklist-list li').forEach(bindChecklistEvents);

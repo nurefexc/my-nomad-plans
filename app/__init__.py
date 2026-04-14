@@ -1,14 +1,32 @@
 import os
 import click
-from flask import Flask
+from flask import Flask, session
+from .translations import TRANSLATIONS
 from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
+from flask_babel import Babel, _
 
 db = SQLAlchemy()
 login_manager = LoginManager()
 migrate = Migrate()
+babel = Babel()
+
+def get_locale():
+    from flask import request
+    # 1. Check URL parameter
+    lang = request.args.get('lang')
+    if lang in ['en', 'hu']:
+        session['lang'] = lang
+        return lang
+    
+    # 2. Check session
+    if session.get('lang'):
+        return session.get('lang')
+    
+    # 3. Check browser language
+    return request.accept_languages.best_match(['en', 'hu']) or 'en'
 
 def create_app():
     app = Flask(__name__)
@@ -63,6 +81,75 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     migrate.init_app(app, db)
+    babel.init_app(app, locale_selector=get_locale)
+    
+    # Add zip filter to Jinja2
+    app.jinja_env.filters['zip'] = zip
+    
+    # Auto-apply migrations and seed initial data
+    with app.app_context():
+        import sys
+        
+        # Don't run auto-migration when executing CLI commands (like db init)
+        is_cli = len(sys.argv) > 1 and sys.argv[1] in ('db', 'create-user', 'seed-demo', 'sync-badges')
+        
+        if not is_cli:
+            try:
+                # Ensure migrations directory exists before attempting upgrade
+                migrations_path = os.path.join(app.root_path, '..', 'migrations')
+                if os.path.exists(migrations_path):
+                    from flask_migrate import upgrade
+                    upgrade()
+                else:
+                    app.logger.warning("Migrations directory not found, skipping auto-upgrade. Attempting to create tables if they don't exist.")
+                    db.create_all()
+                
+                # Seed mandatory data (Badges)
+                from .models import Badge, UserBadge
+                import json
+                
+                badges_json_path = os.path.join(app.root_path, 'badges.json')
+                badge_defs = []
+                if os.path.exists(badges_json_path):
+                    with open(badges_json_path, 'r') as f:
+                        badge_defs = json.load(f)
+                else:
+                    # Fallback to hardcoded list if JSON is missing
+                    badge_defs = [
+                        {'code': 'EARLY_BIRD', 'title': 'Early Bird', 'icon': '🐣', 'description': 'Congratulations on creating your first travel plan!'},
+                        {'code': 'FIRST_STEPS', 'title': 'First Steps', 'icon': '🎒', 'description': 'The ice is broken, the exploration of the world has begun!'},
+                        {'code': 'WORLD_EXPLORER', 'title': 'World Explorer', 'icon': '🌍', 'description': 'You are already considered a seasoned traveler in the world.'},
+                        {'code': 'EURO_TRAVELER', 'title': 'Euro-Traveler', 'icon': '🇪🇺', 'description': 'The gates of Europe are open before you.'},
+                        {'code': 'EU_MASTER', 'title': 'EU Master', 'icon': '👑', 'description': 'You are the uncrowned king of the European Union!'}
+                    ]
+                
+                changed = False
+                for b_def in badge_defs:
+                    existing_badge = Badge.query.filter_by(code=b_def['code']).first()
+                    if not existing_badge:
+                        badge = Badge(
+                            code=b_def['code'], 
+                            title=b_def['title'], 
+                            icon=b_def['icon'], 
+                            description=b_def['description']
+                        )
+                        db.session.add(badge)
+                        changed = True
+                    else:
+                        # Update existing badges if title or icon or description changed in code
+                        if existing_badge.title != b_def['title'] or \
+                           existing_badge.icon != b_def['icon'] or \
+                           existing_badge.description != b_def['description']:
+                            existing_badge.title = b_def['title']
+                            existing_badge.icon = b_def['icon']
+                            existing_badge.description = b_def['description']
+                            changed = True
+                
+                if changed:
+                    db.session.commit()
+                    
+            except Exception as e:
+                app.logger.error(f"Failed to auto-upgrade database or seed badges: {e}")
             
     # Extract SQLite database path from URI to ensure parent directory exists
     db_uri = app.config.get('SQLALCHEMY_DATABASE_URI', '')
@@ -88,7 +175,7 @@ def create_app():
         except Exception:
             pass
 
-    from .models import User, Trip, ShareToken
+    from .models import User, Trip, ShareToken, Badge, UserBadge
 
     # CLI commands
     @app.cli.command("create-user")
@@ -116,29 +203,18 @@ def create_app():
         from seed_demo import seed_demo_data
         seed_demo_data()
 
+    @app.cli.command("sync-badges")
+    @with_appcontext
+    def sync_badges_command():
+        """Syncs all users' badges based on their trip history."""
+        from .main import evaluate_user_badges
+        from .models import User
+        users = User.query.all()
+        for user in users:
+            evaluate_user_badges(user)
+        print("All user badges synced successfully!")
+
     with app.app_context():
-        # Fallback to create_all() ONLY if DB file doesn't exist and we are NOT running a migration/CLI command
-        # This prevents locking issues during 'flask db init/migrate'
-        import sys
-        is_cli = len(sys.argv) > 1 and sys.argv[1] in ('db', 'create-user', 'seed-demo')
-        
-        # Use normalized URI from config
-        db_uri = app.config.get('SQLALCHEMY_DATABASE_URI', '')
-        if not is_cli and db_uri.startswith('sqlite:///'):
-            db_path = db_uri.replace('sqlite:///', '')
-            # If it was an absolute path (4 slashes), it now starts with /
-            # If it was relative (3 slashes), it's already relative
-            if not os.path.isabs(db_path):
-                db_path = os.path.abspath(os.path.join(app.root_path, '..', db_path))
-            
-            if not os.path.exists(db_path):
-                try:
-                    db.create_all()
-                    # Ensure the newly created database file is writable
-                    if os.path.exists(db_path):
-                        os.chmod(db_path, 0o666)
-                except Exception as e:
-                    app.logger.error(f"Failed to create database tables: {e}")
         pass
 
     from .auth import auth as auth_blueprint
@@ -146,6 +222,11 @@ def create_app():
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
+
+    @app.context_processor
+    def inject_i18n():
+        lang = session.get('lang', 'en')
+        return dict(current_lang=lang)
 
     return app
 

@@ -7,10 +7,12 @@ mkdir -p instance
 chmod 777 instance || true
 
 if [ ! -d "migrations" ]; then
-    echo "Initializing migrations..."
-    flask --app app:create_app db init
+    echo "Initializing migrations directory..."
+    mkdir -p migrations
+    flask --app app:create_app db init || (rmdir migrations && echo "Could not init migrations, directory removed")
     
-    # If database exists, it might have an old alembic_version table
+    if [ -d "migrations" ]; then
+        # If database exists, it might have an old alembic_version table
     # that references a non-existent revision (causing "Can't locate revision" errors)
     # We attempt to clear it if it exists to allow a fresh start of the migration history.
     DB_PATH="instance/nomad.db"
@@ -25,17 +27,24 @@ if row:
 conn.close();" || true
     fi
 
-    echo "Generating initial migration..."
-    if flask --app app:create_app db migrate -m "Initial migration"; then
-        echo "Initial migration generated. Syncing database state..."
-        flask --app app:create_app db stamp head || echo "Warning: Could not stamp database."
-    else
-        echo "Warning: Could not generate initial migration automatically. If the database is already initialized, you might need to stamp it manually."
+    if [ -d "migrations" ]; then
+        echo "Generating initial migration..."
+        if flask --app app:create_app db migrate -m "Initial migration"; then
+            echo "Initial migration generated. Syncing database state..."
+            flask --app app:create_app db stamp head || echo "Warning: Could not stamp database."
+        else
+            echo "Warning: Could not generate initial migration automatically. If the database is already initialized, you might need to stamp it manually."
+        fi
+    fi
     fi
 fi
 
 echo "Applying database migrations..."
-flask --app app:create_app db upgrade
+if [ -d "migrations" ]; then
+    flask --app app:create_app db upgrade || echo "Migration upgrade failed."
+else
+    echo "Migrations directory not found, using db.create_all() via app initialization."
+fi
 
 # Run demo seeding if requested and script is available
 if [ "$DEMO" = "1" ]; then
@@ -45,6 +54,12 @@ if [ "$DEMO" = "1" ]; then
     else
         echo "Warning: seed_demo.py not found, skipping demo seeding."
     fi
+fi
+
+# Compile translations if pybabel is available
+if command -v pybabel &> /dev/null; then
+    echo "Compiling translations..."
+    pybabel compile -d app/translations
 fi
 
 # Start the application

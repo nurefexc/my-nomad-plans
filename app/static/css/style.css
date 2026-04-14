@@ -1,0 +1,489 @@
+:root {
+    --gnome-bg: #f6f5f4;
+    --gnome-card: #ffffff;
+    --gnome-accent: #3584e4;
+    --gnome-text: #2e3436;
+    --gnome-secondary: #949d9f;
+    --gnome-danger: #e01b24;
+    --gnome-success: #2ec27e;
+    --gnome-header: #ffffff;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--gnome-bg);
+    color: var(--gnome-text);
+}
+
+.navbar {
+    background-color: var(--gnome-header) !important;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.navbar-brand {
+    color: var(--gnome-text) !important;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.nav-link {
+    color: var(--gnome-text) !important;
+    font-weight: 600;
+    opacity: 0.7;
+    transition: all 0.2s;
+    border-radius: 10px;
+    padding: 0.5rem 1rem !important;
+}
+
+.nav-link:hover {
+    opacity: 1;
+    background-color: rgba(0,0,0,0.05);
+}
+
+.map-container {
+    height: 400px;
+    width: 100%;
+    margin-bottom: 30px;
+    border-radius: 28px;
+    z-index: 1;
+    border: 1px solid rgba(0,0,0,0.05);
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.hero-section {
+    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 100px 0;
+    margin-bottom: 40px;
+    border-radius: 28px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.card {
+    border: none;
+    background: var(--gnome-card);
+    border-radius: 28px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.08) !important;
+}
+
+.btn {
+    border-radius: 16px;
+    font-weight: 600;
+    padding: 0.6rem 1.4rem;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-primary {
+    background-color: var(--gnome-accent);
+    color: white;
+    box-shadow: 0 4px 12px rgba(53, 132, 228, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: #2a76d0;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(53, 132, 228, 0.3);
+}
+
+.btn-success {
+    background-color: var(--gnome-success);
+    color: white;
+    box-shadow: 0 4px 12px rgba(46, 194, 126, 0.2);
+}
+
+.btn-light {
+    background-color: rgba(0,0,0,0.05);
+    color: var(--gnome-text);
+}
+
+.btn-light:hover {
+    background-color: rgba(0,0,0,0.08);
+}
+
+.btn-outline-primary {
+    color: var(--gnome-accent);
+    background-color: rgba(53, 132, 228, 0.1);
+}
+
+.badge {
+    font-weight: 600;
+    padding: 0.5em 1em;
+    border-radius: 12px;
+}
+
+.progress {
+    border-radius: 12px;
+    background-color: rgba(0,0,0,0.05);
+    height: 8px;
+}
+
+.form-control, .form-select {
+    border-radius: 14px;
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 0.8rem 1.1rem;
+    background-color: #ffffff;
+}
+
+.form-control:focus {
+    border-color: var(--gnome-accent);
+    box-shadow: 0 0 0 4px rgba(53, 132, 228, 0.1);
+}
+
+/* Gnome-like UI elements */
+.gnome-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.gnome-group {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 0.5rem;
+    border: 1px solid rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+}
+
+.gnome-row {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0,0,0,0.03);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s;
+    border-radius: 16px;
+}
+
+.gnome-row:last-child {
+    border-bottom: none;
+}
+
+.gnome-row:hover {
+    background-color: rgba(0,0,0,0.02);
+}
+
+.gnome-row-title {
+    font-weight: 600;
+    flex-grow: 1;
+}
+
+.gnome-row-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(53, 132, 228, 0.1);
+    color: var(--gnome-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+
+.fi {
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 1.5em;
+    height: 1.1em;
+    object-fit: cover;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.fi-circular {
+    border-radius: 50% !important;
+    width: 1.8em;
+    height: 1.8em;
+    border: 2px solid #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.flag-wrapper {
+    display: inline-flex;
+    align-items: center;
+    background: #ffffff;
+    padding: 6px 14px;
+    border-radius: 24px;
+    font-size: 0.9rem;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.flag-wrapper:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+}
+
+.flag-wrapper .fi {
+    box-shadow: none;
+    border-radius: 4px;
+}
+
+/* Enhanced Date Styling */
+.date-badge {
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+    padding: 4px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--gnome-text);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    font-variant-numeric: tabular-nums;
+}
+
+.date-badge i {
+    color: var(--gnome-accent);
+    font-size: 0.9rem;
+}
+
+.date-range {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(53, 132, 228, 0.08);
+    padding: 6px 14px;
+    border-radius: 14px;
+    font-weight: 700;
+    color: var(--gnome-accent);
+    font-size: 0.95rem;
+}
+
+.date-range i {
+    font-size: 1rem;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.pulse-badge {
+    animation: pulse 2s infinite;
+}
+
+.grayscale {
+    filter: grayscale(100%);
+    opacity: 0.6;
+}
+
+.next-trip-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.trip-card-checkbox {
+    width: 1.25rem; 
+    height: 1.25rem; 
+    border-radius: 6px;
+}
+
+.trip-card-country {
+    letter-spacing: 0.5px; 
+    font-size: 0.7rem;
+}
+
+.trip-card-btn-list {
+    width: 32px; 
+    height: 32px; 
+    border-radius: 8px;
+}
+
+.modal-24px {
+    border-radius: 24px;
+}
+
+.stats-visited-progress {
+    height: 6px; 
+    background-color: rgba(255,255,255,0.2);
+}
+
+.badge-progress {
+    height: 10px; 
+    border-radius: 10px; 
+    background-color: rgba(0,0,0,0.05); 
+    border: 1px solid rgba(0,0,0,0.02);
+}
+
+.badge-completed-size {
+    font-size: 0.6rem;
+}
+
+.next-trip-badge-dest {
+    letter-spacing: 0.1em; 
+    font-size: 0.7rem;
+}
+
+.next-trip-badge-date {
+    font-size: 0.75rem;
+}
+
+.next-trip-dest-title {
+    letter-spacing: -0.02em;
+}
+
+.countdown-wrapper-text {
+    letter-spacing: 0.1em;
+}
+
+.trip-item-time {
+    font-size: 0.7rem;
+}
+
+.map-preview-size {
+    height: 200px;
+}
+
+.badge-card-detailed {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 20px; 
+    border: 1px solid #f0f0f0 !important;
+}
+
+.badge-card-detailed:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.1) !important;
+}
+
+.badge-card-detailed:hover .progress-bar {
+    filter: brightness(1.1);
+    box-shadow: 0 0 10px rgba(53, 132, 228, 0.4);
+}
+
+.bg-success-soft {
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
+.pulse {
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0% { transform: translate(-50%, -50%) scale(0.95); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+    70% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+    100% { transform: translate(-50%, -50%) scale(0.95); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+.badge-icon-container div {
+    transition: all 0.3s ease;
+}
+
+.badge-card-detailed:hover .badge-icon-container div:first-child {
+    transform: scale(1.1) rotate(5deg);
+    background-color: white !important;
+}
+
+.badge-icon-container-size {
+    width: 80px; 
+    height: 80px;
+}
+
+.badge-icon-check-size {
+    width: 24px; 
+    height: 24px; 
+    font-size: 0.7rem;
+}
+
+.badge-desc-min-height {
+    min-height: 40px;
+}
+
+.badge-completed-pill-size {
+    font-size: 0.7rem;
+}
+
+.badge-progress-height {
+    height: 6px; 
+    border-radius: 10px;
+}
+
+.badge-item {
+    filter: grayscale(100%);
+    opacity: 0.6;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.countdown-card-style {
+    min-height: 300px; 
+    transition: background-color 0.5s ease;
+}
+
+.weather-badge {
+    border-width: 1px;
+    border-style: solid;
+}
+
+.badge-item-completed-badge {
+    font-size: 0.6rem;
+}
+
+.rounded-4 {
+    border-radius: 1.5rem !important;
+}
+
+.shared-stats-card {
+    border-radius: 28px;
+}
+
+.shared-map-size {
+    height: 500px;
+}
+
+.gnome-row-icon-success {
+    background: rgba(46, 194, 126, 0.1);
+}
+
+.gnome-row-icon-warning {
+    background: rgba(255, 193, 7, 0.1);
+}
+
+.gnome-row-icon-info {
+    background: rgba(53, 132, 228, 0.1);
+}
+
+.ls-wide {
+    letter-spacing: 0.05em;
+}
+
+.shadow-xs {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.italic {
+    font-style: italic;
+}
+
+.stats-main-card {
+    border-radius: 28px;
+}
+
+.chart-container {
+    height: 200px;
+}
+
+.stat-bar {
+    min-height: 4px;
+    transition: height 0.5s ease;
+}
+
+.badge-progress {
+    height: 10px;
+    border-radius: 10px;
+    background-color: rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.02);
+}

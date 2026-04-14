@@ -1,0 +1,252 @@
+[
+    {
+        "code": "EARLY_BIRD",
+        "title": "Early Bird",
+        "icon": "🐣",
+        "description": "Congratulations on creating your first travel plan!",
+        "criteria": "len(trips) >= 1",
+        "progress": "min(100, (len(trips) / 1) * 100)",
+        "current": "len(trips)",
+        "target": 1
+    },
+    {
+        "code": "FIRST_STEPS",
+        "title": "First Steps",
+        "icon": "🎒",
+        "description": "The ice is broken, the exploration of the world has begun!",
+        "criteria": "len(visited_countries) >= 1",
+        "progress": "min(100, (len(visited_countries) / 1) * 100)",
+        "current": "len(visited_countries)",
+        "target": 1
+    },
+    {
+        "code": "WORLD_EXPLORER",
+        "title": "World Explorer",
+        "icon": "🌍",
+        "description": "You are already considered a seasoned traveler in the world.",
+        "criteria": "len(visited_countries) >= 10",
+        "progress": "min(100, (len(visited_countries) / 10) * 100)",
+        "current": "len(visited_countries)",
+        "target": 10
+    },
+    {
+        "code": "GLOBETROTTER",
+        "title": "Globetrotter",
+        "icon": "🗺️",
+        "description": "25 countries visited. You're practically living out of a suitcase!",
+        "criteria": "len(visited_countries) >= 25",
+        "progress": "min(100, (len(visited_countries) / 25) * 100)",
+        "current": "len(visited_countries)",
+        "target": 25
+    },
+    {
+        "code": "EURO_TRAVELER",
+        "title": "Euro-Traveler",
+        "icon": "🇪🇺",
+        "description": "The gates of Europe are open before you.",
+        "criteria": "len(visited_eu) >= 5",
+        "progress": "min(100, (len(visited_eu) / 5) * 100)",
+        "current": "len(visited_eu)",
+        "target": 5
+    },
+    {
+        "code": "EU_MASTER",
+        "title": "EU Master",
+        "icon": "👑",
+        "description": "You are the uncrowned king of the European Union!",
+        "criteria": "eu_countries.issubset(visited_countries) and len(eu_countries) > 0",
+        "progress": "min(100, (len(visited_eu) / len(eu_countries) * 100)) if len(eu_countries) > 0 else 0",
+        "current": "len(visited_eu)",
+        "target": "len(eu_countries)"
+    },
+    {
+        "code": "FREQUENT_FLYER",
+        "title": "Frequent Flyer",
+        "icon": "✈️",
+        "description": "You spend more time in the air than on the ground!",
+        "criteria": "len([t for t in trips if t.transport_mode == 'plane' and t.status == 'visited']) >= 5",
+        "progress": "min(100, (len([t for t in trips if t.transport_mode == 'plane' and t.status == 'visited']) / 5) * 100)",
+        "current": "len([t for t in trips if t.transport_mode == 'plane' and t.status == 'visited'])",
+        "target": 5
+    },
+    {
+        "code": "SKY_CAPTAIN",
+        "title": "Sky Captain",
+        "icon": "👨‍✈️",
+        "description": "15 flights completed. The sky is your second home.",
+        "criteria": "len([t for t in trips if t.transport_mode == 'plane' and t.status == 'visited']) >= 15",
+        "progress": "min(100, (len([t for t in trips if t.transport_mode == 'plane' and t.status == 'visited']) / 15) * 100)",
+        "current": "len([t for t in trips if t.transport_mode == 'plane' and t.status == 'visited'])",
+        "target": 15
+    },
+    {
+        "code": "ROAD_WARRIOR",
+        "title": "Road Warrior",
+        "icon": "🚗",
+        "description": "Nothing beats a good old road trip.",
+        "criteria": "len([t for t in trips if t.transport_mode == 'car' and t.status == 'visited']) >= 5",
+        "progress": "min(100, (len([t for t in trips if t.transport_mode == 'car' and t.status == 'visited']) / 5) * 100)",
+        "current": "len([t for t in trips if t.transport_mode == 'car' and t.status == 'visited'])",
+        "target": 5
+    },
+    {
+        "code": "TRAIN_ENTHUSIAST",
+        "title": "Train Enthusiast",
+        "icon": "🚂",
+        "description": "Loving the rhythm of the rails. 5 train journeys completed.",
+        "criteria": "len([t for t in trips if t.transport_mode == 'train' and t.status == 'visited']) >= 5",
+        "progress": "min(100, (len([t for t in trips if t.transport_mode == 'train' and t.status == 'visited']) / 5) * 100)",
+        "current": "len([t for t in trips if t.transport_mode == 'train' and t.status == 'visited'])",
+        "target": 5
+    },
+    {
+        "code": "WEEKEND_WARRIOR",
+        "title": "Weekend Warrior",
+        "icon": "⛱️",
+        "description": "5 short trips (less than 4 days) completed.",
+        "criteria": "len([t for t in trips if t.status == 'visited' and t.start_date and t.end_date and (t.end_date - t.start_date).days < 4]) >= 5",
+        "progress": "min(100, (len([t for t in trips if t.status == 'visited' and t.start_date and t.end_date and (t.end_date - t.start_date).days < 4]) / 5) * 100)",
+        "current": "len([t for t in trips if t.status == 'visited' and t.start_date and t.end_date and (t.end_date - t.start_date).days < 4])",
+        "target": 5
+    },
+    {
+        "code": "LONG_HAULER",
+        "title": "Long Hauler",
+        "icon": "🏕️",
+        "description": "You've completed a trip longer than 14 days. True nomad!",
+        "criteria": "any([t for t in trips if t.status == 'visited' and t.start_date and t.end_date and (t.end_date - t.start_date).days >= 14])",
+        "progress": "100 if any([t for t in trips if t.status == 'visited' and t.start_date and t.end_date and (t.end_date - t.start_date).days >= 14]) else 0",
+        "current": "1 if any([t for t in trips if t.status == 'visited' and t.start_date and t.end_date and (t.end_date - t.start_date).days >= 14]) else 0",
+        "target": 1
+    },
+    {
+        "code": "EARLY_ADOPTER",
+        "title": "Early Adopter",
+        "icon": "🚀",
+        "description": "Created your account in the early days of Nomad Planner.",
+        "criteria": "True",
+        "progress": "100",
+        "current": 1,
+        "target": 1
+    },
+    {
+        "code": "BUDGET_MASTER",
+        "title": "Budget Master",
+        "icon": "💰",
+        "description": "Tracked expenses for at least 10 trips.",
+        "criteria": "len([t for t in trips if t.budget and t.budget > 0]) >= 10",
+        "progress": "min(100, (len([t for t in trips if t.budget and t.budget > 0]) / 10) * 100)",
+        "current": "len([t for t in trips if t.budget and t.budget > 0])",
+        "target": 10
+    },
+    {
+        "code": "CHECKLIST_PRO",
+        "title": "Checklist Pro",
+        "icon": "✅",
+        "description": "Completed all items in a packing list for 5 different trips.",
+        "criteria": "len([t for t in trips if t.checklist and len(t.checklist) > 0 and all(c.is_done for c in t.checklist)]) >= 5",
+        "progress": "min(100, (len([t for t in trips if t.checklist and len(t.checklist) > 0 and all(c.is_done for c in t.checklist)]) / 5) * 100)",
+        "current": "len([t for t in trips if t.checklist and len(t.checklist) > 0 and all(c.is_done for c in t.checklist)])",
+        "target": 5
+    },
+    {
+        "code": "PLANNER_ADDICT",
+        "title": "Planner Addict",
+        "icon": "📔",
+        "description": "Have at least 15 planned (not yet visited) trips in your account.",
+        "criteria": "len([t for t in trips if t.status == 'planned']) >= 15",
+        "progress": "min(100, (len([t for t in trips if t.status == 'planned']) / 15) * 100)",
+        "current": "len([t for t in trips if t.status == 'planned'])",
+        "target": 15
+    },
+    {
+        "code": "SOCIAL_BUTTERFLY",
+        "title": "Social Butterfly",
+        "icon": "🦋",
+        "description": "Created and shared 5 public travel links.",
+        "criteria": "len(user.share_tokens) >= 5",
+        "progress": "min(100, (len(user.share_tokens) / 5) * 100)",
+        "current": "len(user.share_tokens)",
+        "target": 5
+    },
+    {
+        "code": "AFRICA_EXPLORER",
+        "title": "Africa Explorer",
+        "icon": "🦁",
+        "description": "Visited 3 different countries in Africa.",
+        "criteria": "len(visited_africa) >= 3",
+        "progress": "min(100, (len(visited_africa) / 3) * 100)",
+        "current": "len(visited_africa)",
+        "target": 3
+    },
+    {
+        "code": "ASIA_ADVENTURER",
+        "title": "Asia Adventurer",
+        "icon": "🏮",
+        "description": "Visited 5 different countries in Asia.",
+        "criteria": "len(visited_asia) >= 5",
+        "progress": "min(100, (len(visited_asia) / 5) * 100)",
+        "current": "len(visited_asia)",
+        "target": 5
+    },
+    {
+        "code": "AMERICA_VOYAGER",
+        "title": "America Voyager",
+        "icon": "🗽",
+        "description": "Visited 5 different countries across the Americas.",
+        "criteria": "len(visited_americas) >= 5",
+        "progress": "min(100, (len(visited_americas) / 5) * 100)",
+        "current": "len(visited_americas)",
+        "target": 5
+    },
+    {
+        "code": "OCEANIA_DISCOVERER",
+        "title": "Oceania Discoverer",
+        "icon": "🏄",
+        "description": "Visited 3 different countries in Oceania.",
+        "criteria": "len(visited_oceania) >= 3",
+        "progress": "min(100, (len(visited_oceania) / 3) * 100)",
+        "current": "len(visited_oceania)",
+        "target": 3
+    },
+    {
+        "code": "AMERICA_DISCOVERY",
+        "title": "Discovery of America",
+        "icon": "🚢",
+        "description": "Visited both the United States and Canada.",
+        "criteria": "{'United States', 'Canada'}.issubset(visited_countries)",
+        "progress": "100 if {'United States', 'Canada'}.issubset(visited_countries) else (50 if ('United States' in visited_countries or 'Canada' in visited_countries) else 0)",
+        "current": "len({'United States', 'Canada'}.intersection(visited_countries))",
+        "target": 2
+    },
+    {
+        "code": "LATINO_TRAVELER",
+        "title": "Latino Traveler",
+        "icon": "💃",
+        "description": "Visited 3 different countries in South or Central America.",
+        "criteria": "len(visited_americas - {'United States', 'Canada'}) >= 3",
+        "progress": "min(100, (len(visited_americas - {'United States', 'Canada'}) / 3) * 100)",
+        "current": "len(visited_americas - {'United States', 'Canada'})",
+        "target": 3
+    },
+    {
+        "code": "NOMAD_LEGEND",
+        "title": "Nomad Legend",
+        "icon": "🏆",
+        "description": "Completed 50 trips in total. You are a legend!",
+        "criteria": "len([t for t in trips if t.status == 'visited']) >= 50",
+        "progress": "min(100, (len([t for t in trips if t.status == 'visited']) / 50) * 100)",
+        "current": "len([t for t in trips if t.status == 'visited'])",
+        "target": 50
+    },
+    {
+        "code": "NIGHT_OWL",
+        "title": "Night Owl",
+        "icon": "🦉",
+        "description": "Logged into the app 5 times between midnight and 4 AM.",
+        "criteria": "False",
+        "progress": "0",
+        "current": 0,
+        "target": 5
+    }
+]

@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm p-4" style="border-radius: 28px;">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <h2 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                    <i class="bi bi-award text-primary"></i>
+                    {{ _('Your Achievements') }}
+                </h2>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('main.profile') }}" class="btn btn-light rounded-pill px-4 fw-bold">
+                        <i class="bi bi-arrow-left me-1"></i> {{ _('Back to Dashboard') }}
+                    </a>
+                </div>
+            </div>
+
+            <!-- Achievement Overview Header -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm bg-primary text-white p-4 rounded-4 h-100">
+                        <h6 class="opacity-75 mb-1 text-uppercase small ls-wide">{{ _('Unlocked Badges') }}</h6>
+                        <div class="h1 fw-bold mb-2">{{ awarded_count }} / {{ total_count }}</div>
+                        <div class="progress bg-white bg-opacity-25" style="height: 10px; border-radius: 10px;">
+                            <div class="progress-bar bg-white" role="progressbar" style="width: {{ completion_percent }}%;"></div>
+                        </div>
+                        <small class="mt-2 d-block opacity-75">{{ completion_percent }}% {{ _('of total achievements completed') }}</small>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="bg-light rounded-4 p-4 h-100">
+                        <div class="row align-items-center">
+                            <div class="col-md-7">
+                                <h5 class="fw-bold mb-2">{{ _('Road to Legend') }}</h5>
+                                <p class="text-muted small mb-0">
+                                    {{ _('Explore more countries, track your budget, and share your adventures to unlock all 20+ specialized badges. Each badge represents a milestone in your nomadic journey.') }}
+                                </p>
+                            </div>
+                            <div class="col-md-5 text-center d-none d-md-block">
+                                <i class="bi bi-trophy text-warning display-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Badges Grid -->
+            <div class="row g-4">
+                {% for badge in badges %}
+                <div class="col-md-4 col-lg-3">
+                    <div class="card border-0 shadow-sm h-100 badge-card-detailed transition-all {% if not badge.awarded %}opacity-75 grayscale{% endif %}" style="border-radius: 20px; border: 1px solid #f0f0f0 !important;">
+                        <div class="card-body p-4 text-center">
+                            <div class="badge-icon-container mb-3 position-relative mx-auto" style="width: 80px; height: 80px;">
+                                <div class="bg-light rounded-circle w-100 h-100 d-flex align-items-center justify-content-center fs-1 shadow-sm">
+                                    {{ badge.icon }}
+                                </div>
+                                {% if badge.awarded %}
+                                <div class="position-absolute bottom-0 end-0 bg-success text-white rounded-circle d-flex align-items-center justify-content-center border border-white" style="width: 24px; height: 24px; font-size: 0.7rem;">
+                                    <i class="bi bi-check-lg"></i>
+                                </div>
+                                {% endif %}
+                                {% if badge.is_new %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white pulse">
+                                    NEW
+                                </span>
+                                {% endif %}
+                            </div>
+                            
+                            <h5 class="fw-bold mb-1">{{ _(badge.title) }}</h5>
+                            <p class="text-muted small mb-3" style="min-height: 40px;">{{ _(badge.description) }}</p>
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-1 small">
+                                    <span class="text-muted">{{ _('Progress') }}</span>
+                                    <span class="fw-bold" 
+                                          title="{{ badge.current|round|int if badge.current is number else badge.current }} / {{ badge.target|round|int if badge.target is number else badge.target }}"
+                                          data-bs-toggle="tooltip">
+                                        {% if badge.awarded %}
+                                            {% if (badge.target is number and badge.current is number and badge.current > badge.target) or (badge.target == 1 and badge.current > 1) %}
+                                                {{ badge.target|round|int }}+
+                                            {% else %}
+                                                {{ badge.current|round|int if badge.current is number else badge.current }}
+                                            {% endif %}
+                                        {% else %}
+                                            {{ badge.current|round|int if badge.current is number else badge.current }} / {{ badge.target|round|int if badge.target is number else badge.target }}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div class="progress" style="height: 6px; border-radius: 10px;">
+                                    <div class="progress-bar {% if badge.awarded %}bg-success{% else %}bg-primary{% endif %}" 
+                                         role="progressbar" 
+                                         style="width: {{ badge.progress }}%;"></div>
+                                </div>
+                                <div class="mt-2 text-end">
+                                    <span class="badge {% if badge.awarded %}bg-success-soft text-success{% else %}bg-light text-muted{% endif %} rounded-pill px-3 py-1" style="font-size: 0.7rem;">
+                                        {% if badge.awarded %}
+                                            <i class="bi bi-check-circle-fill me-1"></i> {{ _('Completed') }}
+                                        {% else %}
+                                            {{ badge.progress|round|int }}% {{ _('Completed') }}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .badge-card-detailed {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .badge-card-detailed:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.1) !important;
+    }
+    .badge-card-detailed:hover .progress-bar {
+        filter: brightness(1.1);
+        box-shadow: 0 0 10px rgba(53, 132, 228, 0.4);
+    }
+    .progress-bar {
+        transition: width 0.6s ease, filter 0.3s ease, box-shadow 0.3s ease;
+    }
+    .grayscale {
+        filter: grayscale(1);
+    }
+    .bg-success-soft {
+        background-color: rgba(25, 135, 84, 0.1);
+    }
+    .pulse {
+        animation: pulse-red 2s infinite;
+    }
+    @keyframes pulse-red {
+        0% { transform: translate(-50%, -50%) scale(0.95); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+        70% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+        100% { transform: translate(-50%, -50%) scale(0.95); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+    }
+    .badge-icon-container div {
+        transition: all 0.3s ease;
+    }
+    .badge-card-detailed:hover .badge-icon-container div:first-child {
+        transform: scale(1.1) rotate(5deg);
+        background-color: white !important;
+    }
+</style>
+{% endblock %}

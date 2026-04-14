@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="gnome-header-bar mt-4">
+    <div>
+        <h2 class="fw-bold mb-0">{{ _('Shared Links') }}</h2>
+        <p class="text-muted">{{ _('Manage your collections of shared travel experiences.') }}</p>
+    </div>
+</div>
+
+<div class="row">
+    {% if not shares %}
+    <div class="col-12 text-center py-5">
+        <div class="card p-5 shadow-sm border-0">
+            <div class="display-1 text-muted mb-4"><i class="bi bi-link-45deg"></i></div>
+            <h4 class="text-muted">{{ _('No shared links yet') }}</h4>
+            <p>{{ _('Select trips on your dashboard and click "Share Selected" to create your first public collection.') }}</p>
+        </div>
+    </div>
+    {% else %}
+    {% for share in shares %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="fw-bold text-primary mb-1">
+                            {% if share.title %}{{ share.title }}{% else %}{{ _('Collection') }} {{ share.token[:8] }}...{% endif %}
+                        </h5>
+                        <div class="text-muted small">
+                            {{ _('Created on') }} {{ share.created_at.strftime('%Y-%m-%d') }}
+                        </div>
+                    </div>
+                    {% if share.expires_at %}
+                    <span class="badge bg-warning text-dark"><i class="bi bi-clock me-1"></i> {{ _('Expires') }} {{ share.expires_at.strftime('%Y-%m-%d') }}</span>
+                    {% endif %}
+                </div>
+
+                {% if share.description %}
+                <p class="text-muted mb-4">{{ share.description }}</p>
+                {% endif %}
+                
+                <div class="gnome-group mb-4">
+                    <div class="gnome-row">
+                        <div class="gnome-row-icon"><i class="bi bi-eye"></i></div>
+                        <div class="gnome-row-title">{{ _('Total Views') }}</div>
+                        <div class="fw-bold">{{ share.view_count }}</div>
+                    </div>
+                    <div class="gnome-row">
+                        <div class="gnome-row-icon text-success"><i class="bi bi-person-check"></i></div>
+                        <div class="gnome-row-title">{{ _('Unique Visitors') }}</div>
+                        <div class="fw-bold">{{ share.unique_view_count }}</div>
+                    </div>
+                </div>
+                
+                <label class="form-label fw-bold small text-muted">{{ _('Shareable URL') }}</label>
+                <div class="input-group mb-4">
+                    <input type="text" class="form-control bg-light border-0" value="{{ config['PUBLIC_BASE_URL'] + url_for('main.shared_view', token=share.token) if config['PUBLIC_BASE_URL'] else url_for('main.shared_view', token=share.token, _external=True) }}" readonly id="shareLink{{ share.id }}">
+                    <button class="btn btn-primary px-3" type="button" onclick="copyLink('shareLink{{ share.id }}')"><i class="bi bi-clipboard"></i></button>
+                </div>
+
+                <div class="mb-4">
+                    <button class="btn btn-light w-100 d-flex justify-content-between align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#tripsCollapse{{ share.id }}">
+                        <span>{{ _('Included Trips') }} ({{ share.trips|length }})</span>
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
+                    <div class="collapse mt-2" id="tripsCollapse{{ share.id }}">
+                        <div class="gnome-group">
+                            {% for trip in share.trips %}
+                            <div class="gnome-row py-2">
+                                <div class="gnome-row-title small">{{ trip.destination }}, {{ trip.country }}</div>
+                                <span class="badge {% if trip.status == 'visited' %}bg-secondary{% elif trip.status == 'planned' %}bg-success{% else %}bg-info text-dark{% endif %} p-1 px-2 small">
+                                    {{ trip.status.capitalize() }}
+                                </span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('main.shared_view', token=share.token) }}" class="btn btn-outline-primary flex-grow-1" target="_blank">{{ _('View Public Page') }}</a>
+                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#editShareModal{{ share.id }}"><i class="bi bi-pencil"></i></button>
+                    <form action="{{ url_for('main.delete_share', share_id=share.id) }}" method="POST" onsubmit="return confirm('{{ _('Are you sure?') }}');">
+                        <button type="submit" class="btn btn-light text-danger"><i class="bi bi-trash"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Share Modal -->
+    <div class="modal fade" id="editShareModal{{ share.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 28px;">
+                <div class="modal-header border-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold text-primary">{{ _('Edit Collection') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ url_for('main.edit_share', share_id=share.id) }}" method="POST">
+                    <div class="modal-body px-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">{{ _('Collection Title') }}</label>
+                            <input type="text" name="title" class="form-control" value="{{ share.title or '' }}" placeholder="{{ _('e.g. My Summer in Europe') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">{{ _('Notes / Story') }}</label>
+                            <textarea name="description" class="form-control" rows="2" placeholder="{{ _('Tell your viewers about this collection...') }}">{{ share.description or '' }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">{{ _('Expiration Date') }}</label>
+                            <input type="date" name="expires_at" class="form-control" value="{{ share.expires_at.strftime('%Y-%m-%d') if share.expires_at else '' }}">
+                            <div class="form-text small opacity-75">{{ _('Leave empty for no expiration') }}</div>
+                        </div>
+
+                        <hr class="my-4 opacity-5">
+                        <p class="text-muted small fw-bold text-uppercase ls-wide mb-3">{{ _('Trips to Include') }}</p>
+                        <div class="list-group list-group-flush overflow-auto rounded-3 border" style="max-height: 250px;">
+                            {% for trip in all_user_trips %}
+                            <label class="list-group-item d-flex justify-content-between align-items-center px-3 border-0 border-bottom py-2">
+                                <div class="d-flex align-items-center">
+                                    <input type="checkbox" name="trip_ids" value="{{ trip.id }}" {% if trip in share.trips %}checked{% endif %}/>
+                                    <div>
+                                        <div class="fw-bold small">{{ trip.destination }}</div>
+                                        <div class="text-muted" style="font-size: 0.7rem;">{{ trip.country }}</div>
+                                    </div>
+                                </div>
+                                <span class="badge {% if trip.status == 'visited' %}bg-secondary{% elif trip.status == 'planned' %}bg-success{% else %}bg-info text-dark{% endif %} p-1 px-2" style="font-size: 0.6rem;">
+                                    {{ trip.status.capitalize() }}
+                                </span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 pb-4 px-4">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                        <button type="submit" class="btn btn-primary px-4">{{ _('Save Changes') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+
+<script>
+function copyLink(id) {
+    var copyText = document.getElementById(id);
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(copyText.value);
+    
+    var btn = copyText.nextElementSibling;
+    var originalIcon = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-check2"></i>';
+    btn.classList.replace('btn-primary', 'btn-success');
+    
+    setTimeout(function() {
+        btn.innerHTML = originalIcon;
+        btn.classList.replace('btn-success', 'btn-primary');
+    }, 2000);
+}
+</script>
+{% endblock %}

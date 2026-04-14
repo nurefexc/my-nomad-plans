@@ -1,20 +1,26 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="hero-section text-center">
-    <div class="container">
-        <h1 class="display-2 fw-bold mb-3" style="letter-spacing: -2px;">Explore the World</h1>
-        <img src="{{ url_for('static', filename='icon/icon.png') }}" alt="Nomad Logo" width="100" height="100" class="mb-4 rounded-circle shadow-lg border border-3 border-white">
-        <p class="lead fs-4 mb-5 opacity-90">Your professional companion for digital nomad life.</p>
+<div class="hero-section text-center position-relative overflow-hidden mb-5">
+    <div class="container position-relative" style="z-index: 2;">
+        <h1 class="display-1 fw-bold mb-3" style="letter-spacing: -3px;">{{ _('Your Journey, <span class="text-primary">Simplified.</span>')|safe }}</h1>
+        <p class="lead fs-4 mb-5 opacity-90 mx-auto" style="max-width: 700px;">{{ _('The ultimate companion for digital nomads to plan, track, and share their global adventures.') }}</p>
         {% if not current_user.is_authenticated %}
-        <a class="btn btn-primary btn-lg px-5 py-3 shadow-lg border-0" href="{{ url_for('auth.login') }}" role="button">Start Your Journey</a>
+        <div class="d-flex justify-content-center gap-3">
+            <a class="btn btn-primary btn-lg px-5 py-3 shadow-lg border-0" href="{{ url_for('auth.login') }}" role="button">{{ _('Start Your Journey') }}</a>
+            <a class="btn btn-outline-light btn-lg px-5 py-3 border-2" href="#features" role="button">{{ _('Learn More') }}</a>
+        </div>
         {% else %}
-        <a class="btn btn-light btn-lg px-5 py-3 shadow-lg border-0" href="{{ url_for('main.profile') }}" role="button">Go to Dashboard</a>
+        <a class="btn btn-primary btn-lg px-5 py-3 shadow-lg border-0" href="{{ url_for('main.profile') }}" role="button">{{ _('Go to Dashboard') }}</a>
         {% endif %}
     </div>
 </div>
 
-<div class="container py-5">
+<div class="container py-5" id="features">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold h1">{{ _('Everything you need') }}</h2>
+        <p class="text-muted">{{ _('Professional tools for the modern traveler') }}</p>
+    </div>
     <div class="row g-4 text-center">
         <div class="col-md-4">
             <div class="card h-100 p-4 border-0">
@@ -22,8 +28,8 @@
                     <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4 overflow-hidden" style="width: 80px; height: 80px;">
                         <img src="{{ url_for('static', filename='icon/icon.png') }}" alt="Icon" class="w-100 h-100 object-fit-cover">
                     </div>
-                    <h4 class="fw-bold">Dynamic Mapping</h4>
-                    <p class="text-muted">Visualize your routes with professional journey lines and interactive markers.</p>
+                    <h4 class="fw-bold">{{ _('Dynamic Mapping') }}</h4>
+                    <p class="text-muted">{{ _('Visualize your routes with professional journey lines and interactive markers.') }}</p>
                 </div>
             </div>
         </div>
@@ -33,8 +39,8 @@
                     <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
                         <i class="fs-2">📈</i>
                     </div>
-                    <h4 class="fw-bold">Travel Analytics</h4>
-                    <p class="text-muted">Track your progress against global statistics and manage your nomad budget.</p>
+                    <h4 class="fw-bold">{{ _('Travel Analytics') }}</h4>
+                    <p class="text-muted">{{ _('Track your progress against global statistics and manage your nomad budget.') }}</p>
                 </div>
             </div>
         </div>
@@ -44,8 +50,8 @@
                     <div class="bg-info bg-opacity-10 text-info rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
                         <i class="fs-2">🔓</i>
                     </div>
-                    <h4 class="fw-bold">Smart Sharing</h4>
-                    <p class="text-muted">Share collections of trips with friends through secure, beautiful landing pages.</p>
+                    <h4 class="fw-bold">{{ _('Smart Sharing') }}</h4>
+                    <p class="text-muted">{{ _('Share collections of trips with friends through secure, beautiful landing pages.') }}</p>
                 </div>
             </div>
         </div>

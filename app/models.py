@@ -56,9 +56,31 @@ class ShareToken(db.Model):
     token = db.Column(db.String(32), unique=True, nullable=False)
     # Trip IDs as a comma-separated string for multi-trip sharing
     trip_ids = db.Column(db.String(255), nullable=False)
+    title = db.Column(db.String(100))
+    description = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     expires_at = db.Column(db.DateTime)
+    view_count = db.Column(db.Integer, default=0)
+    unique_view_count = db.Column(db.Integer, default=0)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # Optional backref to owner
 
     @staticmethod
     def generate_token():
         return secrets.token_hex(16)
+
+class Badge(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(50), unique=True, nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(255))
+    icon = db.Column(db.String(10)) # Emoji or icon class
+
+class UserBadge(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    badge_id = db.Column(db.Integer, db.ForeignKey('badge.id'), nullable=False)
+    awarded_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_new = db.Column(db.Boolean, default=True)
+
+    user = db.relationship('User', backref=db.backref('user_badges', lazy=True))
+    badge = db.relationship('Badge', backref=db.backref('user_badges', lazy=True))

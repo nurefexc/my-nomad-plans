@@ -1,75 +1,199 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row mb-4">
+<div class="row mb-5">
     <div class="col-12 text-center">
-        <h2 class="fw-bold mb-4">Shared Journey</h2>
-        <div id="shared-map" class="map-container shadow-sm mb-5"></div>
+        {% if share.title %}
+        <h1 class="fw-bold mb-2">{{ share.title }}</h1>
+        {% if share.description %}
+        <p class="text-muted mb-4 lead">{{ share.description }}</p>
+        {% endif %}
+        {% else %}
+        <h1 class="fw-bold mb-4">🌍 {{ _('Public Adventures') }}</h1>
+        {% endif %}
+        
+        <div id="shared-map" class="map-container shadow-sm mb-5 shared-map-size"></div>
+    </div>
+</div>
+
+<div class="row justify-content-center mb-5">
+    <div class="col-md-11 col-lg-10">
+        <div class="card p-0 overflow-hidden shadow-sm border-0 shared-stats-card">
+            <div class="row g-0 text-center">
+                <div class="col-6 col-md-3 border-end border-bottom border-md-bottom-0 p-3 p-md-4">
+                    <div class="gnome-row-icon mx-auto mb-2"><i class="bi bi-geo-alt"></i></div>
+                    <h3 class="fw-bold mb-0">{{ trips|length }}</h3>
+                    <div class="text-muted small fw-bold text-uppercase ls-wide">{{ _('stops') }}</div>
+                </div>
+                <div class="col-6 col-md-3 border-end-md border-bottom border-md-bottom-0 p-3 p-md-4">
+                    <div class="gnome-row-icon mx-auto mb-2 text-success gnome-row-icon-success"><i class="bi bi-check2-circle"></i></div>
+                    <h3 class="fw-bold mb-0">{{ trips|selectattr('status', 'equalto', 'visited')|list|length }}</h3>
+                    <div class="text-muted small fw-bold text-uppercase ls-wide">{{ _('completed') }}</div>
+                </div>
+                <div class="col-6 col-md-3 border-end border-md-bottom-0 p-3 p-md-4">
+                    <div class="gnome-row-icon mx-auto mb-2 text-warning gnome-row-icon-warning"><i class="bi bi-globe"></i></div>
+                    <h3 class="fw-bold mb-0">
+                        {% set countries_list = [] %}
+                        {% for t in trips %}
+                            {% if t.country not in countries_list %}
+                                {% set _ = countries_list.append(t.country) %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ countries_list|length }}
+                    </h3>
+                    <div class="text-muted small fw-bold text-uppercase ls-wide mb-2">{{ _('countries') }}</div>
+                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                        {% for cname in countries_list %}
+                            {% set ccode = get_country_code(cname) %}
+                            {% if ccode %}
+                                <div class="flag-wrapper" title="{{ cname }}">
+                                    <span class="fi fi-{{ ccode }} me-1"></span>
+                                    <span class="small fw-bold opacity-75">{{ ccode|upper }}</span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 p-3 p-md-4">
+                    <div class="gnome-row-icon mx-auto mb-2 text-info gnome-row-icon-info"><i class="bi bi-eye"></i></div>
+                    <h3 class="fw-bold mb-0">{{ share.unique_view_count }}</h3>
+                    <div class="text-muted small fw-bold text-uppercase ls-wide">{{ _('visitors') }}</div>
+                </div>
+            </div>
+            <div class="card-footer bg-light border-0 text-center py-3">
+                <small class="text-muted"><i class="bi bi-info-circle me-1"></i> {{ _('Published on %(date)s', date=share.created_at.strftime('%B %d, %Y')) }}</small>
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="row justify-content-center">
     <div class="col-md-10">
-        <div class="row">
+        <div class="row g-4">
             {% for trip in trips %}
-            <div class="col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center pt-3">
-                        <span class="badge rounded-pill {% if trip.status == 'visited' %}bg-secondary{% elif trip.status == 'planned' %}bg-success{% else %}bg-info text-dark{% endif %} px-3">
-                            {{ trip.status.capitalize() }}
-                        </span>
-                        <small class="text-muted fw-bold text-uppercase">{{ trip.country }}</small>
-                    </div>
-                    <div class="card-body">
-                        <h4 class="card-title fw-bold text-primary">{{ trip.destination }}</h4>
-                        <h6 class="card-subtitle mb-3 text-muted">
-                            <i class="bi bi-calendar"></i> {{ trip.start_date.strftime('%b %d, %Y') }} - {{ trip.end_date.strftime('%b %d, %Y') }}
+            <div class="col-md-6 mb-2">
+                <div class="card h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h4 class="fw-bold text-primary mb-0">{{ trip.destination }}</h4>
+                            <span class="badge {% if trip.status == 'visited' %}bg-secondary{% elif trip.status == 'planned' %}bg-success{% else %}bg-info text-dark{% endif %}">
+                                {% if trip.status == 'visited' %}{{ _('Visited') }}{% elif trip.status == 'planned' %}{{ _('Planned') }}{% else %}{{ _('Draft') }}{% endif %}
+                            </span>
+                        </div>
+                        <div class="mb-4">
+                            <span class="date-range">
+                                <i class="bi bi-calendar3"></i>
+                                {% if trip.start_date %}{{ trip.start_date.strftime('%b %d, %Y') }}{% else %}<span class="opacity-50 small italic">{{ _('Flexible') }}</span>{% endif %}
+                                <i class="bi bi-arrow-right mx-1 small opacity-50"></i>
+                                {% if trip.end_date %}{{ trip.end_date.strftime('%b %d, %Y') }}{% else %}<span class="opacity-50 small italic">{{ _('Flexible') }}</span>{% endif %}
+                            </span>
+                        </div>
+                        <h6 class="text-muted mb-4 d-flex align-items-center">
+                            <span class="text-uppercase small fw-bold d-flex align-items-center">
+                                {% set ccode = get_country_code(trip.country) %}
+                                {% if ccode %}
+                                    <span class="fi fi-{{ ccode }} me-2"></span>
+                                {% else %}
+                                    <i class="bi bi-flag me-1"></i>
+                                {% endif %}
+                                {{ trip.country }}
+                            </span>
                         </h6>
-                        <hr>
-                        {% if trip.transport_mode %}
-                        <p class="mb-1 small"><strong>Transport:</strong> {{ trip.transport_mode }} {% if trip.flight_number %}({{ trip.flight_number }}){% endif %}</p>
-                        {% endif %}
-                        {% if trip.visa_required %}
-                        <p class="mb-1 small text-danger fw-bold">⚠️ Visa Required</p>
-                        {% endif %}
-                        <hr>
+
                         {% if trip.attractions %}
-                        <h6 class="fw-bold">Attractions / Plans:</h6>
-                        <p class="text-dark">{{ trip.attractions }}</p>
-                        {% endif %}
-                        {% if trip.notes %}
-                        <h6 class="fw-bold">Travel Notes:</h6>
-                        <p class="text-muted small">{{ trip.notes }}</p>
+                        <div class="mb-4">
+                            <h6 class="fw-bold small text-uppercase text-muted ls-wide mb-2">{{ _('The Plan') }}</h6>
+                            <p class="mb-0">{{ trip.attractions }}</p>
+                        </div>
                         {% endif %}
 
-                        {% if trip.checklist %}
-                        <hr>
-                        <h6 class="fw-bold">Checklist / Events:</h6>
-                        <ul class="list-unstyled small">
-                            {% for item in trip.checklist %}
-                            <li class="mb-1">
-                                {% if item.is_done %}✅{% else %}⬜{% endif %}
-                                <span class="{% if item.is_done %}text-decoration-line-through text-muted{% endif %}">
-                                    {{ item.item }}
-                                    {% if item.start_date %}
-                                    <small class="d-block text-muted opacity-75 ms-4">
-                                        ⏰ {{ item.start_date.strftime('%Y-%m-%d') }} 
-                                        {% if item.end_date %}to {{ item.end_date.strftime('%Y-%m-%d') }}{% endif %}
-                                    </small>
+                        <div class="gnome-group mb-0">
+                            <button class="btn btn-light w-100 d-flex justify-content-between align-items-center py-3 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#advancedInfo{{ loop.index }}">
+                                <div class="d-flex align-items-center">
+                                    <div class="gnome-row-icon mb-0 me-3"><i class="bi bi-info-circle"></i></div>
+                                    <span class="fw-bold">{{ _('Travel Details & Logistics') }}</span>
+                                </div>
+                                <i class="bi bi-chevron-down opacity-50"></i>
+                            </button>
+                            <div class="collapse" id="advancedInfo{{ loop.index }}">
+                                <div class="p-4 pt-0 border-top">
+                                    {% if trip.transport_mode or trip.visa_required %}
+                                    <div class="row mt-4">
+                                        {% if trip.transport_mode %}
+                                        <div class="col-6">
+                                            <small class="text-muted text-uppercase fw-bold d-block mb-1">{{ _('Transport') }}</small>
+                                            <span>{{ trip.transport_mode }} {% if trip.flight_number %}({{ trip.flight_number }}){% endif %}</span>
+                                        </div>
+                                        {% endif %}
+                                        {% if trip.visa_required %}
+                                        <div class="col-6">
+                                            <small class="text-muted text-uppercase fw-bold d-block mb-1">{{ _('Visa') }}</small>
+                                            <span class="text-danger"><i class="bi bi-exclamation-triangle me-1"></i> {{ _('Visa Required') }}</span>
+                                        </div>
+                                        {% endif %}
+                                    </div>
                                     {% endif %}
-                                </span>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
+
+                                    {% if trip.notes %}
+                                    <div class="mt-4">
+                                        <small class="text-muted text-uppercase fw-bold d-block mb-1">{{ _('Travel Notes') }}</small>
+                                        <p class="small mb-0">{{ trip.notes }}</p>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    {% if trip.packing_list %}
+                                    <div class="mt-4">
+                                        <small class="text-muted text-uppercase fw-bold d-block mb-1">{{ _('Packing List') }}</small>
+                                        <div class="p-3 bg-light rounded-3 small">{{ trip.packing_list }}</div>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if trip.expense_estimate %}
+                                    <div class="mt-4">
+                                        <small class="text-muted text-uppercase fw-bold d-block mb-1">{{ _('Expected Expenses') }}</small>
+                                        <p class="small mb-0 text-muted">{{ trip.expense_estimate }}</p>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if trip.checklist %}
+                                    <div class="mt-4">
+                                        <small class="text-muted text-uppercase fw-bold d-block mb-2">{{ _('Events & Milestones') }}</small>
+                                        <div class="list-group list-group-flush border rounded-3 overflow-hidden">
+                                            {% for item in trip.checklist %}
+                                            <div class="list-group-item d-flex align-items-center px-3 py-2 border-0 bg-transparent">
+                                                <div class="me-3">{% if item.is_done %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-circle"></i>{% endif %}</div>
+                                                <div class="flex-grow-1">
+                                                    <div class="small {% if item.is_done %}text-decoration-line-through text-muted{% endif %}">{{ item.item }}</div>
+                                                    {% if item.start_date %}
+                                                    <div class="text-muted trip-item-time">
+                                                        <i class="bi bi-clock me-1"></i> {{ item.start_date.strftime('%Y-%m-%d') }} {% if item.end_date %}&ndash; {{ item.end_date.strftime('%Y-%m-%d') }}{% endif %}
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
-        <div class="text-center mt-4">
-            <p class="text-muted small">This is a publicly shared view. Sensitive data (exact accommodation, budget) are hidden.</p>
-            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-4">Create Your Own Travel Plan</a>
+        
+        <div class="text-center mt-5 mb-5 p-5 bg-white rounded-5 shadow-sm">
+            <h5 class="fw-bold mb-3">{{ _('Inspired by this journey?') }}</h5>
+            <p class="text-muted mb-4">{{ _('Start planning your own global adventures with Nomad Travels.') }}</p>
+            <div class="d-flex gap-3 justify-content-center">
+                <a href="{{ url_for('main.index') }}" class="btn btn-primary px-5 py-3">{{ _('Start Planning') }}</a>
+                <button class="btn btn-light px-4 py-3" onclick="window.print()"><i class="bi bi-printer me-2"></i> {{ _('Print View') }}</button>
+            </div>
+            <div class="mt-4">
+                <small class="text-muted">{{ _('This is a secure, read-only public view. Personal data like exact accommodation or budget details are protected.') }}</small>
+            </div>
         </div>
     </div>
 </div>
@@ -79,18 +203,33 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var map = L.map('shared-map').setView([20, 0], 2);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20
         }).addTo(map);
 
         var markers = [];
         var visitedPoints = [];
         var plannedPoints = [];
 
+        var trips_json = [];
         {% for trip in trips %}
-            {% if trip.latitude and trip.longitude %}
-                var color = "{{ '#6c757d' if trip.status == 'visited' else ('#2ec4b6' if trip.status == 'planned' else '#4361ee') }}";
-                var marker = L.circleMarker([{{ trip.latitude }}, {{ trip.longitude }}], {
+            trips_json.push({
+                destination: "{{ trip.destination }}",
+                country: "{{ trip.country }}",
+                latitude: {{ trip.latitude if trip.latitude else 'null' }},
+                longitude: {{ trip.longitude if trip.longitude else 'null' }},
+                status: "{{ trip.status }}"
+            });
+        {% endfor %}
+        trips_json.forEach(function(trip) {
+            if (trip.latitude && trip.longitude) {
+                var color = '#4361ee';
+                if (trip.status === 'visited') color = '#6c757d';
+                else if (trip.status === 'planned') color = '#2ec4b6';
+                
+                var marker = L.circleMarker([trip.latitude, trip.longitude], {
                     radius: 8,
                     fillColor: color,
                     color: "#fff",
@@ -99,16 +238,16 @@
                     fillOpacity: 0.8
                 }).addTo(map);
                 
-                marker.bindPopup("<b>{{ trip.destination }}</b><br>{{ trip.country }}");
-                markers.push([{{ trip.latitude }}, {{ trip.longitude }}]);
+                marker.bindPopup("<b>" + trip.destination + "</b><br>" + trip.country);
+                markers.push([trip.latitude, trip.longitude]);
 
-                {% if trip.status == 'visited' %}
-                    visitedPoints.push([{{ trip.latitude }}, {{ trip.longitude }}]);
-                {% elif trip.status == 'planned' %}
-                    plannedPoints.push([{{ trip.latitude }}, {{ trip.longitude }}]);
-                {% endif %}
-            {% endif %}
-        {% endfor %}
+                if (trip.status === 'visited') {
+                    visitedPoints.push([trip.latitude, trip.longitude]);
+                } else if (trip.status === 'planned') {
+                    plannedPoints.push([trip.latitude, trip.longitude]);
+                }
+            }
+        });
 
         if (visitedPoints.length > 1) {
             L.polyline(visitedPoints, {color: '#6c757d', weight: 4, dashArray: '10, 10', opacity: 0.6}).addTo(map);

@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm p-4 stats-main-card">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <h2 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                    <i class="bi bi-bar-chart-line text-primary"></i>
+                    {{ _('Detailed Travel Statistics') }}
+                </h2>
+                <a href="{{ url_for('main.profile') }}" class="btn btn-light rounded-pill px-4 fw-bold">
+                    <i class="bi bi-arrow-left me-1"></i> {{ _('Back to Dashboard') }}
+                </a>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm bg-primary text-white p-3 rounded-4 h-100">
+                        <h6 class="opacity-75 mb-1 small text-uppercase fw-bold">{{ _('Countries Visited') }}</h6>
+                        <div class="d-flex align-items-baseline gap-2">
+                            <span class="h2 fw-bold mb-0">{{ stats.visited_count }}</span>
+                            <span class="opacity-75 small">/ {{ stats.world_total }}</span>
+                        </div>
+                        <div class="progress mt-2 stats-mini-progress">
+                            <div class="progress-bar bg-white" role="progressbar" style="width: {{ stats.visited_percent }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm bg-success text-white p-3 rounded-4 h-100">
+                        <h6 class="opacity-75 mb-1 small text-uppercase fw-bold">{{ _('Total Trips') }}</h6>
+                        <div class="h2 fw-bold mb-0">{{ stats.total_trips }}</div>
+                        <small class="opacity-75">{{ stats.total_visited }} {{ _('done') }} • {{ stats.total_planned }} {{ _('planned') }}</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm bg-info text-white p-3 rounded-4 h-100">
+                        <h6 class="opacity-75 mb-1 small text-uppercase fw-bold">{{ _('Days Traveled') }}</h6>
+                        <div class="h2 fw-bold mb-0">{{ stats.total_days_traveled }}</div>
+                        <small class="opacity-75">{{ stats.avg_trip_length }} {{ _('days avg/trip') }}</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm bg-warning text-dark p-3 rounded-4 h-100">
+                        <h6 class="opacity-75 mb-1 small text-uppercase fw-bold">{{ _('Financials') }}</h6>
+                        <div class="h2 fw-bold mb-0">${{ stats.total_budget|round|int }}</div>
+                        <small class="opacity-75">${{ stats.avg_budget_per_day|round|int }}/{{ _('day') }} • ${{ stats.avg_budget|round|int }} {{ _('avg') }}</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Top Destinations & Extremes -->
+                <div class="col-md-4">
+                    <div class="bg-light rounded-4 p-4 h-100 shadow-sm border border-light">
+                        <h5 class="fw-bold mb-4 text-uppercase small text-muted ls-wide d-flex align-items-center gap-2">
+                            <i class="bi bi-geo-alt text-primary"></i> {{ _('Popular Destinations') }}
+                        </h5>
+                        {% if stats.top_countries %}
+                            <div class="list-group list-group-flush bg-transparent">
+                                {% for country, count in stats.top_countries %}
+                                <div class="list-group-item bg-transparent border-0 px-0 d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center gap-2">
+                                        {% set ccode = get_country_code(country) %}
+                                        {% if ccode %}<span class="fi fi-{{ ccode }} rounded-1 shadow-sm"></span>{% endif %}
+                                        <span class="fw-semibold text-dark">{{ country }}</span>
+                                    </div>
+                                    <span class="badge bg-white text-primary border border-primary border-opacity-25 rounded-pill shadow-sm">{{ count }} {{ _('visits') }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted small italic text-center mt-4">{{ _('No destinations yet.') }}</p>
+                        {% endif %}
+
+                        <hr class="my-4 opacity-10">
+
+                        <h5 class="fw-bold mb-4 text-uppercase small text-muted ls-wide d-flex align-items-center gap-2">
+                            <i class="bi bi-star text-primary"></i> {{ _('Journey Highlights') }}
+                        </h5>
+                        <div class="d-flex flex-column gap-3">
+                            {% if stats.longest_trip %}
+                            <div class="bg-white p-3 rounded-3 shadow-sm border border-light">
+                                <div class="small text-muted mb-1">{{ _('Longest Trip') }}</div>
+                                <div class="fw-bold">{{ stats.longest_trip.destination }}</div>
+                                <div class="text-primary small fw-bold">{{ (stats.longest_trip.end_date - stats.longest_trip.start_date).days }} {{ _('days') }}</div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if stats.shortest_trip %}
+                            <div class="bg-white p-3 rounded-3 shadow-sm border border-light">
+                                <div class="small text-muted mb-1">{{ _('Shortest Trip') }}</div>
+                                <div class="fw-bold">{{ stats.shortest_trip.destination }}</div>
+                                <div class="text-primary small fw-bold">{{ (stats.shortest_trip.end_date - stats.shortest_trip.start_date).days }} {{ _('days') }}</div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Travel Chart -->
+                <div class="col-md-8">
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="bg-light rounded-4 p-4 shadow-sm border border-light">
+                                <h5 class="fw-bold mb-4 text-uppercase small text-muted ls-wide d-flex align-items-center gap-2">
+                                    <i class="bi bi-graph-up text-primary"></i> {{ _('Travel Frequency') }}
+                                </h5>
+                                <div class="d-flex align-items-end gap-2 justify-content-between pt-4 overflow-auto chart-container">
+                                    {% if stats.monthly_data.zipped %}
+                                        {% for label, val in stats.monthly_data.zipped %}
+                                        <div class="flex-grow-1 text-center d-flex flex-column align-items-center" style="min-width: 40px;">
+                                            {% set bar_height = (val / stats.total_visited * 150) if stats.total_visited and stats.total_visited > 0 else 0 %}
+                                            <div class="bg-primary rounded-top-2 w-75 position-relative shadow-sm stat-bar" style="height: {{ bar_height }}px;">
+                                                <span class="position-absolute top-0 start-50 translate-middle-x badge bg-dark text-white rounded-pill px-2 py-1 small shadow-sm stat-bar-label">{{ val }}</span>
+                                            </div>
+                                            <small class="text-muted mt-2 d-block" style="font-size: 0.6rem; white-space: nowrap;">{{ label }}</small>
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted italic">
+                                            {{ _('Plan more trips to see history...') }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-7">
+                            <div class="bg-light rounded-4 p-4 shadow-sm border border-light h-100">
+                                <h5 class="fw-bold mb-4 text-uppercase small text-muted ls-wide d-flex align-items-center gap-2">
+                                    <i class="bi bi-truck text-primary"></i> {{ _('Transportation') }}
+                                </h5>
+                                {% if stats.top_transport %}
+                                    {% for transport, count in stats.top_transport %}
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bi bi-{{ 'airplane' if transport == 'plane' else 'train-front' if transport == 'train' else 'car-front' if transport == 'car' else 'ship' if transport == 'ship' else 'bus-front' if transport == 'bus' else 'bicycle' if transport == 'bicycle' else 'person-walking' if transport == 'walking' else 'info-circle' }} text-primary"></i>
+                                            <span class="small fw-bold text-dark">{{ _(transport.capitalize()) }}</span>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2 flex-grow-1 mx-3">
+                                            <div class="progress flex-grow-1" style="height: 6px; border-radius: 10px;">
+                                                {% set transport_percent = (count / stats.total_visited * 100) if stats.total_visited and stats.total_visited > 0 else 0 %}
+                                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{ transport_percent }}%;"></div>
+                                            </div>
+                                            <span class="small text-muted fw-bold" style="font-size: 0.65rem;">{{ count }}</span>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="text-muted small italic text-center">{{ _('No transport data.') }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-5">
+                            <div class="bg-light rounded-4 p-4 shadow-sm border border-light h-100">
+                                <h5 class="fw-bold mb-4 text-uppercase small text-muted ls-wide d-flex align-items-center gap-2">
+                                    <i class="bi bi-calendar-event text-primary"></i> {{ _('Annual Status') }}
+                                </h5>
+                                {% if stats.trips_by_year %}
+                                    <div style="max-height: 150px; overflow-y: auto;">
+                                        {% for year, count in stats.trips_by_year %}
+                                        <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-white rounded-2 shadow-xs border border-light">
+                                            <span class="fw-bold small">{{ year }}</span>
+                                            <span class="badge bg-primary rounded-pill small" style="font-size: 0.6rem;">{{ count }} {{ _('trips') }}</span>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p class="text-muted small italic text-center">{{ _('No history.') }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
