@@ -1,108 +1,130 @@
-# Nomad Planner 🌍
+# Nomad Planner
 
-A modern, GNOME-style digital nomad trip planning application built with Flask. It helps you track your travels, plan future trips, and share your journeys with others via interactive maps.
+Nomad Planner is a Flask-based travel planning app for tracking trips, sharing itineraries, and viewing travel progress with map, calendar, stats, badges, and Immich gallery integration.
 
-## Features ✨
+## Highlights
 
-- **Interactive Mapping**: Visualize your travels with a dynamic world map using Leaflet.js.
-- **Trip Lifecycle**: Manage trips through `Draft`, `Planned`, and `Visited` statuses.
-- **Detailed Planning**: Track transport modes, expenses, packing lists, and visa requirements.
-- **Checklists**: Add events or tasks to each trip with optional dates.
-- **Global Statistics**: See your progress with "World Explorer" metrics (visited vs. unvisited countries).
-- **Secure Sharing**: Generate unique tokens to share specific trips or your entire journey.
-- **CLI User Management**: Create users securely via the command line.
-- **GNOME-inspired UI**: Clean, professional interface with "Plus Jakarta Sans" typography.
+- Trip lifecycle: `draft`, `planned`, `visited`
+- Shareable public trip pages with tokenized links
+- Transport segments with sensitive/public visibility
+- Immich photo and video album support
+- Calendar and statistics dashboards
+- English/Hungarian localization (language can be switched without login)
+- Docker-first deployment with Gunicorn
 
-## Quick Start (Docker) 🐳
+## Project Layout
 
-The easiest way to run Nomad Planner is using Docker Compose.
+- App entry: `app.py`
+- Flask package: `app/`
+- Docker files: `docker/`
+- SQLite data volume (default): `instance/`
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/nurefexc/my-nomad-plans.git
-   cd my-nomad-plans
-   ```
+## Quick Start (Docker)
 
-2. **Configure environment:**
-   ```bash
-   cp .env.sample .env
-   # Edit .env with your own secret key and configuration
-   ```
+From the repository root:
 
-3. **Start the application:**
 ```bash
+cp docker/.env.sample docker/.env
 docker compose -f docker/docker-compose.yml up --build
 ```
 
-4. **Create a user:**
-   In a new terminal, run:
-   ```bash
-   docker exec -it nomad-planner flask create-user "Your Name" your@email.com "yourpassword"
-   ```
+App URL:
 
-5. **(Optional) Seed demo data:**
-   Set `DEMO=1` in your `.env` or `docker-compose.yml` and restart, or run manually:
-   ```bash
-   docker exec -it nomad-planner flask seed-demo
-   ```
+- `http://localhost:5000`
 
-6. **Access the app:**
-   Open [http://localhost:5000](http://localhost:5000) in your browser.
+Create a user:
 
-## Manual Installation 🛠️
-
-1. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Configure environment:**
-   ```bash
-   cp .env.sample .env
-   # Edit .env and your secret key
-   ```
-
-3. **Initialize the database:**
 ```bash
-flask --app app:create_app db init
-flask --app app:create_app db migrate -m "Initial migration"
+docker compose -f docker/docker-compose.yml exec web flask create-user "Your Name" your@email.com "strong-password"
+```
+
+Optional demo seed:
+
+```bash
+docker compose -f docker/docker-compose.yml exec web flask seed-demo
+```
+
+Stop:
+
+```bash
+docker compose -f docker/docker-compose.yml down
+```
+
+## Configuration
+
+Main runtime config lives in `docker/.env`.
+
+Common variables:
+
+- `SECRET_KEY`
+- `DATABASE_URL` (defaults to SQLite in `instance/nomad.db`)
+- `PUBLIC_BASE_URL`
+- `DEFAULT_CURRENCY`
+- `IMMICH_ENABLED`
+- `IMMICH_BASE_URL`
+- `IMMICH_API_KEY`
+- `IMMICH_TIMEOUT`
+- `IMMICH_RETRY_COUNT`
+
+## Migrations and SQLite Notes
+
+Nomad Planner uses Flask-Migrate/Alembic. In Docker, startup logic in `docker/entrypoint.sh` attempts to keep SQLite schema in sync and recover from legacy migration metadata.
+
+Useful commands (inside Docker):
+
+```bash
+docker compose -f docker/docker-compose.yml exec web flask --app app:create_app db current
+docker compose -f docker/docker-compose.yml exec web flask --app app:create_app db migrate -m "Describe change"
+docker compose -f docker/docker-compose.yml exec web flask --app app:create_app db upgrade
+```
+
+### Troubleshooting: `Cannot add a NOT NULL column with default value NULL`
+
+This SQLite error appears when a migration tries to add a required column without a default on a table that already has rows.
+
+Recommended fix pattern:
+
+1. Add column as nullable or with server default.
+2. Backfill existing rows.
+3. Make it non-nullable in a follow-up migration (or keep default).
+
+For this project specifically, container startup already backfills these columns safely when missing:
+
+- `trip.currency` with default `USD`
+- `user.default_currency` with default `USD`
+
+If migration history is broken in a dev SQLite database, stop the stack, back up `instance/nomad.db`, then restart with a fresh migration state handled by the entrypoint.
+
+## Local (Non-Docker) Run
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 flask --app app:create_app db upgrade
+flask --app app:create_app run
 ```
 
-4. **Run the app:**
-   ```bash
-   flask run
-   ```
+## Frontend Assets
 
-## User Management 🔑
+Vendored assets are served locally from `app/static/vendor`:
 
-For security reasons, there is no public signup page. Use the CLI to manage users:
+- `leaflet`
+- `flag-icons`
+- `fullcalendar`
 
-```bash
-flask create-user <name> <email> <password> [--admin]
-```
+Main app UI files:
 
-## Database Migrations 🗄️
+- `app/static/css/style.css`
+- `app/static/js/ui.js`
+- `app/static/js/immich_gallery.js`
 
-Nomad Planner uses Flask-Migrate (Alembic) to handle database schema changes.
+## Security and Privacy
 
-- **Initial Setup**: Handled automatically in Docker.
-- **New Migration**: `flask db migrate -m "Description"`
-- **Apply Changes**: `flask db upgrade`
+- No public signup page by default
+- Share links use random tokens
+- Sensitive transport fields are hidden from shared pages when marked private
 
-If you encounter migration errors (e.g., "Can't locate revision"), the Docker entrypoint is designed to attempt a recovery by clearing migration metadata and performing a fresh synchronization while preserving your data.
+## License
 
-## Technologies 💻
-
-- **Backend**: Flask, Flask-SQLAlchemy, Flask-Migrate, Flask-Login
-- **Frontend**: Bootstrap 5, Leaflet.js, Overpass API (for destination lookup)
-- **Data**: country_list, SQLite
-- **Deployment**: Docker, Gunicorn
-
-## License 📄
-
-This project is licensed under the MIT License - see `LICENSE.md` for details.
-
----
-**Author**: [nurefexc](https://github.com/nurefexc)
-**Repository**: [my-nomad-plans](https://github.com/nurefexc/my-nomad-plans)
+MIT License. See `LICENSE.md`.

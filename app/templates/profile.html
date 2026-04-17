@@ -11,10 +11,10 @@
                     <div class="col-md-7 p-4 p-md-5 d-flex flex-column justify-content-center">
                         <div class="d-flex align-items-center gap-3 mb-3">
                             <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2 fw-bold text-uppercase next-trip-badge-dest">
-                                <i class="bi bi-rocket-takeoff me-1"></i> {{ _('Next Adventure') }}
+                                <span class="ui-icon me-1">🚀</span> {{ _('Next Adventure') }}
                             </span>
                             <span class="badge rounded-pill bg-light text-muted px-3 py-2 border border-light-subtle shadow-sm next-trip-badge-date">
-                                <i class="bi bi-calendar3 me-1"></i> {{ next_trip.start_date.strftime('%B %d, %Y') }}
+                                <span class="ui-icon me-1">📅</span> {{ next_trip.start_date.strftime('%B %d, %Y') }}
                             </span>
                         </div>
                         
@@ -22,15 +22,17 @@
                         
                         <div class="d-flex align-items-center gap-3 mb-4">
                             {% set next_ccode = get_country_code(next_trip.country) %}
+                            {% set next_localized_country = localize_country(next_trip.country) %}
                             <div class="d-flex align-items-center bg-light rounded-pill px-3 py-2 border border-light-subtle shadow-sm">
                                 {% if next_ccode %}
-                                    <span class="fi fi-{{ next_ccode }} rounded-1 me-2 shadow-sm" style="width: 20px;"></span>
+                                    <span class="fi fi-{{ next_ccode }} rounded-1 shadow-sm" style="width: 20px;" title="{{ _('Country: %(country)s', country=next_localized_country) }}" aria-label="{{ _('Country: %(country)s', country=next_localized_country) }}"></span>
+                                {% else %}
+                                    <span class="ui-icon">⚑</span>
                                 {% endif %}
-                                <span class="fw-medium text-secondary">{{ next_trip.country }}</span>
                             </div>
                             
                     <div id="weather-info" class="d-none align-items-center bg-info bg-opacity-10 text-info rounded-pill px-3 py-2 border-info border-opacity-10 shadow-sm weather-badge" data-lat="{{ next_trip.latitude }}" data-lon="{{ next_trip.longitude }}">
-                        <i class="bi bi-cloud-sun me-2"></i>
+                        <span id="weather-icon" class="ui-icon me-2">⛅</span>
                         <span class="fw-bold" id="weather-temp">--°C</span>
                         <span class="ms-2 small opacity-75 d-none d-sm-inline" id="weather-desc">Loading...</span>
                     </div>
@@ -38,7 +40,7 @@
 
                         <div class="mt-auto d-flex gap-2">
                             <a href="{{ url_for('main.edit_trip', trip_id=next_trip.id) }}" class="btn btn-outline-dark rounded-pill px-4 py-2 fw-bold shadow-sm d-inline-flex align-items-center gap-2">
-                                <i class="bi bi-pencil-square"></i> {{ _('Edit Trip') }}
+                                <span class="ui-icon">✎</span> {{ _('Edit Trip') }}
                             </a>
                         </div>
                     </div>
@@ -65,6 +67,7 @@
         <div id="main-map" class="map-container shadow-sm"></div>
     </div>
 </div>
+
 
 <div class="row mb-4 g-4">
     <div class="col-md-3">
@@ -110,28 +113,28 @@
 {% if badges %}
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card border-0 shadow-sm p-4" style="border-radius: 28px;">
-            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div class="card border-0 shadow-sm p-4 profile-achievements-card" style="border-radius: 28px;">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3 profile-achievements-head">
                 <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
-                    <i class="bi bi-award text-primary"></i>
+                    <span class="ui-icon text-primary">🏅</span>
                     {{ _('Your Achievements') }}
                     {% if new_badges_count > 0 %}
                     <span class="badge bg-danger rounded-pill pulse-badge" style="font-size: 0.6rem;">{{ new_badges_count }} {{ _('NEW') }}</span>
                     {% endif %}
                 </h5>
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 profile-achievements-actions">
                     <a href="{{ url_for('main.badges') }}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold">
-                        <i class="bi bi-award me-1 text-primary"></i> {{ _('All Achievements') }}
+                        <span class="ui-icon me-1 text-primary">🏅</span> {{ _('All Achievements') }}
                     </a>
                     <a href="{{ url_for('main.stats') }}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold">
-                        <i class="bi bi-bar-chart-line me-1 text-primary"></i> {{ _('Detailed Statistics') }}
+                        <span class="ui-icon me-1 text-primary">📊</span> {{ _('Detailed Statistics') }}
                     </a>
                 </div>
             </div>
 
-            <div class="d-flex flex-wrap gap-3">
+            <div class="profile-achievements-grid">
                 {% for b in badges %}
-                <div class="badge-item bg-light rounded-4 p-3 d-flex flex-column gap-2 position-relative {% if b.is_new %}border-primary border-2 shadow-sm{% endif %} {% if not b.awarded %}opacity-75 grayscale{% endif %}" style="min-width: 220px; border: 1px solid rgba(0,0,0,0.05); transition: all 0.3s ease;">
+                <div class="badge-item profile-achievement-item bg-light rounded-4 p-3 d-flex flex-column gap-2 position-relative {% if b.is_new %}border-primary border-2 shadow-sm{% endif %} {% if not b.awarded %}opacity-75 grayscale{% endif %}" style="min-width: 220px; border: 1px solid rgba(0,0,0,0.05); transition: all 0.3s ease;">
                     {% if b.is_new %}
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem; z-index: 1;">{{ _('NEW') }}</span>
                     {% endif %}
@@ -142,7 +145,7 @@
                             <div class="fw-bold text-dark d-flex align-items-center justify-content-between">
                                 {{ _(b.title) }}
                                 {% if b.awarded %}
-                                <i class="bi bi-patch-check-fill text-primary ms-1"></i>
+                                <span class="ui-icon text-primary ms-1">✓</span>
                                 {% endif %}
                             </div>
                             <div class="text-muted small" style="font-size: 0.7rem; line-height: 1.2;">{{ _(b.description) }}</div>
@@ -164,7 +167,7 @@
                     {% else %}
                     <div class="mt-auto pt-2 d-flex justify-content-end">
                         <span class="badge bg-success bg-opacity-10 text-success fw-bold rounded-pill px-2 badge-item-completed-badge">
-                            <i class="bi bi-check2-circle me-1"></i> {{ _('Completed') }}
+                            <span class="ui-icon me-1">✓</span> {{ _('Completed') }}
                         </span>
                     </div>
                     {% endif %}
@@ -220,7 +223,7 @@
                     </div>
 
                     <div class="alert alert-info py-2 px-3 rounded-3 mb-0">
-                        <small><i class="bi bi-info-circle me-1"></i> Trips selected on the dashboard will be included.</small>
+                        <small><span class="ui-icon me-1">ⓘ</span> Trips selected on the dashboard will be included.</small>
                     </div>
                 </div>
                 <div class="modal-footer border-0 pb-4 px-4">
@@ -243,26 +246,33 @@
                         </span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <small class="text-muted fw-bold text-uppercase opacity-75 trip-card-country">{{ trip.country }}</small>
-                        {% set ccode = get_country_code(trip.country) %}
-                        {% if ccode %}
-                        <span class="flag-wrapper ms-1">
-                            <span class="fi fi-{{ ccode }} me-1"></span>
-                            <span class="small fw-bold opacity-75">{{ ccode|upper }}</span>
-                        </span>
-                        {% endif %}
                         <button type="button" class="btn btn-light p-1 ms-1 trip-card-btn-list" data-bs-toggle="collapse" data-bs-target="#checklistCollapse{{ trip.id }}">
-                            <i class="bi bi-list-check"></i>
+                            <span class="ui-icon">☰</span>
                         </button>
+                        <a href="{{ url_for('main.trip_detail', trip_id=trip.id) }}" class="btn btn-light p-1 ms-1 trip-card-btn-list" title="{{ _('View Details') }}" aria-label="{{ _('View Details') }}">
+                            <span class="ui-icon">👁</span>
+                        </a>
                     </div>
                 </div>
                 <div class="card-body px-4 pb-4">
-                    <h4 class="card-title fw-bold mb-3">{{ trip.destination }}</h4>
+                    {% set ccode = get_country_code(trip.country) %}
+                    {% set localized_country = localize_country(trip.country) %}
+                    <h4 class="card-title fw-bold mb-3 d-flex align-items-center gap-2 trip-title-row">
+                        {% if ccode %}
+                        <span class="flag-wrapper flag-wrapper--icon" title="{{ _('Country: %(country)s', country=localized_country) }}" aria-label="{{ _('Country: %(country)s', country=localized_country) }}">
+                            <span class="fi fi-{{ ccode }}"></span>
+                        </span>
+                        <span>{{ trip.destination }}</span>
+                        {% else %}
+                        <span>{{ trip.destination }}</span>
+                        <span class="trip-card-country text-muted fw-bold opacity-75" title="{{ _('Country: %(country)s', country=localized_country) }}">{{ localized_country }}</span>
+                        {% endif %}
+                    </h4>
                     <div class="mb-4">
                         <span class="date-range">
-                            <i class="bi bi-calendar3"></i>
-                            {% if trip.start_date %}{{ trip.start_date.strftime('%b %d, %Y') }}{% else %}<span class="opacity-50 small italic">{{ _('Flexible') }}</span>{% endif %} 
-                            <i class="bi bi-arrow-right mx-1 small opacity-50"></i>
+                            <span class="ui-icon">📅</span>
+                            {% if trip.start_date %}{{ trip.start_date.strftime('%b %d, %Y') }}{% else %}<span class="opacity-50 small italic">{{ _('Flexible') }}</span>{% endif %}
+                            <span class="ui-icon mx-1 small opacity-50">→</span>
                             {% if trip.end_date %}{{ trip.end_date.strftime('%b %d, %Y') }}{% else %}<span class="opacity-50 small italic">{{ _('Flexible') }}</span>{% endif %}
                         </span>
                     </div>
@@ -313,7 +323,7 @@
                         <p class="mb-1 small text-danger fw-bold">⚠️ Visa Required</p>
                         {% endif %}
                         {% if trip.budget %}
-                        <p class="mb-1 small"><strong>Budget:</strong> ${{ trip.budget }}</p>
+                        <p class="mb-1 small"><strong>Budget:</strong> {{ trip.currency or current_user.default_currency or 'USD' }} {{ trip.budget }}</p>
                         {% endif %}
                         <p class="mb-1 small"><strong>Stay:</strong> {{ trip.accommodation if trip.accommodation else 'Not set' }}</p>
                         {% if trip.attractions %}
@@ -323,19 +333,27 @@
                         <p class="mb-1 small text-muted italic"><strong>Packing:</strong> {{ trip.packing_list|truncate(50) }}</p>
                         {% endif %}
                     </div>
-                    <div class="d-grid gap-2">
+                    <div class="d-grid gap-2 trip-card-actions">
                         {% if trip.status == 'draft' %}
-                        <button type="submit" formaction="{{ url_for('main.set_planned', trip_id=trip.id) }}" class="btn btn-sm btn-success rounded-pill shadow-sm mb-1">Mark as Planned</button>
+                        <button type="submit" formaction="{{ url_for('main.set_planned', trip_id=trip.id) }}" class="btn btn-sm btn-success rounded-pill shadow-sm mb-1 trip-action-btn trip-action-primary">
+                            <span class="ui-icon">✓</span> Mark as Planned
+                        </button>
                         {% endif %}
                         {% if trip.status == 'planned' %}
-                        <button type="button" class="btn btn-sm btn-outline-success rounded-pill shadow-sm mb-1" data-bs-toggle="modal" data-bs-target="#visitedModal{{ trip.id }}">Mark as Visited</button>
+                        <button type="button" class="btn btn-sm btn-outline-success rounded-pill shadow-sm mb-1 trip-action-btn trip-action-primary" data-bs-toggle="modal" data-bs-target="#visitedModal{{ trip.id }}">
+                            <span class="ui-icon">⚑</span> Mark as Visited
+                        </button>
                         {% endif %}
 
                         {% if trip.status != 'visited' %}
-                        <a href="{{ url_for('main.edit_trip', trip_id=trip.id) }}" class="btn btn-sm btn-primary rounded-pill">Edit Details</a>
-                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trip.id }}">Delete Trip</button>
+                        <a href="{{ url_for('main.edit_trip', trip_id=trip.id) }}" class="btn btn-sm btn-primary rounded-pill trip-action-btn trip-action-secondary">
+                            <span class="ui-icon">✎</span> Edit Details
+                        </a>
+                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill trip-action-btn trip-action-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trip.id }}">
+                            <span class="ui-icon">🗑</span> Delete Trip
+                        </button>
                         {% else %}
-                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill disabled">Visited - Read Only</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill disabled trip-action-btn">Visited - Read Only</button>
                         {% endif %}
                     </div>
                 </div>
@@ -395,6 +413,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/map_routes.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Combined Countdown & Color Logic
@@ -456,52 +475,32 @@
             });
         });
 
-        // Map setup
-        var map = L.map('main-map').setView([20, 0], 2);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: 'abcd',
-            maxZoom: 20
-        }).addTo(map);
+        // Map setup (shared utility keeps arrow direction consistent on all zoom levels)
+        const tripsData = [
+            {% for trip in trips %}
+            {
+                id: {{ trip.id }},
+                destination: {{ trip.destination|tojson }},
+                country: {{ trip.country|tojson }},
+                status: {{ trip.status|tojson }},
+                latitude: {{ trip.latitude if trip.latitude is not none else 'null' }},
+                longitude: {{ trip.longitude if trip.longitude is not none else 'null' }},
+                start_date: {{ trip.start_date.strftime('%Y-%m-%d')|tojson if trip.start_date else 'null' }},
+                end_date: {{ trip.end_date.strftime('%Y-%m-%d')|tojson if trip.end_date else 'null' }},
+                edit_url: {{ url_for('main.edit_trip', trip_id=trip.id)|tojson }}
+            },
+            {% endfor %}
+        ];
 
-        var markers = [];
-        var visitedPoints = [];
-        var plannedPoints = [];
-
-        {% for trip in trips %}
-            {% if trip.latitude and trip.longitude %}
-                var lat = {{ trip.latitude }};
-                var lng = {{ trip.longitude }};
-                var status = "{{ trip.status }}";
-                var color = status === 'visited' ? '#6c757d' : (status === 'planned' ? '#2ec4b6' : '#3584e4');
-                
-                var marker = L.circleMarker([lat, lng], {
-                    radius: 8,
-                    fillColor: color,
-                    color: "#fff",
-                    weight: 2,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                }).addTo(map);
-                
-                var popupContent = `<b>{{ trip.destination }}</b><br>Status: ${status.charAt(0).toUpperCase() + status.slice(1)}<br>`;
-                popupContent += `<a href="{{ url_for("main.edit_trip", trip_id=trip.id) }}" class="btn btn-sm btn-primary mt-2 py-1 px-3 text-white" style="font-size: 0.7rem;">Edit</a>`;
-                
-                marker.bindPopup(popupContent);
-                markers.push([lat, lng]);
-
-                if (status === 'visited') visitedPoints.push([lat, lng]);
-                else if (status === 'planned') plannedPoints.push([lat, lng]);
-            {% endif %}
-        {% endfor %}
-
-        if (visitedPoints.length > 1) {
-            L.polyline(visitedPoints, {color: '#6c757d', weight: 4, dashArray: '10, 10', opacity: 0.6}).addTo(map);
+        if (window.NomadMap && typeof window.NomadMap.renderTripMap === 'function') {
+            window.NomadMap.renderTripMap('main-map', tripsData, {
+                connectWindowDays: 1,
+                editable: true,
+                showLegend: true,
+                showSummary: true,
+                enableLayerControl: true
+            });
         }
-        if (plannedPoints.length > 1) {
-            L.polyline(plannedPoints, {color: '#2ec4b6', weight: 4, dashArray: '1, 12', opacity: 0.6, lineCap: 'round'}).addTo(map);
-        }
-        if (markers.length > 0) map.fitBounds(markers);
 
         // Weather AJAX
         const weatherEl = document.getElementById('weather-info');
@@ -514,26 +513,26 @@
                 .then(data => {
                     const temp = Math.round(data.current_weather.temperature);
                     const code = data.current_weather.weathercode;
-                    let iconClass = 'bi-sun-fill';
+                    let iconGlyph = '☀';
                     let desc = 'Clear';
                     
-                    if (code > 0) { iconClass = 'bi-cloud-sun-fill'; desc = 'Partly Cloudy'; }
-                    if (code > 2) { iconClass = 'bi-cloud-fill'; desc = 'Cloudy'; }
-                    if (code > 50) { iconClass = 'bi-cloud-rain-fill'; desc = 'Rainy'; }
-                    if (code > 70) { iconClass = 'bi-snow'; desc = 'Snowy'; }
-                    if (code > 90) { iconClass = 'bi-cloud-lightning-rain-fill'; desc = 'Stormy'; }
-                    
+                    if (code > 0) { iconGlyph = '⛅'; desc = 'Partly Cloudy'; }
+                    if (code > 2) { iconGlyph = '☁'; desc = 'Cloudy'; }
+                    if (code > 50) { iconGlyph = '🌧'; desc = 'Rainy'; }
+                    if (code > 70) { iconGlyph = '❄'; desc = 'Snowy'; }
+                    if (code > 90) { iconGlyph = '⛈'; desc = 'Stormy'; }
+
                     const tempEl = document.getElementById('weather-temp');
                     const descEl = document.getElementById('weather-desc');
-                    const iconEl = weatherEl.querySelector('i');
-                    
+                    const iconEl = document.getElementById('weather-icon');
+
                     if (tempEl) tempEl.innerText = `${temp}°C`;
                     if (descEl) {
                         descEl.innerText = desc;
                         descEl.classList.remove('d-none');
                     }
                     if (iconEl) {
-                        iconEl.className = `bi ${iconClass} me-2`;
+                        iconEl.innerText = iconGlyph;
                     }
                     
                     weatherEl.classList.remove('d-none');

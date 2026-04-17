@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            {% set ccode = get_country_code(trip.country) %}
+            {% set localized_country = localize_country(trip.country) %}
+            <h2 class="fw-bold mb-0 d-flex align-items-center gap-2 trip-title-row">
+                {% if ccode %}
+                <span class="flag-wrapper flag-wrapper--icon" title="{{ _('Country: %(country)s', country=localized_country) }}" aria-label="{{ _('Country: %(country)s', country=localized_country) }}">
+                    <span class="fi fi-{{ ccode }}"></span>
+                </span>
+                <span>{{ trip.destination }}</span>
+                {% else %}
+                <span>{{ trip.destination }}</span>
+                <span class="text-muted">{{ localized_country }}</span>
+                {% endif %}
+            </h2>
+            <div class="d-flex gap-2">
+                {% if trip.status != 'visited' %}
+                <a href="{{ url_for('main.edit_trip', trip_id=trip.id) }}" class="btn btn-primary btn-sm rounded-pill">Edit Trip</a>
+                {% endif %}
+                <a href="{{ url_for('main.profile') }}" class="btn btn-outline-secondary btn-sm rounded-pill">Back to Dashboard</a>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="text-muted small text-uppercase fw-bold">Status</div>
+                        <div class="fw-semibold">{{ trip.status|capitalize }}</div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-muted small text-uppercase fw-bold">Start</div>
+                        <div class="fw-semibold">{{ trip.start_date.strftime('%Y-%m-%d') if trip.start_date else '-' }}</div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-muted small text-uppercase fw-bold">End</div>
+                        <div class="fw-semibold">{{ trip.end_date.strftime('%Y-%m-%d') if trip.end_date else '-' }}</div>
+                    </div>
+                </div>
+
+                <hr>
+                <h6 class="fw-bold mb-3">Transport Segments</h6>
+                {% if trip.transport_segments %}
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Mode</th>
+                                <th>Label</th>
+                                <th>Carrier</th>
+                                <th>Public Ref</th>
+                                <th>Ticket Ref</th>
+                                <th>Document Ref</th>
+                                <th>Visibility</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for seg in trip.transport_segments %}
+                            <tr>
+                                <td>{{ seg.segment_type|capitalize }}</td>
+                                <td>{{ seg.mode }}</td>
+                                <td>{{ seg.label or '-' }}</td>
+                                <td>{{ seg.carrier or '-' }}</td>
+                                <td>{{ seg.reference_code or '-' }}</td>
+                                <td>{{ seg.ticket_ref or '-' }}</td>
+                                <td>{{ seg.document_ref or '-' }}</td>
+                                <td>
+                                    {% if seg.is_sensitive %}
+                                    <span class="badge bg-warning text-dark">Private</span>
+                                    {% else %}
+                                    <span class="badge bg-success">Public</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% elif trip.transport_mode %}
+                <p class="mb-0 small">
+                    {{ trip.transport_mode }}{% if trip.flight_number %} ({{ trip.flight_number }}){% endif %}
+                </p>
+                {% else %}
+                <p class="mb-0 text-muted small">No transport items added yet.</p>
+                {% endif %}
+
+                {% if trip.notes %}
+                <hr>
+                <h6 class="fw-bold">Notes</h6>
+                <p class="mb-0">{{ trip.notes }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if trip.immich_album_id %}
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-3">Immich Gallery</h5>
+                <div class="immich-gallery" data-gallery-endpoint="{{ url_for('main.get_trip_gallery', trip_id=trip.id) }}">
+                    <div class="immich-gallery-status text-muted small">Loading gallery...</div>
+                    <div class="immich-gallery-grid"></div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-light border">No Immich album linked to this trip yet.</div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="modal fade" id="immichLightbox" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered immich-lightbox-dialog">
+        <div class="modal-content bg-dark border-0 immich-lightbox-content">
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center pt-0 immich-lightbox-body">
+                <button type="button" class="btn btn-light immich-lightbox-nav immich-lightbox-prev" id="immichLightboxPrev" aria-label="Previous media">
+                    <span class="ui-icon">←</span>
+                </button>
+                <img id="immichLightboxImage" src="" alt="Immich preview" class="img-fluid rounded immich-lightbox-media">
+                <video id="immichLightboxVideo" class="img-fluid rounded d-none immich-lightbox-media" controls preload="metadata"></video>
+                <button type="button" class="btn btn-light immich-lightbox-nav immich-lightbox-next" id="immichLightboxNext" aria-label="Next media">
+                    <span class="ui-icon">→</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/immich_gallery.js') }}"></script>
+{% endblock %}
+

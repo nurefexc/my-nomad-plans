@@ -43,6 +43,40 @@ msgstr "Kijelentkezés"
 msgid "Login"
 msgstr "Bejelentkezés"
 
+#: app/templates/profile.html app/templates/shared_trip.html app/templates/stats.html
+msgid "Country: %(country)s"
+msgstr "Ország: %(country)s"
+
+msgid "View Details"
+msgstr "Részletek"
+
+msgid "No details available."
+msgstr "Nincs elérhető részlet."
+
+msgid "Transport Segments"
+msgstr "Közlekedési szakaszok"
+
+msgid "Add the main travel legs. Shared pages only show outbound transport."
+msgstr "Add meg a fő utazási szakaszokat. A megosztott oldalon csak az odaút jelenik meg."
+
+msgid "Outbound"
+msgstr "Odaút"
+
+msgid "Intercity"
+msgstr "Helyközi"
+
+msgid "Local"
+msgstr "Helyi"
+
+msgid "Outbound Ref (optional)"
+msgstr "Odaút azonosító (opcionális)"
+
+msgid "Intercity Ref (optional)"
+msgstr "Helyközi azonosító (opcionális)"
+
+msgid "Local Ref (optional)"
+msgstr "Helyi azonosító (opcionális)"
+
 #: app/templates/index.html
 msgid "Your Journey, <span class=\"text-primary\">Simplified.</span>"
 msgstr "Utazásaid, <span class=\"text-primary\">egyszerűen.</span>"
@@ -909,3 +943,196 @@ msgstr "Költségvetés (kb.)"
 #: app/templates/edit_trip.html
 msgid "Accommodation (Sensitive)"
 msgstr "Szállás (Szenzitív)"
+
+msgid "Photos"
+msgstr "Fotók"
+
+msgid "Open photo gallery"
+msgstr "Fotógaléria megnyitása"
+
+msgid "Click an image to open and navigate with arrows."
+msgstr "Kattints egy képre a megnyitáshoz, majd lapozz a nyilakkal."
+
+msgid "Explore more countries, track your budget, and share your adventures to unlock all specialized badges. Each badge represents a milestone in your nomadic journey."
+msgstr "Fedezz fel több országot, kövesd a költségvetésedet és oszd meg kalandjaidat, hogy feloldd az összes speciális kitüntetést. Minden jelvény egy mérföldkövet jelent a nomád utad során."
+
+msgid "Share Ambassador"
+msgstr "Megosztási nagykövet"
+
+msgid "Created 10 shared travel links."
+msgstr "10 megosztott utazási linket hoztál létre."
+
+msgid "Visa Navigator"
+msgstr "Vízum navigátor"
+
+msgid "Completed 5 trips where a visa was required."
+msgstr "5 olyan utat teljesítettél, ahol vízumra volt szükség."
+
+msgid "Cartographer"
+msgstr "Térképész"
+
+msgid "Logged map coordinates for 10 visited trips."
+msgstr "10 meglátogatott útnál rögzítetted a térképkoordinátákat."
+
+msgid "Itinerary Architect"
+msgstr "Útiterv építész"
+
+msgid "Added detailed attractions to 12 trips."
+msgstr "12 utazáshoz adtál meg részletes látnivalókat."
+
+msgid "Multi-modal Master"
+msgstr "Többmódos mester"
+
+msgid "Used at least 4 different transport modes on visited trips."
+msgstr "Legalább 4 különböző közlekedési módot használtál a meglátogatott utakon."
+
+msgid "Season Hopper"
+msgstr "Évszakugró"
+
+msgid "Completed visited trips in all four seasons."
+msgstr "Mind a négy évszakban teljesítettél meglátogatott utat."
+
+msgid "Year Rounder"
+msgstr "Egész éves utazó"
+
+msgid "Visited trips across at least 3 different years."
+msgstr "Legalább 3 különböző évben volt meglátogatott utad."
+
+msgid "Journey Marathon"
+msgstr "Utazási maraton"
+
+msgid "Completed 10 long trips (7+ days each)."
+msgstr "10 hosszú utat teljesítettél (mindegyik legalább 7 napos)."
+
+msgid "Continent Collector"
+msgstr "Kontinens gyűjtő"
+
+msgid "Visited at least 3 different world regions."
+msgstr "Legalább 3 különböző világrégióban jártál."
+
+msgid "Continent Conqueror"
+msgstr "Kontinens hódító"
+
+msgid "Visited countries in all tracked world regions."
+msgstr "Minden nyomon követett világrégióban jártál országokban."
+
+msgid "Bus Explorer"
+msgstr "Buszos felfedező"
+
+msgid "Completed 5 visited trips by bus."
+msgstr "5 meglátogatott utat teljesítettél busszal."
+
+msgid "Ferry Rider"
+msgstr "Komputazó"
+
+msgid "Completed 3 visited trips by ferry."
+msgstr "3 meglátogatott utat teljesítettél komppal."
+
+msgid "Draft Strategist"
+msgstr "Piszkozat stratéga"
+
+msgid "Built up 10 draft trip ideas."
+msgstr "10 piszkozat utazási ötletet gyűjtöttél össze."
+
+msgid "Destination Curator"
+msgstr "Úticél kurátor"
+
+msgid "Saved 20 trips with clear destination and country data."
+msgstr "20 utazást mentettél egyértelmű úti cél- és országinformációval."
+
+msgid "Checklist Commander"
+msgstr "Checklist parancsnok"
+
+msgid "Fully completed checklists for 12 different trips."
+msgstr "12 különböző utazáshoz teljesen kitöltötted a checklistet."
+
+msgid "Map Archivist"
+msgstr "Térkép archivista"
+
+msgid "Saved map coordinates on 20 trips."
+msgstr "20 utazáshoz mentettél térképkoordinátát."
+
+msgid "Consistent Traveler"
+msgstr "Következetes utazó"
+
+msgid "Completed at least one visited trip in 5 different years."
+msgstr "Legalább 5 különböző évben teljesítettél legalább egy meglátogatott utat."
+
+msgid "Monthly Momentum"
+msgstr "Havi lendület"
+
+msgid "Visited trips in at least 8 different months of the year."
+msgstr "Az év legalább 8 különböző hónapjában volt meglátogatott utad."
+
+msgid "journey window"
+msgstr "útvonal időablaka"
+
+msgid "from %(start)s to %(end)s"
+msgstr "%(start)s - %(end)s"
+
+msgid "No fixed dates"
+msgstr "Nincs rögzített dátum"
+
+msgid "%(days)s days"
+msgstr "%(days)s nap"
+
+msgid "to prepare"
+msgstr "előkészítendő"
+
+msgid "Visa checks needed for %(count)s stop(s)"
+msgstr "%(count)s állomásnál szükséges vízumellenőrzés"
+
+msgid "Itinerary highlights added for %(count)s stop(s)"
+msgstr "%(count)s állomáshoz tartozik kiemelt program"
+
+msgid "Published on %(date)s"
+msgstr "Közzétéve: %(date)s"
+
+msgid "cities"
+msgstr "város"
+
+msgid "next stop"
+msgstr "következő állomás"
+
+msgid "No upcoming stop"
+msgstr "Nincs közelgő állomás"
+
+msgid "Now in %(city)s"
+msgstr "Most itt: %(city)s"
+
+msgid "%(city)s on %(date)s"
+msgstr "%(city)s - %(date)s"
+
+msgid "%(city)s (flexible date)"
+msgstr "%(city)s (rugalmas dátum)"
+
+msgid "Photo albums linked for %(count)s stop(s)"
+msgstr "%(count)s állomáshoz kapcsolódik fotóalbum"
+
+msgid "View all cities (%(count)s)"
+msgstr "Összes város megtekintése (%(count)s)"
+
+msgid "Cities in this shared journey"
+msgstr "Városok ebben a megosztott útvonalban"
+
+msgid "current stop"
+msgstr "aktuális állomás"
+
+msgid "up next"
+msgstr "következő"
+
+msgid "No current stop"
+msgstr "Nincs aktuális állomás"
+
+msgid "current location"
+msgstr "aktuális hely"
+
+msgid "No active location"
+msgstr "Nincs aktív hely"
+
+msgid "No active trip right now"
+msgstr "Jelenleg nincs aktív utazás"
+
+msgid "City not specified"
+msgstr "A város nincs megadva"
+

@@ -6,11 +6,11 @@
         <div class="card border-0 shadow-sm p-4 stats-main-card">
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                 <h2 class="fw-bold mb-0 d-flex align-items-center gap-2">
-                    <i class="bi bi-bar-chart-line text-primary"></i>
+                    <span class="ui-icon text-primary">📊</span>
                     {{ _('Detailed Travel Statistics') }}
                 </h2>
                 <a href="{{ url_for('main.profile') }}" class="btn btn-light rounded-pill px-4 fw-bold">
-                    <i class="bi bi-arrow-left me-1"></i> {{ _('Back to Dashboard') }}
+                    <span class="ui-icon me-1">←</span> {{ _('Back to Dashboard') }}
                 </a>
             </div>
 
@@ -44,9 +44,24 @@
                 <div class="col-md-3">
                     <div class="card border-0 shadow-sm bg-warning text-dark p-3 rounded-4 h-100">
                         <h6 class="opacity-75 mb-1 small text-uppercase fw-bold">{{ _('Financials') }}</h6>
-                        <div class="h2 fw-bold mb-0">${{ stats.total_budget|round|int }}</div>
-                        <small class="opacity-75">${{ stats.avg_budget_per_day|round|int }}/{{ _('day') }} • ${{ stats.avg_budget|round|int }} {{ _('avg') }}</small>
+                        {% set curr = current_user.default_currency or 'USD' %}
+                        <div class="h2 fw-bold mb-0">{{ curr }} {{ stats.total_budget|round|int }}</div>
+                        <small class="opacity-75">{{ curr }} {{ stats.avg_budget_per_day|round|int }}/{{ _('day') }} • {{ curr }} {{ stats.avg_budget|round|int }} {{ _('avg') }}</small>
                     </div>
+                </div>
+            </div>
+
+            <div class="bg-light rounded-4 p-3 mb-4 border border-light">
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <span class="badge bg-primary-subtle text-primary border">{{ _('Avg trips/year') }}: {{ stats.avg_trips_per_year }}</span>
+                    <span class="badge bg-warning-subtle text-dark border">{{ _('Longest break') }}: {{ stats.longest_gap_days }} {{ _('days') }}</span>
+                    <span class="badge bg-success-subtle text-success border">
+                        {% if stats.next_trip_in_days is not none %}
+                            {{ _('Next trip in') }} {{ stats.next_trip_in_days }} {{ _('days') }}
+                        {% else %}
+                            {{ _('No upcoming planned trip') }}
+                        {% endif %}
+                    </span>
                 </div>
             </div>
 
@@ -55,7 +70,7 @@
                 <div class="col-md-4">
                     <div class="bg-light rounded-4 p-4 h-100 shadow-sm border border-light">
                         <h5 class="fw-bold mb-4 text-uppercase small text-muted ls-wide d-flex align-items-center gap-2">
-                            <i class="bi bi-geo-alt text-primary"></i> {{ _('Popular Destinations') }}
+                            <span class="ui-icon text-primary">📍</span> {{ _('Popular Destinations') }}
                         </h5>
                         {% if stats.top_countries %}
                             <div class="list-group list-group-flush bg-transparent">
@@ -63,8 +78,14 @@
                                 <div class="list-group-item bg-transparent border-0 px-0 d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center gap-2">
                                         {% set ccode = get_country_code(country) %}
-                                        {% if ccode %}<span class="fi fi-{{ ccode }} rounded-1 shadow-sm"></span>{% endif %}
-                                        <span class="fw-semibold text-dark">{{ country }}</span>
+                                        {% set localized_country = localize_country(country or _('Unknown')) %}
+                                        {% if ccode %}
+                                            <span class="flag-wrapper flag-wrapper--icon" title="{{ _('Country: %(country)s', country=localized_country) }}" aria-label="{{ _('Country: %(country)s', country=localized_country) }}">
+                                                <span class="fi fi-{{ ccode }} rounded-1 shadow-sm"></span>
+                                            </span>
+                                        {% else %}
+                                            <span class="fw-semibold text-dark">{{ localized_country }}</span>
+                                        {% endif %}
                                     </div>
                                     <span class="badge bg-white text-primary border border-primary border-opacity-25 rounded-pill shadow-sm">{{ count }} {{ _('visits') }}</span>
                                 </div>
@@ -77,13 +98,22 @@
                         <hr class="my-4 opacity-10">
 
                         <h5 class="fw-bold mb-4 text-uppercase small text-muted ls-wide d-flex align-items-center gap-2">
-                            <i class="bi bi-star text-primary"></i> {{ _('Journey Highlights') }}
+                            <span class="ui-icon text-primary">★</span> {{ _('Journey Highlights') }}
                         </h5>
                         <div class="d-flex flex-column gap-3">
                             {% if stats.longest_trip %}
                             <div class="bg-white p-3 rounded-3 shadow-sm border border-light">
                                 <div class="small text-muted mb-1">{{ _('Longest Trip') }}</div>
-                                <div class="fw-bold">{{ stats.longest_trip.destination }}</div>
+                                {% set longest_ccode = get_country_code(stats.longest_trip.country) %}
+                                {% set longest_localized_country = localize_country(stats.longest_trip.country or _('Unknown')) %}
+                                <div class="fw-bold d-flex align-items-center gap-2 trip-title-row">
+                                    {% if longest_ccode %}
+                                    <span class="flag-wrapper flag-wrapper--icon" title="{{ _('Country: %(country)s', country=longest_localized_country) }}" aria-label="{{ _('Country: %(country)s', country=longest_localized_country) }}">
+                                        <span class="fi fi-{{ longest_ccode }}"></span>
+                                    </span>
+                                    {% endif %}
+                                    <span>{{ stats.longest_trip.destination }}</span>
+                                </div>
                                 <div class="text-primary small fw-bold">{{ stats.longest_trip_days or 0 }} {{ _('days') }}</div>
                             </div>
                             {% endif %}
@@ -91,7 +121,16 @@
                             {% if stats.shortest_trip %}
                             <div class="bg-white p-3 rounded-3 shadow-sm border border-light">
                                 <div class="small text-muted mb-1">{{ _('Shortest Trip') }}</div>
-                                <div class="fw-bold">{{ stats.shortest_trip.destination }}</div>
+                                {% set shortest_ccode = get_country_code(stats.shortest_trip.country) %}
+                                {% set shortest_localized_country = localize_country(stats.shortest_trip.country or _('Unknown')) %}
+                                <div class="fw-bold d-flex align-items-center gap-2 trip-title-row">
+                                    {% if shortest_ccode %}
+                                    <span class="flag-wrapper flag-wrapper--icon" title="{{ _('Country: %(country)s', country=shortest_localized_country) }}" aria-label="{{ _('Country: %(country)s', country=shortest_localized_country) }}">
+                                        <span class="fi fi-{{ shortest_ccode }}"></span>
+                                    </span>
+                                    {% endif %}
+                                    <span>{{ stats.shortest_trip.destination }}</span>
+                                </div>
                                 <div class="text-primary small fw-bold">{{ stats.shortest_trip_days or 0 }} {{ _('days') }}</div>
                             </div>
                             {% endif %}
@@ -105,7 +144,7 @@
                         <div class="col-12">
                             <div class="bg-light rounded-4 p-4 shadow-sm border border-light">
                                 <h5 class="fw-bold mb-4 text-uppercase small text-muted ls-wide d-flex align-items-center gap-2">
-                                    <i class="bi bi-graph-up text-primary"></i> {{ _('Travel Frequency') }}
+                                    <span class="ui-icon text-primary">📈</span> {{ _('Travel Frequency') }}
                                 </h5>
                                 <div class="d-flex align-items-end gap-2 justify-content-between pt-4 overflow-auto chart-container">
                                     {% if stats.monthly_data.zipped %}
@@ -130,13 +169,13 @@
                         <div class="col-md-7">
                             <div class="bg-light rounded-4 p-4 shadow-sm border border-light h-100">
                                 <h5 class="fw-bold mb-4 text-uppercase small text-muted ls-wide d-flex align-items-center gap-2">
-                                    <i class="bi bi-truck text-primary"></i> {{ _('Transportation') }}
+                                    <span class="ui-icon text-primary">🚍</span> {{ _('Transportation') }}
                                 </h5>
                                 {% if stats.top_transport %}
                                     {% for transport, count in stats.top_transport %}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <div class="d-flex align-items-center gap-2">
-                                            <i class="bi bi-{{ 'airplane' if transport == 'plane' else 'train-front' if transport == 'train' else 'car-front' if transport == 'car' else 'ship' if transport == 'ship' else 'bus-front' if transport == 'bus' else 'bicycle' if transport == 'bicycle' else 'person-walking' if transport == 'walking' else 'info-circle' }} text-primary"></i>
+                                            <span class="ui-icon text-primary">{{ '✈' if transport == 'plane' else '🚆' if transport == 'train' else '🚗' if transport == 'car' else '🚢' if transport == 'ship' else '🚌' if transport == 'bus' else '🚲' if transport == 'bicycle' else '🚶' if transport == 'walking' else 'ⓘ' }}</span>
                                             <span class="small fw-bold text-dark">{{ _(transport.capitalize()) }}</span>
                                         </div>
                                         <div class="d-flex align-items-center gap-2 flex-grow-1 mx-3">
@@ -157,7 +196,7 @@
                         <div class="col-md-5">
                             <div class="bg-light rounded-4 p-4 shadow-sm border border-light h-100">
                                 <h5 class="fw-bold mb-4 text-uppercase small text-muted ls-wide d-flex align-items-center gap-2">
-                                    <i class="bi bi-calendar-event text-primary"></i> {{ _('Annual Status') }}
+                                    <span class="ui-icon text-primary">🗓</span> {{ _('Annual Status') }}
                                 </h5>
                                 {% if stats.trips_by_year %}
                                     <div style="max-height: 150px; overflow-y: auto;">

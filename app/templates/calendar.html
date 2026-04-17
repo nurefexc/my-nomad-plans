@@ -1,59 +1,102 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row mb-4 animate__animated animate__fadeIn">
-    <div class="col-md-12">
+<div class="row mb-4 calendar-page">
+    <div class="col-lg-9">
         <div class="card p-4 shadow-sm border-0">
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                 <h2 class="fw-bold mb-0">{{ _('Travel Calendar') }}</h2>
-                <div>
-                    <span class="badge bg-primary me-2">{{ _('Upcoming') }}</span>
-                    <span class="badge bg-success me-2">{{ _('Visited') }}</span>
-                    <span class="badge bg-warning text-dark">{{ _('Planned') }}</span>
+                <a class="btn btn-success btn-sm" href="{{ url_for('main.add_trip') }}">{{ _('Plan New Trip') }}</a>
+            </div>
+
+            <div class="row g-2 mb-3">
+                <div class="col-md-4">
+                    <label for="statusFilter" class="form-label small fw-bold mb-1">{{ _('Status') }}</label>
+                    <select id="statusFilter" class="form-select form-select-sm">
+                        <option value="all">{{ _('All') }}</option>
+                        <option value="planned">{{ _('Planned') }}</option>
+                        <option value="visited">{{ _('Visited') }}</option>
+                        <option value="draft">{{ _('Draft') }}</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="timeFilter" class="form-label small fw-bold mb-1">{{ _('Time Window') }}</label>
+                    <select id="timeFilter" class="form-select form-select-sm">
+                        <option value="all">{{ _('All') }}</option>
+                        <option value="upcoming">{{ _('Upcoming') }}</option>
+                        <option value="ongoing">{{ _('Ongoing') }}</option>
+                        <option value="overdue">{{ _('Overdue') }}</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="searchFilter" class="form-label small fw-bold mb-1">{{ _('Search') }}</label>
+                    <input id="searchFilter" class="form-control form-control-sm" placeholder="{{ _('Destination or country') }}">
                 </div>
             </div>
-            <div id="calendar" style="min-height: 600px;"></div>
+
+            <div id="calendar" class="calendar-shell"></div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 mt-4 mt-lg-0">
+        <div class="card p-3 shadow-sm border-0">
+            <h6 class="fw-bold mb-3">{{ _('Undated Trips') }}</h6>
+            {% if undated_trips %}
+                <div class="d-flex flex-column gap-2">
+                {% for trip in undated_trips %}
+                    <a href="{{ trip.edit_url }}" class="undated-trip-item text-decoration-none">
+                        <div class="fw-bold text-dark">{{ trip.destination }}</div>
+                        <div class="small text-muted">{{ trip.country }} • {{ trip.status }}</div>
+                    </a>
+                {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted small mb-0">{{ _('Great, all trips already have dates.') }}</p>
+            {% endif %}
         </div>
     </div>
 </div>
 
-<style>
-    #calendar {
-        background: white;
-        padding: 20px;
-        border-radius: 15px;
-    }
-    .fc-event {
-        cursor: pointer;
-        padding: 2px 5px;
-        border-radius: 6px;
-        border: none !important;
-        font-weight: 600;
-        font-size: 0.85em;
-    }
-    .fc-toolbar-title {
-        font-weight: 700 !important;
-        color: var(--gnome-text);
-    }
-    .fc-button-primary {
-        background-color: var(--gnome-accent) !important;
-        border: none !important;
-        border-radius: 10px !important;
-        padding: 8px 16px !important;
-        font-weight: 600 !important;
-    }
-    .fc-daygrid-day:hover {
-        background-color: rgba(0,0,0,0.02);
-    }
-</style>
+<div class="modal fade" id="calendarEventModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="calendarEventTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-0">
+                <div id="calendarEventMeta" class="small text-muted mb-3"></div>
+                <div id="calendarEventBadges" class="mb-3"></div>
+                <div id="calendarEventDetails" class="small"></div>
+            </div>
+            <div class="modal-footer border-0">
+                <a id="calendarEventEditBtn" href="#" class="btn btn-primary btn-sm">{{ _('Edit') }}</a>
+                <form id="calendarMarkVisitedForm" method="POST" class="d-none align-items-center gap-2">
+                    <input type="date" name="end_date" id="calendarVisitedDate" class="form-control form-control-sm" required>
+                    <button type="submit" class="btn btn-success btn-sm">{{ _('Mark Visited') }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+<script src="{{ url_for('static', filename='vendor/fullcalendar/index.global.min.js') }}"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
+    const calendarEl = document.getElementById('calendar');
+    const statusFilterEl = document.getElementById('statusFilter');
+    const timeFilterEl = document.getElementById('timeFilter');
+    const searchFilterEl = document.getElementById('searchFilter');
+    const allEvents = {{ events|tojson }};
+    const eventModalEl = document.getElementById('calendarEventModal');
+    const eventModal = new bootstrap.Modal(eventModalEl);
+    const todayIso = new Date().toISOString().slice(0, 10);
+
+    document.getElementById('calendarVisitedDate').value = todayIso;
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         headerToolbar: {
             left: 'prev,next today',
@@ -66,12 +109,18 @@ document.addEventListener('DOMContentLoaded', function() {
             week: '{{ _("Week") }}',
             list: '{{ _("List") }}'
         },
-        events: {{ events|tojson }},
+        events: allEvents,
         eventClick: function(info) {
-            if (info.event.url) {
-                info.jsEvent.preventDefault();
-                window.location.href = info.event.url;
-            }
+            info.jsEvent.preventDefault();
+            openEventModal(info.event);
+        },
+        eventDidMount: function(info) {
+            // Double click is a quick shortcut to edit trip details.
+            info.el.addEventListener('dblclick', function() {
+                if (info.event.url) {
+                    window.location.href = info.event.url;
+                }
+            });
         },
         height: 'auto',
         firstDay: 1, // Monday
@@ -82,7 +131,78 @@ document.addEventListener('DOMContentLoaded', function() {
             hour12: false
         }
     });
+
     calendar.render();
+
+    function formatDateLabel(isoDate) {
+        if (!isoDate) return '-';
+        return new Date(isoDate + 'T00:00:00').toLocaleDateString();
+    }
+
+    function openEventModal(event) {
+        const p = event.extendedProps || {};
+        document.getElementById('calendarEventTitle').textContent = event.title;
+        document.getElementById('calendarEventMeta').textContent =
+            `${formatDateLabel(p.startDate)} - ${formatDateLabel(p.endDate)} • ${p.status || '-'}`;
+
+        const badges = [];
+        if (p.isOverdue) badges.push('<span class="badge bg-danger me-1">{{ _("Overdue") }}</span>');
+        if (p.isOngoing) badges.push('<span class="badge bg-success me-1">{{ _("Ongoing") }}</span>');
+        if (!p.isOverdue && !p.isOngoing && typeof p.daysUntilStart === 'number' && p.daysUntilStart >= 0) {
+            badges.push('<span class="badge bg-primary me-1">' + p.daysUntilStart + ' {{ _("days left") }}</span>');
+        }
+        document.getElementById('calendarEventBadges').innerHTML = badges.join('');
+
+        const details = [];
+        details.push('<div><b>{{ _("Destination") }}:</b> ' + (p.destination || '-') + ' (' + (p.country || '-') + ')</div>');
+        details.push('<div><b>{{ _("Checklist") }}:</b> ' + (p.checklistDone || 0) + '/' + (p.checklistTotal || 0) + '</div>');
+        if (p.transportMode) details.push('<div><b>{{ _("Transport") }}:</b> ' + p.transportMode + '</div>');
+        if (p.flightNumber) details.push('<div><b>{{ _("Flight") }}:</b> ' + p.flightNumber + '</div>');
+        if (p.visaRequired) details.push('<div class="text-danger"><b>{{ _("Visa required") }}</b></div>');
+        if (p.attractions) details.push('<div class="mt-2"><b>{{ _("Plan") }}:</b><br>' + p.attractions + '</div>');
+        if (p.notes) details.push('<div class="mt-2"><b>{{ _("Notes") }}:</b><br>' + p.notes + '</div>');
+        document.getElementById('calendarEventDetails').innerHTML = details.join('');
+
+        const editBtn = document.getElementById('calendarEventEditBtn');
+        editBtn.href = p.editUrl || event.url || '#';
+
+        const visitedForm = document.getElementById('calendarMarkVisitedForm');
+        if (p.status === 'planned' && p.markVisitedUrl) {
+            visitedForm.action = p.markVisitedUrl;
+            visitedForm.classList.remove('d-none');
+            visitedForm.classList.add('d-flex');
+        } else {
+            visitedForm.classList.add('d-none');
+            visitedForm.classList.remove('d-flex');
+        }
+
+        eventModal.show();
+    }
+
+    function applyFilters() {
+        const statusVal = statusFilterEl.value;
+        const timeVal = timeFilterEl.value;
+        const q = searchFilterEl.value.trim().toLowerCase();
+
+        calendar.getEvents().forEach(function(event) {
+            const p = event.extendedProps || {};
+            const destination = (p.destination || '').toLowerCase();
+            const country = (p.country || '').toLowerCase();
+            let visible = true;
+
+            if (statusVal !== 'all' && p.status !== statusVal) visible = false;
+            if (timeVal === 'upcoming' && ((p.daysUntilStart ?? -999) < 0 || p.isOngoing)) visible = false;
+            if (timeVal === 'ongoing' && !p.isOngoing) visible = false;
+            if (timeVal === 'overdue' && !p.isOverdue) visible = false;
+            if (q && !destination.includes(q) && !country.includes(q)) visible = false;
+
+            event.setProp('display', visible ? 'auto' : 'none');
+        });
+    }
+
+    statusFilterEl.addEventListener('change', applyFilters);
+    timeFilterEl.addEventListener('change', applyFilters);
+    searchFilterEl.addEventListener('input', applyFilters);
 });
 </script>
 {% endblock %}

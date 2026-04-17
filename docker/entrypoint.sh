@@ -6,6 +6,38 @@ set -e
 mkdir -p instance
 chmod 777 instance || true
 
+ensure_sqlite_currency_columns() {
+    local db_path="$1"
+    [ -f "$db_path" ] || return 0
+
+    python3 - <<PY
+import sqlite3
+
+db_path = "$db_path"
+conn = sqlite3.connect(db_path)
+cur = conn.cursor()
+
+def has_table(name):
+    cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (name,))
+    return cur.fetchone() is not None
+
+def has_column(table, column):
+    cur.execute(f"PRAGMA table_info('{table}')")
+    return any(row[1] == column for row in cur.fetchall())
+
+if has_table('trip') and not has_column('trip', 'currency'):
+    print("Backfilling trip.currency with default USD...")
+    cur.execute("ALTER TABLE trip ADD COLUMN currency VARCHAR(8) NOT NULL DEFAULT 'USD'")
+
+if has_table('user') and not has_column('user', 'default_currency'):
+    print("Backfilling user.default_currency with default USD...")
+    cur.execute("ALTER TABLE user ADD COLUMN default_currency VARCHAR(8) NOT NULL DEFAULT 'USD'")
+
+conn.commit()
+conn.close()
+PY
+}
+
 if [ ! -f "migrations/env.py" ]; then
     echo "Initializing migrations directory..."
     # Clean partial/invalid migration scaffolding before re-init.
@@ -21,11 +53,15 @@ if row:
     cursor.execute('DROP TABLE alembic_version;')
     conn.commit()
 conn.close()" || true
+
+        ensure_sqlite_currency_columns "$DB_PATH"
     fi
 
     echo "Generating initial migration..."
     flask --app app:create_app db migrate -m "Initial migration" || true
 fi
+
+ensure_sqlite_currency_columns "instance/nomad.db"
 
 echo "Applying database migrations..."
 if [ -f "migrations/env.py" ]; then

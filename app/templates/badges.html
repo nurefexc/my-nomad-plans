@@ -6,12 +6,12 @@
         <div class="card border-0 shadow-sm p-4" style="border-radius: 28px;">
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                 <h2 class="fw-bold mb-0 d-flex align-items-center gap-2">
-                    <i class="bi bi-award text-primary"></i>
+                    <span class="ui-icon text-primary">🏅</span>
                     {{ _('Your Achievements') }}
                 </h2>
                 <div class="d-flex gap-2">
                     <a href="{{ url_for('main.profile') }}" class="btn btn-light rounded-pill px-4 fw-bold">
-                        <i class="bi bi-arrow-left me-1"></i> {{ _('Back to Dashboard') }}
+                        <span class="ui-icon me-1">←</span> {{ _('Back to Dashboard') }}
                     </a>
                 </div>
             </div>
@@ -34,11 +34,11 @@
                             <div class="col-md-7">
                                 <h5 class="fw-bold mb-2">{{ _('Road to Legend') }}</h5>
                                 <p class="text-muted small mb-0">
-                                    {{ _('Explore more countries, track your budget, and share your adventures to unlock all 20+ specialized badges. Each badge represents a milestone in your nomadic journey.') }}
+                                    {{ _('Explore more countries, track your budget, and share your adventures to unlock all specialized badges. Each badge represents a milestone in your nomadic journey.') }}
                                 </p>
                             </div>
                             <div class="col-md-5 text-center d-none d-md-block">
-                                <i class="bi bi-trophy text-warning display-4"></i>
+                                <span class="ui-icon text-warning display-4">🏆</span>
                             </div>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                                 </div>
                                 {% if badge.awarded %}
                                 <div class="position-absolute bottom-0 end-0 bg-success text-white rounded-circle d-flex align-items-center justify-content-center border border-white" style="width: 24px; height: 24px; font-size: 0.7rem;">
-                                    <i class="bi bi-check-lg"></i>
+                                    <span class="ui-icon">✓</span>
                                 </div>
                                 {% endif %}
                                 {% if badge.is_new %}
@@ -95,7 +95,7 @@
                                 <div class="mt-2 text-end">
                                     <span class="badge {% if badge.awarded %}bg-success-soft text-success{% else %}bg-light text-muted{% endif %} rounded-pill px-3 py-1" style="font-size: 0.7rem;">
                                         {% if badge.awarded %}
-                                            <i class="bi bi-check-circle-fill me-1"></i> {{ _('Completed') }}
+                                            <span class="ui-icon me-1">✓</span> {{ _('Completed') }}
                                         {% else %}
                                             {{ badge.progress|round|int }}% {{ _('Completed') }}
                                         {% endif %}

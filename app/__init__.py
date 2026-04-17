@@ -4,8 +4,8 @@ from flask import Flask, session
 from .translations import TRANSLATIONS
 from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import MetaData, inspect
-from flask_login import LoginManager
+from sqlalchemy import MetaData, inspect, text
+from flask_login import LoginManager, current_user
 from flask_migrate import Migrate
 from flask_babel import Babel, _
 
@@ -22,18 +22,31 @@ babel = Babel()
 
 def get_locale():
     from flask import request
+    supported_languages = ('en', 'hu')
+
     # 1. Check URL parameter
-    lang = request.args.get('lang')
-    if lang in ['en', 'hu']:
+    lang = (request.args.get('lang') or '').strip().lower()
+    if lang in supported_languages:
         session['lang'] = lang
+        if current_user.is_authenticated and getattr(current_user, 'preferred_language', None) != lang:
+            current_user.preferred_language = lang
+            db.session.commit()
         return lang
     
     # 2. Check session
-    if session.get('lang'):
-        return session.get('lang')
+    session_lang = (session.get('lang') or '').strip().lower()
+    if session_lang in supported_languages:
+        return session_lang
+
+    # 3. Check authenticated user preference
+    if current_user.is_authenticated:
+        user_lang = (getattr(current_user, 'preferred_language', None) or '').strip().lower()
+        if user_lang in supported_languages:
+            session['lang'] = user_lang
+            return user_lang
     
-    # 3. Check browser language
-    return request.accept_languages.best_match(['en', 'hu']) or 'en'
+    # 4. Check browser language
+    return request.accept_languages.best_match(list(supported_languages)) or 'en'
 
 def create_app():
     app = Flask(__name__)
@@ -56,6 +69,12 @@ def create_app():
     
     app.config['PUBLIC_BASE_URL'] = public_base
     app.config['INTERNAL_URL'] = os.environ.get('INTERNAL_URL')
+    app.config['IMMICH_ENABLED'] = os.environ.get('IMMICH_ENABLED', 'False').lower() in ('true', '1', 't', 'yes')
+    app.config['IMMICH_BASE_URL'] = os.environ.get('IMMICH_BASE_URL')
+    app.config['IMMICH_API_KEY'] = os.environ.get('IMMICH_API_KEY')
+    app.config['IMMICH_TIMEOUT'] = int(os.environ.get('IMMICH_TIMEOUT', '10'))
+    app.config['IMMICH_RETRY_COUNT'] = int(os.environ.get('IMMICH_RETRY_COUNT', '2'))
+    app.config['DEFAULT_CURRENCY'] = os.environ.get('DEFAULT_CURRENCY', 'USD')
 
     # Ensure instance folder exists and is writable
     try:
@@ -157,7 +176,7 @@ def create_app():
         except Exception:
             pass
 
-    from .models import User, Trip, ShareToken, Badge, UserBadge
+    from .models import User, Trip, ShareToken, Badge, UserBadge, TripTransportSegment
 
     # CLI commands
     @app.cli.command("create-user")
@@ -174,6 +193,12 @@ def create_app():
             return
         user = User(name=name, email=email, is_admin=admin)
         user.set_password(password)
+        user.default_currency = app.config.get('DEFAULT_CURRENCY', 'USD')
+        user.preferred_landing_page = 'profile'
+        user.show_badge_toasts = True
+        user.compact_mode = False
+        user.immich_base_url = app.config.get('IMMICH_BASE_URL')
+        user.immich_api_key = app.config.get('IMMICH_API_KEY')
         db.session.add(user)
         db.session.commit()
         print(f"User {name} ({email}) created successfully!")
@@ -197,7 +222,66 @@ def create_app():
         print("All user badges synced successfully!")
 
     with app.app_context():
-        pass
+        try:
+            inspector = inspect(db.engine)
+
+            if inspector.has_table('user'):
+                user_cols = {c['name'] for c in inspector.get_columns('user')}
+                user_ddl_by_col = {
+                    'profile_image_url': "ALTER TABLE user ADD COLUMN profile_image_url VARCHAR(500)",
+                    'preferred_language': "ALTER TABLE user ADD COLUMN preferred_language VARCHAR(8)",
+                    'preferred_landing_page': "ALTER TABLE user ADD COLUMN preferred_landing_page VARCHAR(20) NOT NULL DEFAULT 'profile'",
+                    'show_badge_toasts': "ALTER TABLE user ADD COLUMN show_badge_toasts BOOLEAN NOT NULL DEFAULT 1",
+                    'compact_mode': "ALTER TABLE user ADD COLUMN compact_mode BOOLEAN NOT NULL DEFAULT 0",
+                }
+                for col_name, ddl in user_ddl_by_col.items():
+                    if col_name in user_cols:
+                        continue
+                    db.session.execute(text(ddl))
+                db.session.commit()
+
+            if not inspector.has_table('trip_transport_segment'):
+                TripTransportSegment.__table__.create(bind=db.engine)
+            else:
+                # Keep local SQLite installs working even if Alembic migrations were not applied.
+                existing_cols = {c['name'] for c in inspector.get_columns('trip_transport_segment')}
+                ddl_by_col = {
+                    'label': "ALTER TABLE trip_transport_segment ADD COLUMN label VARCHAR(120)",
+                    'carrier': "ALTER TABLE trip_transport_segment ADD COLUMN carrier VARCHAR(120)",
+                    'ticket_ref': "ALTER TABLE trip_transport_segment ADD COLUMN ticket_ref VARCHAR(120)",
+                    'document_ref': "ALTER TABLE trip_transport_segment ADD COLUMN document_ref VARCHAR(255)",
+                    'is_sensitive': "ALTER TABLE trip_transport_segment ADD COLUMN is_sensitive BOOLEAN NOT NULL DEFAULT 1",
+                    'order_index': "ALTER TABLE trip_transport_segment ADD COLUMN order_index INTEGER NOT NULL DEFAULT 0",
+                }
+
+                for col_name, ddl in ddl_by_col.items():
+                    if col_name in existing_cols:
+                        continue
+                    db.session.execute(text(ddl))
+                db.session.commit()
+
+            # Backfill one outbound segment from legacy fields when missing.
+            trips = Trip.query.all()
+            changed = False
+            for trip in trips:
+                if trip.transport_segments:
+                    continue
+                mode = (trip.transport_mode or '').strip()
+                if not mode:
+                    continue
+                db.session.add(TripTransportSegment(
+                    trip_id=trip.id,
+                    segment_type='outbound',
+                    mode=mode,
+                    reference_code=(trip.flight_number or '').strip() or None,
+                    is_sensitive=False,
+                ))
+                changed = True
+
+            if changed:
+                db.session.commit()
+        except Exception as e:
+            app.logger.error(f"Transport segment bootstrap failed: {e}")
 
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
@@ -207,8 +291,23 @@ def create_app():
 
     @app.context_processor
     def inject_i18n():
-        lang = session.get('lang', 'en')
-        return dict(current_lang=lang)
+        lang = (session.get('lang') or '').strip().lower()
+        if lang not in ('en', 'hu') and current_user.is_authenticated:
+            lang = (getattr(current_user, 'preferred_language', None) or '').strip().lower()
+        if lang not in ('en', 'hu'):
+            lang = 'en'
+
+        compact_mode = bool(session.get('compact_mode', False))
+        show_badge_toasts = bool(session.get('show_badge_toasts', True))
+        if current_user.is_authenticated:
+            compact_mode = bool(getattr(current_user, 'compact_mode', compact_mode))
+            show_badge_toasts = bool(getattr(current_user, 'show_badge_toasts', show_badge_toasts))
+
+        return dict(
+            current_lang=lang,
+            app_compact_mode=compact_mode,
+            app_show_badge_toasts=show_badge_toasts,
+        )
 
     return app
 

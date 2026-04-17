@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="settings-page">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h3 class="fw-bold mb-0">{{ _('User settings') }}</h3>
+        <a href="{{ url_for('main.profile') }}" class="btn btn-light btn-sm rounded-pill trip-action-btn trip-action-secondary">{{ _('Back to dashboard') }}</a>
+    </div>
+
+    <div class="card border-0 shadow-sm settings-shell">
+        <div class="card-body p-0">
+            <div class="row g-0">
+                <aside class="col-md-4 col-lg-3 settings-sidebar p-3 p-md-4 border-end">
+                    <button type="button" class="btn btn-light w-100 text-start mb-2 settings-nav-btn is-active" data-settings-target="personal">
+                        <span class="ui-icon me-1">👤</span> {{ _('Personal') }}
+                    </button>
+                    <button type="button" class="btn btn-light w-100 text-start mb-2 settings-nav-btn" data-settings-target="security">
+                        <span class="ui-icon me-1">🔐</span> {{ _('Security') }}
+                    </button>
+                    <button type="button" class="btn btn-light w-100 text-start settings-nav-btn" data-settings-target="services">
+                        <span class="ui-icon me-1">🧩</span> {{ _('Services') }}
+                    </button>
+                </aside>
+
+                <section class="col-md-8 col-lg-9 settings-content p-4 p-md-5">
+                    <div class="settings-pane" data-settings-pane="personal">
+                        <h5 class="fw-bold mb-1">{{ _('Personal') }}</h5>
+                        <p class="text-muted small mb-4">{{ _('Manage your profile and default trip preferences.') }}</p>
+
+                        <form action="{{ url_for('main.save_account_settings') }}" method="POST" class="row g-3 mb-4">
+                            <div class="col-12 d-flex align-items-center gap-3 settings-avatar-wrap">
+                                <img src="{{ avatar_url_for(current_user) }}" alt="{{ _('Profile image') }}" class="settings-avatar-preview">
+                                <div class="w-100">
+                                    <div class="form-label fw-bold mb-1">{{ _('Profile image') }}</div>
+                                    <small class="text-muted">{{ _('Profile icon is generated automatically from your name.') }}</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold" for="name">{{ _('Name') }}</label>
+                                <input type="text" id="name" name="name" class="form-control" value="{{ current_user.name or '' }}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold" for="email">{{ _('Email') }}</label>
+                                <input type="email" id="email" name="email" class="form-control" value="{{ current_user.email or '' }}" required>
+                            </div>
+
+                            <div class="col-12 d-flex justify-content-end mt-2">
+                                <button type="submit" class="btn btn-primary rounded-pill px-4 trip-action-btn trip-action-primary">{{ _('Save account') }}</button>
+                            </div>
+                        </form>
+
+                        <hr class="my-4">
+
+                        <form action="{{ url_for('main.save_preferences_settings') }}" method="POST" class="row g-3">
+                            <div class="col-12">
+                                <div class="settings-subsection rounded-3 p-3 p-md-4 border bg-light">
+                                    <h6 class="fw-bold mb-1">{{ _('Regional defaults') }}</h6>
+                                    <p class="text-muted small mb-3">{{ _('Set language and formatting defaults for your planning workflow.') }}</p>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold" for="preferred_language">{{ _('App language') }}</label>
+                                            <select id="preferred_language" name="preferred_language" class="form-select">
+                                                <option value="en" {% if pref_language == 'en' %}selected{% endif %}>English</option>
+                                                <option value="hu" {% if pref_language == 'hu' %}selected{% endif %}>Magyar</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold" for="default_currency">{{ _('Default currency') }}</label>
+                                            <select id="default_currency" name="default_currency" class="form-select">
+                                                {% set pref_currency = (current_user.default_currency or 'USD') %}
+                                                {% for curr in currencies %}
+                                                <option value="{{ curr }}" {% if pref_currency == curr %}selected{% endif %}>{{ curr }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold" for="week_start">{{ _('Week starts on') }}</label>
+                                            <select id="week_start" name="week_start" class="form-select">
+                                                <option value="mon" {% if pref_week_start == 'mon' %}selected{% endif %}>{{ _('Monday') }}</option>
+                                                <option value="sun" {% if pref_week_start == 'sun' %}selected{% endif %}>{{ _('Sunday') }}</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold" for="date_format">{{ _('Date format') }}</label>
+                                            <select id="date_format" name="date_format" class="form-select">
+                                                <option value="iso" {% if pref_date_format == 'iso' %}selected{% endif %}>YYYY-MM-DD</option>
+                                                <option value="eu" {% if pref_date_format == 'eu' %}selected{% endif %}>DD.MM.YYYY</option>
+                                                <option value="us" {% if pref_date_format == 'us' %}selected{% endif %}>MM/DD/YYYY</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold" for="home_country">{{ _('Home country') }}</label>
+                                            <select id="home_country" name="home_country" class="form-select">
+                                                <option value="">{{ _('Select...') }}</option>
+                                                {% for country_name in countries %}
+                                                <option value="{{ country_name }}" {% if pref_home_country == country_name %}selected{% endif %}>{{ localize_country(country_name) }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold" for="default_trip_status">{{ _('Default trip status') }}</label>
+                                <select id="default_trip_status" name="default_trip_status" class="form-select">
+                                    <option value="draft" {% if pref_status == 'draft' %}selected{% endif %}>{{ _('Draft') }}</option>
+                                    <option value="planned" {% if pref_status == 'planned' %}selected{% endif %}>{{ _('Planned') }}</option>
+                                    <option value="visited" {% if pref_status == 'visited' %}selected{% endif %}>{{ _('Visited') }}</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold" for="default_transport_mode">{{ _('Default transport mode') }}</label>
+                                <select id="default_transport_mode" name="default_transport_mode" class="form-select">
+                                    <option value="" {% if not pref_transport %}selected{% endif %}>{{ _('Select...') }}</option>
+                                    <option value="Flight" {% if pref_transport == 'Flight' %}selected{% endif %}>{{ _('Flight') }}</option>
+                                    <option value="Train" {% if pref_transport == 'Train' %}selected{% endif %}>{{ _('Train') }}</option>
+                                    <option value="Bus" {% if pref_transport == 'Bus' %}selected{% endif %}>{{ _('Bus') }}</option>
+                                    <option value="Car" {% if pref_transport == 'Car' %}selected{% endif %}>{{ _('Car') }}</option>
+                                    <option value="Ferry" {% if pref_transport == 'Ferry' %}selected{% endif %}>{{ _('Ferry') }}</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12"><hr class="my-1"></div>
+
+                            <div class="col-12">
+                                <div class="settings-subsection rounded-3 p-3 p-md-4 border bg-light">
+                                    <h6 class="fw-bold mb-1">{{ _('Planning defaults') }}</h6>
+                                    <p class="text-muted small mb-3">{{ _('Tune how trips and shared plans are pre-filled.') }}</p>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold" for="distance_unit">{{ _('Distance unit') }}</label>
+                                            <select id="distance_unit" name="distance_unit" class="form-select">
+                                                <option value="metric" {% if pref_distance_unit == 'metric' %}selected{% endif %}>{{ _('Metric (km)') }}</option>
+                                                <option value="imperial" {% if pref_distance_unit == 'imperial' %}selected{% endif %}>{{ _('Imperial (mi)') }}</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold" for="planning_horizon_days">{{ _('Planning horizon') }}</label>
+                                            <select id="planning_horizon_days" name="planning_horizon_days" class="form-select">
+                                                <option value="30" {% if pref_planning_horizon_days == '30' %}selected{% endif %}>{{ _('30 days') }}</option>
+                                                <option value="60" {% if pref_planning_horizon_days == '60' %}selected{% endif %}>{{ _('60 days') }}</option>
+                                                <option value="90" {% if pref_planning_horizon_days == '90' %}selected{% endif %}>{{ _('90 days') }}</option>
+                                                <option value="180" {% if pref_planning_horizon_days == '180' %}selected{% endif %}>{{ _('180 days') }}</option>
+                                                <option value="365" {% if pref_planning_horizon_days == '365' %}selected{% endif %}>{{ _('365 days') }}</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold" for="share_expiry_days">{{ _('Default share expiration') }}</label>
+                                            <select id="share_expiry_days" name="share_expiry_days" class="form-select">
+                                                <option value="0" {% if pref_share_expiry_days == '0' %}selected{% endif %}>{{ _('Never expires') }}</option>
+                                                <option value="7" {% if pref_share_expiry_days == '7' %}selected{% endif %}>{{ _('7 days') }}</option>
+                                                <option value="30" {% if pref_share_expiry_days == '30' %}selected{% endif %}>{{ _('30 days') }}</option>
+                                                <option value="90" {% if pref_share_expiry_days == '90' %}selected{% endif %}>{{ _('90 days') }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold" for="preferred_landing_page">{{ _('Start page after login') }}</label>
+                                <select id="preferred_landing_page" name="preferred_landing_page" class="form-select">
+                                    <option value="profile" {% if pref_landing_page == 'profile' %}selected{% endif %}>{{ _('Dashboard') }}</option>
+                                    <option value="calendar" {% if pref_landing_page == 'calendar' %}selected{% endif %}>{{ _('Calendar') }}</option>
+                                    <option value="stats" {% if pref_landing_page == 'stats' %}selected{% endif %}>{{ _('Stats') }}</option>
+                                    <option value="shares" {% if pref_landing_page == 'shares' %}selected{% endif %}>{{ _('Shared Links') }}</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="settings-subsection rounded-3 p-3 p-md-4 border bg-light">
+                                    <h6 class="fw-bold mb-1">{{ _('Privacy defaults') }}</h6>
+                                    <p class="text-muted small mb-3">{{ _('Protect sensitive travel details by default.') }}</p>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold d-block mb-2">{{ _('Trip details') }}</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="private_notes" name="private_notes" value="1" {% if pref_private_notes %}checked{% endif %}>
+                                                <label class="form-check-label" for="private_notes">{{ _('Keep notes private by default') }}</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold d-block mb-2">{{ _('Transport details') }}</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="hide_sensitive_transport" name="hide_sensitive_transport" value="1" {% if pref_hide_sensitive_transport %}checked{% endif %}>
+                                                <label class="form-check-label" for="hide_sensitive_transport">{{ _('Hide sensitive transport references by default') }}</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold d-block mb-2">{{ _('Lifecycle') }}</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="auto_archive_visited" name="auto_archive_visited" value="1" {% if pref_auto_archive_visited %}checked{% endif %}>
+                                                <label class="form-check-label" for="auto_archive_visited">{{ _('Auto-archive visited trips') }}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold d-block mb-2">{{ _('Layout density') }}</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="compact_mode" name="compact_mode" value="1" {% if pref_compact_mode %}checked{% endif %}>
+                                    <label class="form-check-label" for="compact_mode">{{ _('Use compact cards and tighter spacing') }}</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold d-block mb-2">{{ _('Notifications') }}</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="disable_badge_toasts" name="disable_badge_toasts" value="1" {% if not pref_show_badge_toasts %}checked{% endif %}>
+                                    <label class="form-check-label" for="disable_badge_toasts">{{ _('Disable achievement toast popups') }}</label>
+                                </div>
+                            </div>
+
+                            <div class="col-12 d-flex justify-content-end mt-2">
+                                <button type="submit" class="btn btn-primary rounded-pill px-4 trip-action-btn trip-action-primary">{{ _('Save preferences') }}</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane d-none" data-settings-pane="security">
+                        <h5 class="fw-bold mb-1">{{ _('Security') }}</h5>
+                        <p class="text-muted small mb-4">{{ _('Change your password to keep your account safe.') }}</p>
+
+                        <form action="{{ url_for('main.change_password') }}" method="POST" class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label fw-bold" for="current_password">{{ _('Current password') }}</label>
+                                <input type="password" id="current_password" name="current_password" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold" for="new_password">{{ _('New password') }}</label>
+                                <input type="password" id="new_password" name="new_password" class="form-control" minlength="8" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold" for="confirm_password">{{ _('Confirm new password') }}</label>
+                                <input type="password" id="confirm_password" name="confirm_password" class="form-control" minlength="8" required>
+                            </div>
+
+                            <div class="col-12 d-flex justify-content-end mt-2">
+                                <button type="submit" class="btn btn-primary rounded-pill px-4 trip-action-btn trip-action-primary">{{ _('Update password') }}</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane d-none" data-settings-pane="services">
+                        <h5 class="fw-bold mb-1">{{ _('Services') }}</h5>
+                        <p class="text-muted small mb-4">{{ _('Configure external integrations used by the application.') }}</p>
+
+                        {% for service in services_status %}
+                        <section class="service-panel mb-3">
+                            <button
+                                type="button"
+                                class="btn btn-light w-100 d-flex justify-content-between align-items-center service-panel-toggle"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#servicePanel{{ service.id }}"
+                                aria-expanded="{{ 'true' if service.configured else 'false' }}"
+                                aria-controls="servicePanel{{ service.id }}">
+                                <span class="d-flex align-items-center gap-2 fw-bold">
+                                    <span class="ui-icon ui-icon--round">{% if service.configured %}✓{% else %}!{% endif %}</span>
+                                    {{ service.name }}
+                                </span>
+                                <span class="d-flex align-items-center gap-2">
+                                    <span class="badge {% if service.configured %}bg-success{% else %}bg-warning text-dark{% endif %}">{{ service.status_label }}</span>
+                                    <span class="ui-icon">▾</span>
+                                </span>
+                            </button>
+
+                            <div class="collapse {% if service.configured %}show{% endif %}" id="servicePanel{{ service.id }}">
+                                <div class="service-panel-body p-3 p-md-4 mt-2 rounded-3 bg-light border">
+                                    <p class="text-muted small mb-3">{{ service.description }}</p>
+
+                                    {% if service.id == 'immich' %}
+                                    <form action="{{ url_for('main.save_immich_settings') }}" method="POST" class="row g-3">
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold" for="immich_base_url">Immich URL</label>
+                                            <input type="url" id="immich_base_url" name="immich_base_url" class="form-control" value="{{ current_user.immich_base_url or '' }}" placeholder="http://immich:2283">
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold" for="immich_api_key">Immich API Key</label>
+                                            <input type="password" id="immich_api_key" name="immich_api_key" class="form-control" placeholder="{{ _('Leave empty to keep existing key') }}">
+                                            <div class="form-check mt-2">
+                                                <input class="form-check-input" type="checkbox" id="clear_immich_api_key" name="clear_immich_api_key" value="1">
+                                                <label class="form-check-label" for="clear_immich_api_key">{{ _('Clear stored API key') }}</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2">
+                                            <div id="immichServiceTestResult" class="small text-muted"></div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-light trip-action-btn trip-action-secondary"
+                                                    data-service-test-url="{{ service.test_url }}"
+                                                    data-service-test-target="#immichServiceTestResult">
+                                                    <span class="ui-icon">🧪</span> {{ _('Test connection') }}
+                                                </button>
+                                                <button type="submit" class="btn btn-primary rounded-pill px-4 trip-action-btn trip-action-primary">{{ _('Save settings') }}</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </section>
+                        {% endfor %}
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const navButtons = document.querySelectorAll('.settings-nav-btn[data-settings-target]');
+    const panes = document.querySelectorAll('.settings-pane[data-settings-pane]');
+    if (!navButtons.length || !panes.length) return;
+
+    function openPane(name) {
+        navButtons.forEach((btn) => {
+            btn.classList.toggle('is-active', btn.getAttribute('data-settings-target') === name);
+        });
+        panes.forEach((pane) => {
+            pane.classList.toggle('d-none', pane.getAttribute('data-settings-pane') !== name);
+        });
+    }
+
+    navButtons.forEach((btn) => {
+        btn.addEventListener('click', function () {
+            openPane(this.getAttribute('data-settings-target'));
+        });
+    });
+
+    openPane('personal');
+});
+</script>
+{% endblock %}
+

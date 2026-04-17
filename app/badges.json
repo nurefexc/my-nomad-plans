@@ -64,9 +64,9 @@
         "title": "Frequent Flyer",
         "icon": "✈️",
         "description": "You spend more time in the air than on the ground!",
-        "criteria": "len([t for t in trips if t.transport_mode == 'plane' and t.status == 'visited']) >= 5",
-        "progress": "min(100, (len([t for t in trips if t.transport_mode == 'plane' and t.status == 'visited']) / 5) * 100)",
-        "current": "len([t for t in trips if t.transport_mode == 'plane' and t.status == 'visited'])",
+        "criteria": "visited_by_transport.get('plane', 0) >= 5",
+        "progress": "min(100, (visited_by_transport.get('plane', 0) / 5) * 100)",
+        "current": "visited_by_transport.get('plane', 0)",
         "target": 5
     },
     {
@@ -74,9 +74,9 @@
         "title": "Sky Captain",
         "icon": "👨‍✈️",
         "description": "15 flights completed. The sky is your second home.",
-        "criteria": "len([t for t in trips if t.transport_mode == 'plane' and t.status == 'visited']) >= 15",
-        "progress": "min(100, (len([t for t in trips if t.transport_mode == 'plane' and t.status == 'visited']) / 15) * 100)",
-        "current": "len([t for t in trips if t.transport_mode == 'plane' and t.status == 'visited'])",
+        "criteria": "visited_by_transport.get('plane', 0) >= 15",
+        "progress": "min(100, (visited_by_transport.get('plane', 0) / 15) * 100)",
+        "current": "visited_by_transport.get('plane', 0)",
         "target": 15
     },
     {
@@ -84,9 +84,9 @@
         "title": "Road Warrior",
         "icon": "🚗",
         "description": "Nothing beats a good old road trip.",
-        "criteria": "len([t for t in trips if t.transport_mode == 'car' and t.status == 'visited']) >= 5",
-        "progress": "min(100, (len([t for t in trips if t.transport_mode == 'car' and t.status == 'visited']) / 5) * 100)",
-        "current": "len([t for t in trips if t.transport_mode == 'car' and t.status == 'visited'])",
+        "criteria": "visited_by_transport.get('car', 0) >= 5",
+        "progress": "min(100, (visited_by_transport.get('car', 0) / 5) * 100)",
+        "current": "visited_by_transport.get('car', 0)",
         "target": 5
     },
     {
@@ -94,9 +94,9 @@
         "title": "Train Enthusiast",
         "icon": "🚂",
         "description": "Loving the rhythm of the rails. 5 train journeys completed.",
-        "criteria": "len([t for t in trips if t.transport_mode == 'train' and t.status == 'visited']) >= 5",
-        "progress": "min(100, (len([t for t in trips if t.transport_mode == 'train' and t.status == 'visited']) / 5) * 100)",
-        "current": "len([t for t in trips if t.transport_mode == 'train' and t.status == 'visited'])",
+        "criteria": "visited_by_transport.get('train', 0) >= 5",
+        "progress": "min(100, (visited_by_transport.get('train', 0) / 5) * 100)",
+        "current": "visited_by_transport.get('train', 0)",
         "target": 5
     },
     {
@@ -164,10 +164,190 @@
         "title": "Social Butterfly",
         "icon": "🦋",
         "description": "Created and shared 5 public travel links.",
-        "criteria": "len(user.share_tokens) >= 5",
-        "progress": "min(100, (len(user.share_tokens) / 5) * 100)",
-        "current": "len(user.share_tokens)",
+        "criteria": "share_count >= 5",
+        "progress": "min(100, (share_count / 5) * 100)",
+        "current": "share_count",
         "target": 5
+    },
+    {
+        "code": "SHARE_AMBASSADOR",
+        "title": "Share Ambassador",
+        "icon": "🔗",
+        "description": "Created 10 shared travel links.",
+        "criteria": "share_count >= 10",
+        "progress": "min(100, (share_count / 10) * 100)",
+        "current": "share_count",
+        "target": 10
+    },
+    {
+        "code": "VISA_NAVIGATOR",
+        "title": "Visa Navigator",
+        "icon": "🛂",
+        "description": "Completed 5 trips where a visa was required.",
+        "criteria": "len([t for t in visited_trips if t.visa_required]) >= 5",
+        "progress": "min(100, (len([t for t in visited_trips if t.visa_required]) / 5) * 100)",
+        "current": "len([t for t in visited_trips if t.visa_required])",
+        "target": 5
+    },
+    {
+        "code": "CARTOGRAPHER",
+        "title": "Cartographer",
+        "icon": "🧭",
+        "description": "Logged map coordinates for 10 visited trips.",
+        "criteria": "len([t for t in visited_trips if t.latitude is not None and t.longitude is not None]) >= 10",
+        "progress": "min(100, (len([t for t in visited_trips if t.latitude is not None and t.longitude is not None]) / 10) * 100)",
+        "current": "len([t for t in visited_trips if t.latitude is not None and t.longitude is not None])",
+        "target": 10
+    },
+    {
+        "code": "ITINERARY_ARCHITECT",
+        "title": "Itinerary Architect",
+        "icon": "🧾",
+        "description": "Added detailed attractions to 12 trips.",
+        "criteria": "len([t for t in trips if t.attractions and t.attractions.strip()]) >= 12",
+        "progress": "min(100, (len([t for t in trips if t.attractions and t.attractions.strip()]) / 12) * 100)",
+        "current": "len([t for t in trips if t.attractions and t.attractions.strip()])",
+        "target": 12
+    },
+    {
+        "code": "MULTI_MODAL_MASTER",
+        "title": "Multi-modal Master",
+        "icon": "🚦",
+        "description": "Used at least 4 different transport modes on visited trips.",
+        "criteria": "len(set(visited_transport_modes)) >= 4",
+        "progress": "min(100, (len(set(visited_transport_modes)) / 4) * 100)",
+        "current": "len(set(visited_transport_modes))",
+        "target": 4
+    },
+    {
+        "code": "SEASON_HOPPER",
+        "title": "Season Hopper",
+        "icon": "🌦️",
+        "description": "Completed visited trips in all four seasons.",
+        "criteria": "len(set([((t.start_date.month - 1) // 3) for t in visited_trips if t.start_date])) >= 4",
+        "progress": "min(100, (len(set([((t.start_date.month - 1) // 3) for t in visited_trips if t.start_date])) / 4) * 100)",
+        "current": "len(set([((t.start_date.month - 1) // 3) for t in visited_trips if t.start_date]))",
+        "target": 4
+    },
+    {
+        "code": "YEAR_ROUNDER",
+        "title": "Year Rounder",
+        "icon": "📆",
+        "description": "Visited trips across at least 3 different years.",
+        "criteria": "len(set([t.start_date.year for t in visited_trips if t.start_date])) >= 3",
+        "progress": "min(100, (len(set([t.start_date.year for t in visited_trips if t.start_date])) / 3) * 100)",
+        "current": "len(set([t.start_date.year for t in visited_trips if t.start_date]))",
+        "target": 3
+    },
+    {
+        "code": "JOURNEY_MARATHON",
+        "title": "Journey Marathon",
+        "icon": "🥾",
+        "description": "Completed 10 long trips (7+ days each).",
+        "criteria": "len([t for t in visited_trips if t.start_date and t.end_date and (t.end_date - t.start_date).days >= 7]) >= 10",
+        "progress": "min(100, (len([t for t in visited_trips if t.start_date and t.end_date and (t.end_date - t.start_date).days >= 7]) / 10) * 100)",
+        "current": "len([t for t in visited_trips if t.start_date and t.end_date and (t.end_date - t.start_date).days >= 7])",
+        "target": 10
+    },
+    {
+        "code": "CONTINENT_COLLECTOR",
+        "title": "Continent Collector",
+        "icon": "🌐",
+        "description": "Visited at least 3 different world regions.",
+        "criteria": "len([region for region in [visited_africa, visited_asia, visited_americas, visited_oceania] if len(region) > 0]) >= 3",
+        "progress": "min(100, (len([region for region in [visited_africa, visited_asia, visited_americas, visited_oceania] if len(region) > 0]) / 3) * 100)",
+        "current": "len([region for region in [visited_africa, visited_asia, visited_americas, visited_oceania] if len(region) > 0])",
+        "target": 3
+    },
+    {
+        "code": "CONTINENT_CONQUEROR",
+        "title": "Continent Conqueror",
+        "icon": "🛰️",
+        "description": "Visited countries in all tracked world regions.",
+        "criteria": "len([region for region in [visited_africa, visited_asia, visited_americas, visited_oceania] if len(region) > 0]) >= 4",
+        "progress": "min(100, (len([region for region in [visited_africa, visited_asia, visited_americas, visited_oceania] if len(region) > 0]) / 4) * 100)",
+        "current": "len([region for region in [visited_africa, visited_asia, visited_americas, visited_oceania] if len(region) > 0])",
+        "target": 4
+    },
+    {
+        "code": "BUS_EXPLORER",
+        "title": "Bus Explorer",
+        "icon": "🚌",
+        "description": "Completed 5 visited trips by bus.",
+        "criteria": "visited_by_transport.get('bus', 0) >= 5",
+        "progress": "min(100, (visited_by_transport.get('bus', 0) / 5) * 100)",
+        "current": "visited_by_transport.get('bus', 0)",
+        "target": 5
+    },
+    {
+        "code": "FERRY_RIDER",
+        "title": "Ferry Rider",
+        "icon": "⛴️",
+        "description": "Completed 3 visited trips by ferry.",
+        "criteria": "visited_by_transport.get('ferry', 0) >= 3",
+        "progress": "min(100, (visited_by_transport.get('ferry', 0) / 3) * 100)",
+        "current": "visited_by_transport.get('ferry', 0)",
+        "target": 3
+    },
+    {
+        "code": "DRAFT_STRATEGIST",
+        "title": "Draft Strategist",
+        "icon": "📝",
+        "description": "Built up 10 draft trip ideas.",
+        "criteria": "len([t for t in trips if t.status == 'draft']) >= 10",
+        "progress": "min(100, (len([t for t in trips if t.status == 'draft']) / 10) * 100)",
+        "current": "len([t for t in trips if t.status == 'draft'])",
+        "target": 10
+    },
+    {
+        "code": "DESTINATION_CURATOR",
+        "title": "Destination Curator",
+        "icon": "📍",
+        "description": "Saved 20 trips with clear destination and country data.",
+        "criteria": "len([t for t in trips if t.destination and t.country]) >= 20",
+        "progress": "min(100, (len([t for t in trips if t.destination and t.country]) / 20) * 100)",
+        "current": "len([t for t in trips if t.destination and t.country])",
+        "target": 20
+    },
+    {
+        "code": "CHECKLIST_COMMANDER",
+        "title": "Checklist Commander",
+        "icon": "📋",
+        "description": "Fully completed checklists for 12 different trips.",
+        "criteria": "len([t for t in trips if t.checklist and len(t.checklist) > 0 and all(c.is_done for c in t.checklist)]) >= 12",
+        "progress": "min(100, (len([t for t in trips if t.checklist and len(t.checklist) > 0 and all(c.is_done for c in t.checklist)]) / 12) * 100)",
+        "current": "len([t for t in trips if t.checklist and len(t.checklist) > 0 and all(c.is_done for c in t.checklist)])",
+        "target": 12
+    },
+    {
+        "code": "MAP_ARCHIVIST",
+        "title": "Map Archivist",
+        "icon": "🗺️",
+        "description": "Saved map coordinates on 20 trips.",
+        "criteria": "len([t for t in trips if t.latitude is not None and t.longitude is not None]) >= 20",
+        "progress": "min(100, (len([t for t in trips if t.latitude is not None and t.longitude is not None]) / 20) * 100)",
+        "current": "len([t for t in trips if t.latitude is not None and t.longitude is not None])",
+        "target": 20
+    },
+    {
+        "code": "CONSISTENT_TRAVELER",
+        "title": "Consistent Traveler",
+        "icon": "📈",
+        "description": "Completed at least one visited trip in 5 different years.",
+        "criteria": "len(set([t.start_date.year for t in visited_trips if t.start_date])) >= 5",
+        "progress": "min(100, (len(set([t.start_date.year for t in visited_trips if t.start_date])) / 5) * 100)",
+        "current": "len(set([t.start_date.year for t in visited_trips if t.start_date]))",
+        "target": 5
+    },
+    {
+        "code": "MONTHLY_MOMENTUM",
+        "title": "Monthly Momentum",
+        "icon": "🗓️",
+        "description": "Visited trips in at least 8 different months of the year.",
+        "criteria": "len(set([t.start_date.month for t in visited_trips if t.start_date])) >= 8",
+        "progress": "min(100, (len(set([t.start_date.month for t in visited_trips if t.start_date])) / 8) * 100)",
+        "current": "len(set([t.start_date.month for t in visited_trips if t.start_date]))",
+        "target": 8
     },
     {
         "code": "AFRICA_EXPLORER",

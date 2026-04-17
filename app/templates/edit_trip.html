@@ -11,121 +11,177 @@
                         <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">{{ _('Delete Trip') }}</button>
                     </form>
                 </div>
-                <form method="POST">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="search-box" class="form-label fw-bold">{{ _('Update Location') }}</label>
-                            <div class="input-group">
-                                <input type="text" id="search-box" class="form-control" placeholder="{{ _('Search city or country...') }}">
-                                <button class="btn btn-outline-secondary" type="button" id="search-btn">{{ _('Search') }}</button>
+                <form method="POST" class="trip-form-layout">
+                    <section class="trip-form-section mb-3">
+                        <button type="button" class="btn btn-light w-100 d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#editTripSectionLocation" aria-expanded="true">
+                            <span class="fw-bold"><span class="ui-icon me-1">📍</span>{{ _('Location') }}</span>
+                            <span class="ui-icon">▾</span>
+                        </button>
+                        <div class="collapse show" id="editTripSectionLocation">
+                            <div class="trip-form-section-body p-3 mt-2 border rounded-3 bg-light">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="search-box" class="form-label fw-bold">{{ _('Update Location') }}</label>
+                                        <div class="input-group">
+                                            <input type="text" id="search-box" class="form-control" placeholder="{{ _('Search city or country...') }}">
+                                            <button class="btn btn-outline-secondary" type="button" id="search-btn">{{ _('Search') }}</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold">{{ _('Map Preview') }}</label>
+                                        <div id="add-trip-map" class="map-container map-preview-size"></div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="country" class="form-label fw-bold">{{ _('Country') }}</label>
+                                        <select name="country" class="form-select" id="country" required>
+                                            {% for country in countries %}
+                                            {% set ccode = get_country_code(country) %}
+                                            <option value="{{ country }}" data-code="{{ ccode }}" {% if trip.country == country %}selected{% endif %}>
+                                                {{ country }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="destination" class="form-label fw-bold">{{ _('Select City') }}</label>
+                                        <input type="text" name="destination" class="form-control" id="destination" list="city-list" value="{{ trip.destination }}" placeholder="{{ _('Search city...') }}" required>
+                                        <datalist id="city-list"></datalist>
+                                        <small class="text-muted">{{ _('Start typing to see suggestions') }}</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">{{ _('Map Preview') }}</label>
-                            <div id="add-trip-map" class="map-container map-preview-size"></div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="country" class="form-label fw-bold">{{ _('Country') }}</label>
-                            <select name="country" class="form-select" id="country" required>
-                                {% for country in countries %}
-                                {% set ccode = get_country_code(country) %}
-                                <option value="{{ country }}" data-code="{{ ccode }}" {% if trip.country == country %}selected{% endif %}>
-                                    {{ country }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="destination" class="form-label fw-bold">{{ _('Select City') }}</label>
-                            <input type="text" name="destination" class="form-control" id="destination" list="city-list" value="{{ trip.destination }}" placeholder="{{ _('Search city...') }}" required>
-                            <datalist id="city-list"></datalist>
-                            <small class="text-muted">{{ _('Start typing to see suggestions') }}</small>
-                        </div>
-                    </div>
+                    </section>
 
                     <input type="hidden" name="latitude" id="latitude" value="{{ trip.latitude }}">
                     <input type="hidden" name="longitude" id="longitude" value="{{ trip.longitude }}">
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="start_date" class="form-label fw-bold">{{ _('Start Date') }}</label>
-                            <input type="date" name="start_date" class="form-control" id="start_date" value="{{ trip.start_date }}">
-                            <small class="text-muted opacity-75">{{ _('Required for Planned/Visited') }}</small>
+                    <section class="trip-form-section mb-3">
+                        <button type="button" class="btn btn-light w-100 d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#editTripSectionSchedule" aria-expanded="true">
+                            <span class="fw-bold"><span class="ui-icon me-1">📅</span>{{ _('Schedule and Budget') }}</span>
+                            <span class="ui-icon">▾</span>
+                        </button>
+                        <div class="collapse show" id="editTripSectionSchedule">
+                            <div class="trip-form-section-body p-3 mt-2 border rounded-3 bg-light">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="start_date" class="form-label fw-bold">{{ _('Start Date') }}</label>
+                                        <input type="date" name="start_date" class="form-control" id="start_date" value="{{ trip.start_date }}">
+                                        <small class="text-muted opacity-75">{{ _('Required for Planned/Visited') }}</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="end_date" class="form-label fw-bold">{{ _('End Date') }}</label>
+                                        <input type="date" name="end_date" class="form-control" id="end_date" value="{{ trip.end_date }}">
+                                        <small class="text-muted opacity-75">{{ _('Required for Visited') }}</small>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="status" class="form-label fw-bold">{{ _('Status') }}</label>
+                                        <select name="status" class="form-select" id="status">
+                                            <option value="draft" {% if trip.status == 'draft' %}selected{% endif %}>{{ _('Draft') }}</option>
+                                            <option value="planned" {% if trip.status == 'planned' %}selected{% endif %}>{{ _('Planned') }}</option>
+                                            <option value="visited" {% if trip.status == 'visited' %}selected{% endif %}>{{ _('Visited') }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="budget" class="form-label fw-bold">{{ _('Budget (approx.)') }}</label>
+                                        <input type="number" step="0.01" name="budget" class="form-control" id="budget" value="{{ trip.budget }}" placeholder="e.g. 1500">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="currency" class="form-label fw-bold">{{ _('Currency') }}</label>
+                                        {% set trip_currency = trip.currency if trip.currency else (current_user.default_currency or 'USD') %}
+                                        <select name="currency" class="form-select" id="currency">
+                                            {% for curr in currencies %}
+                                            <option value="{{ curr }}" {% if trip_currency == curr %}selected{% endif %}>{{ curr }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mb-0">
+                                    <label for="accommodation" class="form-label fw-bold">{{ _('Accommodation (Sensitive)') }}</label>
+                                    <input type="text" name="accommodation" class="form-control" id="accommodation" value="{{ trip.accommodation }}" placeholder="{{ _('e.g. Hotel, Airbnb address... (Private)') }}">
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="end_date" class="form-label fw-bold">{{ _('End Date') }}</label>
-                            <input type="date" name="end_date" class="form-control" id="end_date" value="{{ trip.end_date }}">
-                            <small class="text-muted opacity-75">{{ _('Required for Visited') }}</small>
+                    </section>
+
+                    <section class="trip-form-section mb-3">
+                        <button type="button" class="btn btn-light w-100 d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#editTripSectionTransport" aria-expanded="false">
+                            <span class="fw-bold"><span class="ui-icon me-1">🛫</span>{{ _('Travel and Transport') }}</span>
+                            <span class="ui-icon">▾</span>
+                        </button>
+                        <div class="collapse" id="editTripSectionTransport">
+                            <div class="trip-form-section-body p-3 mt-2 border rounded-3 bg-light">
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <h6 class="fw-bold mb-0">{{ _('Transport Segments') }}</h6>
+                                            <small class="text-muted">{{ _('Build a full travel list. Shared pages only show public outbound transport.') }}</small>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" id="add-transport-segment-btn">{{ _('Add Segment') }}</button>
+                                    </div>
+                                    <div id="transport-segments-list" class="d-flex flex-column gap-3"></div>
+                                </div>
+
+                                <div class="mb-0">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" name="visa_required" id="visa_required" {% if trip.visa_required %}checked{% endif %}>
+                                        <label class="form-check-label fw-bold" for="visa_required">{{ _('Visa Required?') }}</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </section>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="status" class="form-label fw-bold">{{ _('Status') }}</label>
-                            <select name="status" class="form-select" id="status">
-                                <option value="draft" {% if trip.status == 'draft' %}selected{% endif %}>{{ _('Draft') }}</option>
-                                <option value="planned" {% if trip.status == 'planned' %}selected{% endif %}>{{ _('Planned') }}</option>
-                                <option value="visited" {% if trip.status == 'visited' %}selected{% endif %}>{{ _('Visited') }}</option>
-                            </select>
+                    <section class="trip-form-section mb-3">
+                        <button type="button" class="btn btn-light w-100 d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#editTripSectionPlan" aria-expanded="false">
+                            <span class="fw-bold"><span class="ui-icon me-1">📝</span>{{ _('Plans and Notes') }}</span>
+                            <span class="ui-icon">▾</span>
+                        </button>
+                        <div class="collapse" id="editTripSectionPlan">
+                            <div class="trip-form-section-body p-3 mt-2 border rounded-3 bg-light">
+                                <div class="mb-3">
+                                    <label for="attractions" class="form-label fw-bold">{{ _('Attractions / Plans') }}</label>
+                                    <textarea name="attractions" class="form-control" id="attractions" rows="3" placeholder="{{ _('What do you want to see?') }}">{{ trip.attractions }}</textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="packing_list" class="form-label fw-bold">{{ _('Packing List') }}</label>
+                                    <textarea name="packing_list" class="form-control" id="packing_list" rows="2" placeholder="{{ _('Clothes, tech, documents...') }}">{{ trip.packing_list }}</textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="expense_estimate" class="form-label fw-bold">{{ _('Expense Estimate') }}</label>
+                                    <textarea name="expense_estimate" class="form-control" id="expense_estimate" rows="2" placeholder="{{ _('Food, transport, activities...') }}">{{ trip.expense_estimate }}</textarea>
+                                </div>
+
+                                <div class="mb-0">
+                                    <label for="notes" class="form-label fw-bold">{{ _('Notes') }}</label>
+                                    <textarea name="notes" class="form-control" id="notes" rows="3">{{ trip.notes }}</textarea>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="budget" class="form-label fw-bold">{{ _('Budget (approx.)') }}</label>
-                            <input type="number" step="0.01" name="budget" class="form-control" id="budget" value="{{ trip.budget }}" placeholder="e.g. 1500">
+                    </section>
+
+                    <section class="trip-form-section mb-4">
+                        <button type="button" class="btn btn-light w-100 d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#editTripSectionMedia" aria-expanded="false">
+                            <span class="fw-bold"><span class="ui-icon me-1">🖼</span>{{ _('Images and Gallery') }}</span>
+                            <span class="ui-icon">▾</span>
+                        </button>
+                        <div class="collapse" id="editTripSectionMedia">
+                            <div class="trip-form-section-body p-3 mt-2 border rounded-3 bg-light">
+                                <label for="immich_album_id" class="form-label fw-bold">Immich Album ID</label>
+                                <input type="text" name="immich_album_id" class="form-control" id="immich_album_id" value="{{ trip.immich_album_id or '' }}" placeholder="Optional album UUID">
+                                <small class="text-muted">Leave empty to disable gallery integration for this trip.</small>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="accommodation" class="form-label fw-bold">{{ _('Accommodation (Sensitive)') }}</label>
-                        <input type="text" name="accommodation" class="form-control" id="accommodation" value="{{ trip.accommodation }}" placeholder="{{ _('e.g. Hotel, Airbnb address... (Private)') }}">
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="transport_mode" class="form-label fw-bold">{{ _('Transport Mode') }}</label>
-                            <select name="transport_mode" class="form-select" id="transport_mode">
-                                <option value="" {% if not trip.transport_mode %}selected{% endif %}>{{ _('Select...') }}</option>
-                                <option value="Flight" {% if trip.transport_mode == 'Flight' %}selected{% endif %}>{{ _('Flight') }}</option>
-                                <option value="Train" {% if trip.transport_mode == 'Train' %}selected{% endif %}>{{ _('Train') }}</option>
-                                <option value="Bus" {% if trip.transport_mode == 'Bus' %}selected{% endif %}>{{ _('Bus') }}</option>
-                                <option value="Car" {% if trip.transport_mode == 'Car' %}selected{% endif %}>{{ _('Car') }}</option>
-                                <option value="Ferry" {% if trip.transport_mode == 'Ferry' %}selected{% endif %}>{{ _('Ferry') }}</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="flight_number" class="form-label fw-bold">{{ _('Flight/Ticket #') }}</label>
-                            <input type="text" name="flight_number" class="form-control" id="flight_number" value="{{ trip.flight_number }}" placeholder="{{ _('e.g. LH1234') }}">
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" name="visa_required" id="visa_required" {% if trip.visa_required %}checked{% endif %}>
-                            <label class="form-check-label fw-bold" for="visa_required">{{ _('Visa Required?') }}</label>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="attractions" class="form-label fw-bold">{{ _('Attractions / Plans') }}</label>
-                        <textarea name="attractions" class="form-control" id="attractions" rows="3" placeholder="{{ _('What do you want to see?') }}">{{ trip.attractions }}</textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="packing_list" class="form-label fw-bold">{{ _('Packing List') }}</label>
-                        <textarea name="packing_list" class="form-control" id="packing_list" rows="2" placeholder="{{ _('Clothes, tech, documents...') }}">{{ trip.packing_list }}</textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="expense_estimate" class="form-label fw-bold">{{ _('Expense Estimate') }}</label>
-                        <textarea name="expense_estimate" class="form-control" id="expense_estimate" rows="2" placeholder="{{ _('Food, transport, activities...') }}">{{ trip.expense_estimate }}</textarea>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="notes" class="form-label fw-bold">{{ _('Notes') }}</label>
-                        <textarea name="notes" class="form-control" id="notes" rows="3">{{ trip.notes }}</textarea>
-                    </div>
+                    </section>
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary btn-lg shadow-sm py-3">{{ _('Save Adventure') }}</button>
@@ -141,6 +197,105 @@
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const transportTypeOptions = {{ transport_segment_types|tojson }};
+        const transportModeOptions = {{ transport_modes|tojson }};
+        const initialSegments = {{ transport_segments_data|tojson }};
+        const transportList = document.getElementById('transport-segments-list');
+        const addTransportBtn = document.getElementById('add-transport-segment-btn');
+
+        function esc(value) {
+            return (value || '').replace(/[&<>"']/g, function(ch) {
+                return ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'})[ch];
+            });
+        }
+
+        function makeOptions(options, selected, includeEmpty) {
+            let html = includeEmpty ? `<option value="">{{ _('Select...') }}</option>` : '';
+            options.forEach(function(optionValue) {
+                const selectedAttr = optionValue === selected ? ' selected' : '';
+                html += `<option value="${esc(optionValue)}"${selectedAttr}>${esc(optionValue)}</option>`;
+            });
+            return html;
+        }
+
+        function addTransportRow(data) {
+            const seg = Object.assign({
+                segment_type: 'other',
+                label: '',
+                mode: '',
+                reference_code: '',
+                carrier: '',
+                ticket_ref: '',
+                document_ref: '',
+                visibility: 'private'
+            }, data || {});
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'border rounded-3 p-3 bg-light-subtle';
+            wrapper.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="small fw-bold text-uppercase text-muted">{{ _('Transport Item') }}</div>
+                    <button type="button" class="btn btn-sm btn-outline-danger transport-remove-btn">{{ _('Remove') }}</button>
+                </div>
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">{{ _('Type') }}</label>
+                        <select class="form-select form-select-sm" name="transport_segment_type[]">
+                            ${makeOptions(transportTypeOptions, seg.segment_type, false)}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">{{ _('Mode') }}</label>
+                        <select class="form-select form-select-sm" name="transport_mode[]" required>
+                            ${makeOptions(transportModeOptions, seg.mode, true)}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">{{ _('Label') }}</label>
+                        <input type="text" class="form-control form-control-sm" name="transport_label[]" value="${esc(seg.label)}" placeholder="{{ _('e.g. Budapest to Warsaw') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">{{ _('Visibility') }}</label>
+                        <select class="form-select form-select-sm" name="transport_visibility[]">
+                            <option value="private" ${seg.visibility === 'private' ? 'selected' : ''}>{{ _('Private (sensitive)') }}</option>
+                            <option value="public" ${seg.visibility === 'public' ? 'selected' : ''}>{{ _('Public (safe to share)') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">{{ _('Carrier') }}</label>
+                        <input type="text" class="form-control form-control-sm" name="transport_carrier[]" value="${esc(seg.carrier)}" placeholder="{{ _('e.g. Wizz Air / MAV') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">{{ _('Public Ref') }}</label>
+                        <input type="text" class="form-control form-control-sm" name="transport_reference_code[]" value="${esc(seg.reference_code)}" placeholder="{{ _('e.g. W62231 or IC712') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">{{ _('Ticket Ref (private)') }}</label>
+                        <input type="text" class="form-control form-control-sm" name="transport_ticket_ref[]" value="${esc(seg.ticket_ref)}" placeholder="{{ _('PNR / booking / ticket id') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">{{ _('Document Ref (Paperless)') }}</label>
+                        <input type="text" class="form-control form-control-sm" name="transport_document_ref[]" value="${esc(seg.document_ref)}" placeholder="{{ _('paperless:doc-id or URL') }}">
+                    </div>
+                </div>
+            `;
+
+            wrapper.querySelector('.transport-remove-btn').addEventListener('click', function() {
+                wrapper.remove();
+            });
+            transportList.appendChild(wrapper);
+        }
+
+        addTransportBtn.addEventListener('click', function() {
+            addTransportRow({segment_type: 'other', visibility: 'private'});
+        });
+
+        if (initialSegments.length) {
+            initialSegments.forEach(addTransportRow);
+        } else {
+            addTransportRow({segment_type: 'outbound', visibility: 'public'});
+        }
+
         var initialLat = {{ trip.latitude if trip.latitude else 20 }};
         var initialLng = {{ trip.longitude if trip.longitude else 0 }};
         var initialZoom = {{ 10 if trip.latitude else 2 }};
