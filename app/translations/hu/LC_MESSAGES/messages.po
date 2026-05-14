@@ -1,1206 +1,2020 @@
 # Hungarian translations for nomad-planner.
 # Copyright (C) 2026 Nomad Planner
-# This file is distributed under the same license as the nomad-planner project.
+# This file is distributed under the same license as the nomad-planner
+# project.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nomad-planner 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-14 09:00+0000\n"
+"POT-Creation-Date: 2026-05-14 15:09+0000\n"
 "PO-Revision-Date: 2026-04-14 09:00+0000\n"
 "Last-Translator: Junie <junie@jetbrains.com>\n"
 "Language: hu\n"
 "Language-Team: hu <hu@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Handcrafted\n"
+"Generated-By: Babel 2.18.0\n"
 
-#: app/templates/base.html
-msgid "Stats"
-msgstr "Statisztika"
-
-#: app/templates/base.html
-msgid "Manage Trip"
-msgstr "Utazás Kezelése"
-
-msgid "Days Left"
-msgstr "Nap Van Hátra"
-
-#: app/templates/base.html
-msgid "Calendar"
-msgstr "Naptár"
-
-#: app/templates/base.html
-msgid "Shared Links"
-msgstr "Megosztott Linkek"
-
-#: app/templates/base.html
-msgid "Logout"
-msgstr "Kijelentkezés"
-
-#: app/templates/base.html
-msgid "Login"
-msgstr "Bejelentkezés"
-
-#: app/templates/profile.html app/templates/shared_trip.html app/templates/stats.html
-msgid "Country: %(country)s"
-msgstr "Ország: %(country)s"
-
-msgid "View Details"
-msgstr "Részletek"
-
-msgid "No details available."
-msgstr "Nincs elérhető részlet."
-
-msgid "Transport Segments"
-msgstr "Közlekedési szakaszok"
-
-msgid "Add the main travel legs. Shared pages only show outbound transport."
-msgstr "Add meg a fő utazási szakaszokat. A megosztott oldalon csak az odaút jelenik meg."
-
-msgid "Outbound"
-msgstr "Odaút"
-
-msgid "Intercity"
-msgstr "Helyközi"
-
-msgid "Local"
-msgstr "Helyi"
-
-msgid "Outbound Ref (optional)"
-msgstr "Odaút azonosító (opcionális)"
-
-msgid "Intercity Ref (optional)"
-msgstr "Helyközi azonosító (opcionális)"
-
-msgid "Local Ref (optional)"
-msgstr "Helyi azonosító (opcionális)"
-
-#: app/templates/index.html
-msgid "Your Journey, <span class=\"text-primary\">Simplified.</span>"
-msgstr "Utazásaid, <span class=\"text-primary\">egyszerűen.</span>"
-
-#: app/templates/index.html
-msgid "The ultimate companion for digital nomads to plan, track, and share their global adventures."
-msgstr "A tökéletes társ digitális nomádoknak kalandjaik tervezéséhez, követéséhez és megosztásához."
-
-#: app/templates/index.html
-msgid "Start Your Journey"
-msgstr "Kezdd el az utazást"
-
-#: app/templates/index.html
-msgid "Learn More"
-msgstr "Tudj meg többet"
-
-#: app/templates/index.html
-msgid "Go to Dashboard"
-msgstr "Ugrás az irányítópultra"
-
-#: app/templates/index.html
-msgid "Everything you need"
-msgstr "Minden, amire szükséged van"
-
-#: app/templates/index.html
-msgid "Professional tools for the modern traveler"
-msgstr "Professzionális eszközök a modern utazóknak"
-
-#: app/templates/index.html
-msgid "Dynamic Mapping"
-msgstr "Dinamikus térképek"
-
-#: app/templates/index.html
-msgid "Visualize your routes with professional journey lines and interactive markers."
-msgstr "Vizualizáld útvonalaidat professzionális vonalakkal és interaktív jelölőkkel."
-
-#: app/templates/index.html
-msgid "Travel Analytics"
-msgstr "Utazási analitika"
-
-#: app/templates/index.html
-msgid "Track your progress against global statistics and manage your nomad budget."
-msgstr "Kövesd a haladásodat a globális statisztikák alapján, és kezeld a nomád költségvetésedet."
-
-#: app/templates/index.html
-msgid "Smart Sharing"
-msgstr "Okos megosztás"
-
-#: app/templates/index.html
-msgid "Share collections of trips with friends through secure, beautiful landing pages."
-msgstr "Oszd meg utazásaid gyűjteményét barátaiddal biztonságos és gyönyörű oldalakon keresztül."
-
-#: app/templates/profile.html
-msgid "Your Achievements"
-msgstr "Kitüntetéseid"
-
-msgid "Days"
-msgstr "Nap"
-
-msgid "Hours"
-msgstr "Óra"
-
-msgid "Minutes"
-msgstr "Perc"
-
-msgid "Seconds"
-msgstr "Másodperc"
-
-msgid "Trip Progress"
-msgstr "Utazás Haladása"
-
-msgid "Achievement Progress!"
-msgstr "Teljesítmény növekedés!"
-
-msgid "Unlocked Badges"
-msgstr "Megszerzett kitüntetések"
-
-msgid "of total achievements completed"
-msgstr "a kitüntetések közül teljesítve"
-
-msgid "Road to Legend"
-msgstr "Út a legendává váláshoz"
-
-msgid "%(visited)s of %(total)s countries"
-msgstr "%(visited)s / %(total)s ország"
-
-msgid "Globetrotter"
-msgstr "Világutazó"
-
-msgid "25 countries visited. You're practically living out of a suitcase!"
-msgstr "25 meglátogatott ország. Gyakorlatilag a bőrödből élsz!"
-
-msgid "Sky Captain"
-msgstr "Égi Kapitány"
-
-msgid "15 flights completed. The sky is your second home."
-msgstr "15 repülés teljesítve. Az ég a második otthonod."
-
-msgid "Train Enthusiast"
-msgstr "Vonat Rajongó"
-
-msgid "Loving the rhythm of the rails. 5 train journeys completed."
-msgstr "Szereted a sínek ritmusát. 5 vonatút teljesítve."
-
-msgid "Weekend Warrior"
-msgstr "Hétvégi Harcos"
-
-msgid "5 short trips (less than 4 days) completed."
-msgstr "5 rövid utazás (kevesebb mint 4 nap) teljesítve."
-
-msgid "Long Hauler"
-msgstr "Hosszútávú Utazó"
-
-msgid "You've completed a trip longer than 14 days. True nomad!"
-msgstr "Teljesítettél egy 14 napnál hosszabb utat. Igazi nomád!"
-
-msgid "avg per trip"
-msgstr "átlag / út"
-
-msgid "Yearly Breakdown"
-msgstr "Éves bontás"
-
-msgid "trips"
-msgstr "utazás"
-
-msgid "No years recorded."
-msgstr "Még nincsenek rögzített évek."
-
-msgid "Total Budget"
-msgstr "Teljes költségkeret"
-
-#: app/templates/profile.html
-msgid "Detailed Statistics"
-msgstr "Részletes statisztika"
-
-#: app/templates/profile.html
-msgid "Next Adventure"
-msgstr "Következő kaland"
-
-#: app/templates/profile.html
-msgid "Starting on"
-msgstr "Kezdés"
-
-#: app/templates/profile.html
-msgid "Loading weather..."
-msgstr "Időjárás betöltése..."
-
-#: app/templates/profile.html
-msgid "Adventure Begins In"
-msgstr "Kaland kezdete"
-
-msgid "days"
-msgstr "nap"
-
-#: app/templates/stats.html
-msgid "Detailed Travel Statistics"
-msgstr "Részletes utazási statisztika"
-
-#: app/templates/stats.html
-msgid "Back to Dashboard"
-msgstr "Vissza az irányítópultra"
-
-#: app/templates/stats.html
-msgid "Total Trips"
-msgstr "Összes utazás"
-
-#: app/templates/stats.html
-msgid "completed"
-msgstr "befejezve"
-
-#: app/templates/stats.html
-msgid "Total journey time"
-msgstr "Teljes utazási idő"
-
-#: app/templates/stats.html
-msgid "Average Trip"
-msgstr "Átlagos utazás"
-
-#: app/templates/stats.html
-msgid "Days per adventure"
-msgstr "nap / kaland"
-
-#: app/templates/stats.html
-msgid "Travel Frequency (Trips per Month)"
-msgstr "Utazási gyakoriság (utazás / hónap)"
-
-#: app/templates/stats.html
-msgid "Top Transportation Modes"
-msgstr "Leggyakoribb közlekedési eszközök"
-
-#: app/templates/stats.html
-msgid "No transport data recorded yet."
-msgstr "Még nincs rögzített közlekedési adat."
-
-#: app/templates/profile.html
-msgid "Until adventure begins"
-msgstr "a kaland kezdetéig"
-
-#: app/templates/profile.html
-msgid "Visited Countries"
-msgstr "Meglátogatott országok"
-
-#: app/templates/profile.html
-msgid "of {total} countries"
-msgstr "/ {total} ország"
-
-#: app/templates/profile.html
-msgid "World Explorer"
-msgstr "Világjáró"
-
-#: app/templates/profile.html
-msgid "Next Destinations"
-msgstr "Következő úticélok"
-
-#: app/templates/profile.html
-msgid "Future plans"
-msgstr "Jövőbeli tervek"
-
-#: app/templates/profile.html
-msgid "Remaining"
-msgstr "Hátralévő"
-
-#: app/templates/profile.html
-msgid "Countries to explore"
-msgstr "Felfedezésre váró országok"
-
-#: app/templates/profile.html
-msgid "Your Achievements"
-msgstr "Eredményeid"
-
-msgid "Your Achievements & Statistics"
-msgstr "Eredményeid és statisztikák"
-
-msgid "Advanced Stats"
-msgstr "Részletes statisztika"
-
-msgid "Travel Frequency"
-msgstr "Utazási gyakoriság"
-
-msgid "Plan more trips to see history..."
-msgstr "Tervezz több utat az előzmények megtekintéséhez..."
-
-msgid "Total Days"
-msgstr "Összes nap"
-
-msgid "Avg. Length"
-msgstr "Átlagos hossz"
-
-msgid "Top Transport"
-msgstr "Kedvenc közlekedés"
-
-msgid "No transport data recorded"
-msgstr "Nincs rögzített közlekedési adat"
-
-msgid "Plane"
-msgstr "Repülő"
-
-msgid "Train"
-msgstr "Vonat"
-
-msgid "Car"
-msgstr "Autó"
-
-msgid "Ship"
-msgstr "Hajó"
-
-msgid "Bus"
-msgstr "Busz"
-
-msgid "Bicycle"
-msgstr "Kerékpár"
-
-msgid "Walking"
-msgstr "Gyalog"
-
-msgid "stops"
-msgstr "megálló"
-
-msgid "completed"
-msgstr "teljesítve"
-
-msgid "countries"
-msgstr "ország"
-
-msgid "visitors"
-msgstr "látogató"
-
-#: app/templates/profile.html
-msgid "NEW"
-msgstr "ÚJ"
-
-#: app/templates/profile.html
-msgid "Early Bird"
-msgstr "Korai madár"
-
-#: app/templates/profile.html
-msgid "Congratulations on creating your first travel plan!"
-msgstr "Gratulálunk az első utazási terved elkészítéséhez!"
-
-#: app/templates/profile.html
-msgid "First Steps"
-msgstr "Első lépések"
-
-#: app/templates/profile.html
-msgid "The ice is broken, the exploration of the world has begun!"
-msgstr "A jég megtört, a világ felfedezése elkezdődött!"
-
-#: app/templates/profile.html
-msgid "You are already considered a seasoned traveler in the world."
-msgstr "Már tapasztalt utazónak számítasz a világban."
-
-#: app/templates/profile.html
-msgid "Euro-Traveler"
-msgstr "Európa-utazó"
-
-#: app/templates/profile.html
-msgid "The gates of Europe are open before you."
-msgstr "Európa kapui nyitva állnak előtted."
-
-#: app/templates/profile.html
-msgid "EU Master"
-msgstr "EU Mester"
-
-msgid "Frequent Flyer"
-msgstr "Törzsutas"
-
-msgid "You spend more time in the air than on the ground!"
-msgstr "Több időt töltesz a levegőben, mint a földön!"
-
-msgid "Road Warrior"
-msgstr "Az utak királya"
-
-msgid "Nothing beats a good old road trip."
-msgstr "Semmi sem ér fel egy régi jó autós úttal."
-
-#: app/templates/profile.html
-msgid "You are the uncrowned king of the European Union!"
-msgstr "Te vagy az Európai Unió koronázatlan királya!"
-
-#: app/main.py
-msgid "Start date is required for planned trips!"
-msgstr "A tervezett utakhoz meg kell adni a kezdési dátumot!"
-
-#: app/main.py
-msgid "Both start and end dates are required for visited trips!"
-msgstr "A meglátogatott utakhoz meg kell adni a kezdési és befejezési dátumot is!"
-
-#: app/main.py
-msgid "Visited trip end date cannot be in the future!"
-msgstr "A meglátogatott út befejezési dátuma nem lehet a jövőben!"
-
-#: app/main.py
-msgid "Trip added successfully!"
-msgstr "Utazás sikeresen hozzáadva!"
-
-#: app/main.py
-msgid "Trip updated successfully!"
-msgstr "Utazás sikeresen frissítve!"
-
-#: app/main.py
-msgid "Trip deleted successfully!"
-msgstr "Utazás sikeresen törölve!"
-
-#: app/auth.py
+#: app/auth.py:21
 msgid "Invalid email or password"
 msgstr "Érvénytelen e-mail cím vagy jelszó"
 
-#: app/templates/calendar.html
-msgid "Travel Calendar"
-msgstr "Utazási naptár"
+#: app/main.py:184
+msgid "Configured"
+msgstr ""
 
-#: app/templates/calendar.html
-msgid "Upcoming"
-msgstr "Közelgő"
+#: app/main.py:184
+msgid "Missing setup"
+msgstr ""
 
-#: app/templates/calendar.html
-msgid "Visited"
-msgstr "Meglátogatott"
+#: app/main.py:185
+msgid "Photo and video gallery integration for trips."
+msgstr ""
 
-#: app/templates/calendar.html
-msgid "Planned"
-msgstr "Tervezett"
+#: app/main.py:566
+msgid "Immich settings saved."
+msgstr ""
 
-#: app/templates/calendar.html
-msgid "Today"
-msgstr "Ma"
+#: app/main.py:650
+msgid "Immich is not configured yet."
+msgstr ""
 
-#: app/templates/calendar.html
-msgid "Month"
-msgstr "Hónap"
+#: app/main.py:653
+msgid "Connection failed. Check URL/API key and server availability."
+msgstr ""
 
-#: app/templates/calendar.html
-msgid "Week"
-msgstr "Hét"
+#: app/main.py:656
+msgid "Unexpected test error."
+msgstr ""
 
-#: app/templates/calendar.html
-msgid "List"
-msgstr "Lista"
+#: app/main.py:737
+msgid "Preferences saved."
+msgstr ""
 
-#: app/templates/shares.html
-msgid "Manage your collections of shared travel experiences."
-msgstr "Kezeld a megosztott utazási élményeid gyűjteményét."
+#: app/main.py:748
+msgid "Name and email are required."
+msgstr ""
 
-#: app/templates/shares.html
-msgid "No shared links yet"
-msgstr "Még nincsek megosztott linkek"
+#: app/main.py:753
+msgid "This email is already used by another account."
+msgstr ""
 
-#: app/templates/shares.html
-msgid "Select trips on your dashboard and click \"Share Selected\" to create your first public collection."
-msgstr "Válassz ki utazásokat az irányítópulton, és kattints a \"Kijelöltek megosztása\" gombra az első nyilvános gyűjteményed létrehozásához."
+#: app/main.py:759
+msgid "Account settings saved."
+msgstr ""
 
-#: app/templates/shares.html
-msgid "Collection"
-msgstr "Gyűjtemény"
+#: app/main.py:771
+msgid "Please fill all password fields."
+msgstr ""
 
-#: app/templates/shares.html
-msgid "Created on"
-msgstr "Létrehozva"
+#: app/main.py:775
+msgid "Current password is incorrect."
+msgstr ""
 
-#: app/templates/shares.html
-msgid "Expires"
-msgstr "Lejár"
+#: app/main.py:779
+msgid "New password must be at least 8 characters long."
+msgstr ""
 
-#: app/templates/shares.html
-msgid "Total Views"
-msgstr "Összes megtekintés"
+#: app/main.py:783
+msgid "New password and confirmation do not match."
+msgstr ""
 
-#: app/templates/shares.html
-msgid "Unique Visitors"
-msgstr "Egyedi látogatók"
+#: app/main.py:787
+msgid "New password must be different from current password."
+msgstr ""
 
-#: app/templates/shares.html
-msgid "Shareable URL"
-msgstr "Megosztható URL"
+#: app/main.py:792
+#, fuzzy
+msgid "Password changed successfully."
+msgstr "Utazás sikeresen hozzáadva!"
 
-#: app/templates/shares.html
-msgid "Included Trips"
-msgstr "Tartalmazott utazások"
+#: app/main.py:1159 app/main.py:1259
+msgid "Start date is required for planned trips!"
+msgstr "A tervezett utakhoz meg kell adni a kezdési dátumot!"
 
-#: app/templates/shares.html
-msgid "View Public Page"
-msgstr "Nyilvános oldal megtekintése"
+#: app/main.py:1163 app/main.py:1263
+msgid "Both start and end dates are required for visited trips!"
+msgstr "A meglátogatott utakhoz meg kell adni a kezdési és befejezési dátumot is!"
 
-#: app/templates/shares.html
-msgid "Are you sure you want to delete this sharing link?"
-msgstr "Biztosan törölni szeretnéd ezt a megosztási linket?"
+#: app/main.py:1166 app/main.py:1266 app/main.py:1425
+msgid "Visited trip end date cannot be in the future!"
+msgstr "A meglátogatott út befejezési dátuma nem lehet a jövőben!"
 
-#: app/templates/shares.html
-msgid "Edit Collection"
-msgstr "Gyűjtemény szerkesztése"
+#: app/main.py:1201 app/main.py:1292
+msgid "This Immich album is already linked to another trip."
+msgstr ""
 
-#: app/templates/shares.html
-msgid "Collection Title"
-msgstr "Gyűjtemény címe"
+#: app/main.py:1205
+msgid "Trip added successfully!"
+msgstr "Utazás sikeresen hozzáadva!"
 
-#: app/templates/shares.html
-msgid "Notes / Story"
-msgstr "Megjegyzések / Történet"
+#: app/main.py:1241
+#, fuzzy
+msgid "Cannot edit a visited trip."
+msgstr "5 meglátogatott utat teljesítettél busszal."
 
-#: app/templates/shares.html
-msgid "Expiration Date"
-msgstr "Lejárati dátum"
+#: app/main.py:1294
+msgid "Trip updated successfully!"
+msgstr "Utazás sikeresen frissítve!"
 
-#: app/templates/shares.html
-msgid "Trips to Include"
-msgstr "Belefoglalandó utazások"
+#: app/main.py:1341
+#, fuzzy
+msgid "Cannot delete a visited trip."
+msgstr "5 meglátogatott utat teljesítettél busszal."
 
-#: app/templates/shares.html
-msgid "Cancel"
-msgstr "Mégse"
+#: app/main.py:1346
+msgid "Trip deleted successfully!"
+msgstr "Utazás sikeresen törölve!"
 
-#: app/templates/shares.html
-msgid "Save Changes"
-msgstr "Módosítások mentése"
+#: app/main.py:1359
+#, python-brace-format
+msgid "Trip status set to planned for {dest}."
+msgstr ""
 
-#: app/templates/shared_trip.html
-msgid "Public Adventures"
-msgstr "Nyilvános kalandok"
+#: app/main.py:1368
+msgid "No trips selected for sharing!"
+msgstr ""
 
-#: app/templates/shared_trip.html
-msgid "stops"
-msgstr "megálló"
+#: app/main.py:1407
+#, python-brace-format
+msgid "Sharing link created! URL: {url}"
+msgstr ""
 
-#: app/templates/shared_trip.html
-msgid "completed"
-msgstr "teljesítve"
+#: app/main.py:1419
+#, fuzzy
+msgid "End date is required to mark as visited!"
+msgstr "Meglátogatott esetén kötelező"
 
-#: app/templates/shared_trip.html
-msgid "countries"
-msgstr "ország"
+#: app/main.py:1433
+#, python-brace-format
+msgid "Trip marked as visited! Awesome! Destination: {dest}"
+msgstr ""
 
-#: app/templates/shared_trip.html
-msgid "visitors"
-msgstr "látogató"
+#: app/main.py:1435
+msgid "Invalid date format provided."
+msgstr ""
 
-#: app/templates/shared_trip.html
-msgid "Published on {date}"
-msgstr "Közzétéve: {date}"
+#: app/main.py:1451
+msgid "error_item_required"
+msgstr ""
 
-#: app/templates/shared_trip.html
-msgid "Flexible"
-msgstr "Rugalmas"
+#: app/main.py:1580
+#, fuzzy
+msgid "Sharing link deleted successfully!"
+msgstr "Utazás sikeresen törölve!"
 
-#: app/templates/shared_trip.html
-msgid "The Plan"
-msgstr "A terv"
-
-#: app/templates/shared_trip.html
-msgid "Travel Details & Logistics"
-msgstr "Utazási részletek és logisztika"
-
-#: app/templates/shared_trip.html
-msgid "Transport"
-msgstr "Közlekedés"
-
-#: app/templates/shared_trip.html
-msgid "Visa"
-msgstr "Vízum"
-
-#: app/templates/shared_trip.html
-msgid "Visa Required"
-msgstr "Vízum szükséges"
-
-#: app/templates/shared_trip.html
-msgid "Travel Notes"
-msgstr "Utazási megjegyzések"
-
-#: app/templates/shared_trip.html
-msgid "Packing List"
-msgstr "Csomagolási lista"
-
-#: app/templates/shared_trip.html
-msgid "Expected Expenses"
-msgstr "Várható költségek"
-
-#: app/templates/shared_trip.html
-msgid "Events & Milestones"
-msgstr "Események és mérföldkövek"
-
-#: app/templates/shared_trip.html
-msgid "Inspired by this journey?"
-msgstr "Inspirált ez az utazás?"
-
-#: app/templates/shared_trip.html
-msgid "Start planning your own global adventures with Nomad Travels."
-msgstr "Kezdd el tervezni saját globális kalandjaidat a Nomad Travels segítségével."
-
-#: app/templates/shared_trip.html
-msgid "Start Planning"
-msgstr "Tervezés indítása"
-
-#: app/templates/shared_trip.html
-msgid "Print View"
-msgstr "Nyomtatási nézet"
-
-#: app/templates/shared_trip.html
-msgid "This is a secure, read-only public view. Personal data like exact accommodation or budget details are protected."
-msgstr "Ez egy biztonságos, csak olvasható nyilvános nézet. A személyes adatok, mint a pontos szállás vagy a költségvetés részletei, védettek."
-
-#: app/templates/login.html
-msgid "Sign In to Nomad Travels"
-msgstr "Bejelentkezés a Nomad Travels-be"
-
-#: app/templates/login.html
-msgid "Email Address"
-msgstr "E-mail cím"
-
-#: app/templates/login.html
-msgid "Password"
-msgstr "Jelszó"
-
-#: app/templates/login.html
-msgid "Remember me"
-msgstr "Emlékezz rám"
-
-#: app/templates/login.html
-msgid "Quick Access"
-msgstr "Gyors elérés"
-
-#: app/templates/login.html
-msgid "Note: Use the CLI to seed demo data if needed:"
-msgstr "Megjegyzés: Használd a CLI-t a demó adatok feltöltéséhez, ha szükséges:"
-
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:8
 msgid "Plan Your Next Adventure"
 msgstr "Tervezd meg a következő kalandodat"
 
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:12 app/templates/edit_trip.html:17
+#, fuzzy
+msgid "Location"
+msgstr "Helyszín frissítése"
+
+#: app/templates/add_trip.html:19
 msgid "Search Location"
 msgstr "Helyszín keresése"
 
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:21 app/templates/edit_trip.html:26
 msgid "Search city or country..."
 msgstr "Város vagy ország keresése..."
 
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:22 app/templates/calendar.html:32
+#: app/templates/edit_trip.html:27
 msgid "Search"
 msgstr "Keresés"
 
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:24
 msgid "Type and click Search to find on map"
 msgstr "Írd be és kattints a Keresésre a térképen való megjelenítéshez"
 
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:27 app/templates/edit_trip.html:31
 msgid "Map Preview"
 msgstr "Térkép előnézet"
 
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:34
 msgid "Select Country"
 msgstr "Ország kiválasztása"
 
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:36
 msgid "Select a country..."
 msgstr "Válassz országot..."
 
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:46 app/templates/edit_trip.html:49
 msgid "Select City"
 msgstr "Város kiválasztása"
 
-#: app/templates/add_trip.html
-msgid "Select a country first..."
-msgstr "Előbb válassz országot..."
+#: app/templates/add_trip.html:47 app/templates/edit_trip.html:50
+#, fuzzy
+msgid "Search city..."
+msgstr "Város vagy ország keresése..."
 
-#: app/templates/add_trip.html
-msgid "Or type manually if not in list:"
-msgstr "Vagy írd be kézzel, ha nincs a listában:"
+#: app/templates/add_trip.html:49 app/templates/edit_trip.html:52
+msgid "Start typing to see suggestions"
+msgstr ""
 
-#: app/templates/add_trip.html
-msgid "Type city name..."
-msgstr "Írd be a város nevét..."
+#: app/templates/add_trip.html:62 app/templates/edit_trip.html:64
+msgid "Schedule and Budget"
+msgstr ""
 
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:69
 msgid "Departure"
 msgstr "Indulás"
 
-#: app/templates/add_trip.html
-msgid "Arrival"
-msgstr "Érkezés"
-
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:71 app/templates/edit_trip.html:73
 msgid "Required for Planned/Visited"
 msgstr "Tervezett/Meglátogatott esetén kötelező"
 
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:74
+msgid "Arrival"
+msgstr "Érkezés"
+
+#: app/templates/add_trip.html:76 app/templates/edit_trip.html:78
 msgid "Required for Visited"
 msgstr "Meglátogatott esetén kötelező"
 
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:82 app/templates/calendar.html:14
+#: app/templates/edit_trip.html:84 app/templates/shared_trip.html:281
 msgid "Status"
 msgstr "Állapot"
 
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:84 app/templates/calendar.html:19
+#: app/templates/edit_trip.html:86 app/templates/settings.html:112
+#: app/templates/shared_trip.html:217 app/templates/shared_trip.html:281
 msgid "Draft"
 msgstr "Piszkozat"
 
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:85 app/templates/calendar.html:17
+#: app/templates/edit_trip.html:87 app/templates/settings.html:113
+#: app/templates/shared_trip.html:31 app/templates/shared_trip.html:217
+#: app/templates/shared_trip.html:281
+msgid "Planned"
+msgstr "Tervezett"
+
+#: app/templates/add_trip.html:86 app/templates/calendar.html:18
+#: app/templates/edit_trip.html:88 app/templates/settings.html:114
+#: app/templates/shared_trip.html:31 app/templates/shared_trip.html:217
+#: app/templates/shared_trip.html:281
+msgid "Visited"
+msgstr "Meglátogatott"
+
+#: app/templates/add_trip.html:90
 msgid "Budget (optional)"
 msgstr "Költségvetés (opcionális)"
 
-#: app/templates/add_trip.html
+#: app/templates/add_trip.html:94 app/templates/edit_trip.html:96
+#: app/templates/profile.html:82 app/templates/profile.html:490
+#, fuzzy
+msgid "Currency"
+msgstr "aktuális állomás"
+
+#: app/templates/add_trip.html:104
 msgid "Accommodation Info"
 msgstr "Szállás információ"
 
-#: app/templates/add_trip.html
-msgid "e.g. Hotel, Airbnb address... (Private)"
-msgstr "pl. Hotel, Airbnb cím... (Privát)"
-
-#: app/templates/add_trip.html
-msgid "Transport Mode"
-msgstr "Közlekedési mód"
-
-#: app/templates/add_trip.html
-msgid "Select..."
-msgstr "Válassz..."
-
-#: app/templates/add_trip.html
-msgid "Flight"
-msgstr "Repülő"
-
-#: app/templates/add_trip.html
-msgid "Train"
-msgstr "Vonat"
-
-#: app/templates/add_trip.html
-msgid "Bus"
-msgstr "Busz"
-
-#: app/templates/add_trip.html
-msgid "Car"
-msgstr "Autó"
-
-#: app/templates/add_trip.html
-msgid "Ferry"
-msgstr "Komp"
-
-#: app/templates/add_trip.html
-msgid "Flight/Ticket #"
-msgstr "Járat/Jegy szám"
-
-#: app/templates/add_trip.html
-msgid "e.g. LH1234"
-msgstr "pl. LH1234"
-
-#: app/templates/add_trip.html
-msgid "Visa Required?"
-msgstr "Vízum szükséges?"
-
-#: app/templates/add_trip.html
-msgid "Attractions / Plans"
-msgstr "Látnivalók / Tervek"
-
-#: app/templates/add_trip.html
-msgid "What do you want to see?"
-msgstr "Mit szeretnél megnézni?"
-
-#: app/templates/add_trip.html
-msgid "Clothes, tech, documents..."
-msgstr "Ruhák, tech, okmányok..."
-
-#: app/templates/add_trip.html
-msgid "Expense Estimate"
-msgstr "Költségbecslés"
-
-#: app/templates/add_trip.html
-msgid "Food, transport, activities..."
-msgstr "Étel, utazás, programok..."
-
-#: app/templates/add_trip.html
-msgid "Notes"
-msgstr "Megjegyzések"
-
-#: app/templates/add_trip.html
-msgid "Save Adventure"
-msgstr "Kaland mentése"
-
-#: app/templates/edit_trip.html
-msgid "Edit Trip"
-msgstr "Utazás szerkesztése"
-
-#: app/templates/edit_trip.html
-msgid "Badges"
-msgstr "Kitüntetések"
-
-msgid "Achievement Progress!"
-msgstr "Teljesítmény növekedés!"
-
-msgid "Unlocked Badges"
-msgstr "Megszerzett kitüntetések"
-
-msgid "of total achievements completed"
-msgstr "a kitüntetések közül teljesítve"
-
-msgid "Road to Legend"
-msgstr "Út a legendává váláshoz"
-
-msgid "Explore more countries, track your budget, and share your adventures to unlock all specialized badges. Each badge represents a milestone in your nomadic journey."
-msgstr "Fedezz fel több országot, kövesd a költségvetésedet, és oszd meg kalandjaidat, hogy feloldd az összes speciális kitüntetést. Minden jelvény egy mérföldkövet jelent a nomád utazásod során."
-
-msgid "Progress"
-msgstr "Haladás"
-
-msgid "Explore more countries, track your budget, and share your adventures to unlock all 20+ specialized badges. Each badge represents a milestone in your nomadic journey."
-msgstr "Fedezz fel több országot, kövesd a költségvetésedet és oszd meg kalandjaidat, hogy feloldd mind a 20+ speciális kitüntetést. Minden jelvény egy mérföldkövet jelent a nomád utad során."
-
-msgid "All Achievements"
-msgstr "Összes kitüntetés"
-
-msgid "Early Adopter"
-msgstr "Korai felhasználó"
-
-msgid "Created your account in the early days of Nomad Planner."
-msgstr "A Nomad Planner korai napjaiban hoztad létre a fiókodat."
-
-msgid "Budget Master"
-msgstr "Költségvetés mestere"
-
-msgid "Tracked expenses for at least 10 trips."
-msgstr "Legalább 10 utazásnál rögzítettél költségeket."
-
-msgid "Checklist Pro"
-msgstr "Checklist profi"
-
-msgid "Completed all items in a packing list for 5 different trips."
-msgstr "Minden tételt kipipáltál a csomagolási listán 5 különböző utazásnál."
-
-msgid "Planner Addict"
-msgstr "Tervezés függő"
-
-msgid "Have at least 15 planned (not yet visited) trips in your account."
-msgstr "Legalább 15 tervezett (még nem meglátogatott) utazásod van."
-
-msgid "Social Butterfly"
-msgstr "Társasági pillangó"
-
-msgid "Created and shared 5 public travel links."
-msgstr "5 nyilvános utazási linket hoztál létre és osztottál meg."
-
-msgid "Africa Explorer"
-msgstr "Afrika felfedezője"
-
-msgid "Visited 3 different countries in Africa."
-msgstr "3 különböző afrikai országban jártál."
-
-msgid "Asia Adventurer"
-msgstr "Ázsiai kalandor"
-
-msgid "Visited 5 different countries in Asia."
-msgstr "5 különböző ázsiai országban jártál."
-
-msgid "America Voyager"
-msgstr "Amerika vándora"
-
-msgid "Visited 5 different countries across the Americas."
-msgstr "5 különböző országban jártál az amerikai kontinensen."
-
-msgid "Oceania Discoverer"
-msgstr "Óceánia felfedezője"
-
-msgid "Visited 3 different countries in Oceania."
-msgstr "3 különböző országban jártál Óceániában."
-
-msgid "Discovery of America"
-msgstr "Amerika felfedezése"
-
-msgid "Visited both the United States and Canada."
-msgstr "Meglátogattad az Egyesült Államokat és Kanadát is."
-
-msgid "Latino Traveler"
-msgstr "Latino utazó"
-
-msgid "Visited 3 different countries in South or Central America."
-msgstr "3 különböző országban jártál Dél- vagy Közép-Amerikában."
-
-msgid "Nomad Legend"
-msgstr "Nomád legenda"
-
-msgid "Completed 50 trips in total. You are a legend!"
-msgstr "Összesen 50 utazást teljesítettél. Te egy legenda vagy!"
-
-msgid "Night Owl"
-msgstr "Éjszakai bagoly"
-
-msgid "Logged into the app 5 times between midnight and 4 AM."
-msgstr "5 alkalommal jelentkeztél be éjfél és hajnali 4 óra között."
-
-msgid "Are you sure you want to delete this trip?"
-msgstr "Biztosan törölni szeretnéd ezt az utazást?"
-
-#: app/templates/edit_trip.html
-msgid "Delete Trip"
-msgstr "Utazás törlése"
-
-#: app/templates/edit_trip.html
-msgid "Update Location"
-msgstr "Helyszín frissítése"
-
-#: app/templates/edit_trip.html
-msgid "Country"
-msgstr "Ország"
-
-#: app/templates/edit_trip.html
-msgid "Start Date"
-msgstr "Kezdés dátuma"
-
-#: app/templates/edit_trip.html
-msgid "End Date"
-msgstr "Befejezés dátuma"
-
-#: app/templates/edit_trip.html
-msgid "Budget (approx.)"
-msgstr "Költségvetés (kb.)"
-
-#: app/templates/edit_trip.html
-msgid "Accommodation (Sensitive)"
-msgstr "Szállás (Szenzitív)"
-
-msgid "Photos"
-msgstr "Fotók"
-
-msgid "Open photo gallery"
-msgstr "Fotógaléria megnyitása"
-
-msgid "Click an image to open and navigate with arrows."
-msgstr "Kattints egy képre a megnyitáshoz, majd lapozz a nyilakkal."
-
-msgid "Explore more countries, track your budget, and share your adventures to unlock all specialized badges. Each badge represents a milestone in your nomadic journey."
-msgstr "Fedezz fel több országot, kövesd a költségvetésedet és oszd meg kalandjaidat, hogy feloldd az összes speciális kitüntetést. Minden jelvény egy mérföldkövet jelent a nomád utad során."
-
-msgid "Share Ambassador"
-msgstr "Megosztási nagykövet"
-
-msgid "Created 10 shared travel links."
-msgstr "10 megosztott utazási linket hoztál létre."
-
-msgid "Visa Navigator"
-msgstr "Vízum navigátor"
-
-msgid "Completed 5 trips where a visa was required."
-msgstr "5 olyan utat teljesítettél, ahol vízumra volt szükség."
-
-msgid "Cartographer"
-msgstr "Térképész"
-
-msgid "Logged map coordinates for 10 visited trips."
-msgstr "10 meglátogatott útnál rögzítetted a térképkoordinátákat."
-
-msgid "Itinerary Architect"
-msgstr "Útiterv építész"
-
-msgid "Added detailed attractions to 12 trips."
-msgstr "12 utazáshoz adtál meg részletes látnivalókat."
-
-msgid "Multi-modal Master"
-msgstr "Többmódos mester"
-
-msgid "Used at least 4 different transport modes on visited trips."
-msgstr "Legalább 4 különböző közlekedési módot használtál a meglátogatott utakon."
-
-msgid "Season Hopper"
-msgstr "Évszakugró"
-
-msgid "Completed visited trips in all four seasons."
-msgstr "Mind a négy évszakban teljesítettél meglátogatott utat."
-
-msgid "Year Rounder"
-msgstr "Egész éves utazó"
-
-msgid "Visited trips across at least 3 different years."
-msgstr "Legalább 3 különböző évben volt meglátogatott utad."
-
-msgid "Journey Marathon"
-msgstr "Utazási maraton"
-
-msgid "Completed 10 long trips (7+ days each)."
-msgstr "10 hosszú utat teljesítettél (mindegyik legalább 7 napos)."
-
-msgid "Continent Collector"
-msgstr "Kontinens gyűjtő"
-
-msgid "Visited at least 3 different world regions."
-msgstr "Legalább 3 különböző világrégióban jártál."
-
-msgid "Continent Conqueror"
-msgstr "Kontinens hódító"
-
-msgid "Visited countries in all tracked world regions."
-msgstr "Minden nyomon követett világrégióban jártál országokban."
-
-msgid "Bus Explorer"
-msgstr "Buszos felfedező"
-
-msgid "Completed 5 visited trips by bus."
-msgstr "5 meglátogatott utat teljesítettél busszal."
-
-msgid "Ferry Rider"
-msgstr "Komputazó"
-
-msgid "Completed 3 visited trips by ferry."
-msgstr "3 meglátogatott utat teljesítettél komppal."
-
-msgid "Draft Strategist"
-msgstr "Piszkozat stratéga"
-
-msgid "Built up 10 draft trip ideas."
-msgstr "10 piszkozat utazási ötletet gyűjtöttél össze."
-
-msgid "Destination Curator"
-msgstr "Úticél kurátor"
-
-msgid "Saved 20 trips with clear destination and country data."
-msgstr "20 utazást mentettél egyértelmű úti cél- és országinformációval."
-
-msgid "Checklist Commander"
-msgstr "Checklist parancsnok"
-
-msgid "Fully completed checklists for 12 different trips."
-msgstr "12 különböző utazáshoz teljesen kitöltötted a checklistet."
-
-msgid "Map Archivist"
-msgstr "Térkép archivista"
-
-msgid "Saved map coordinates on 20 trips."
-msgstr "20 utazáshoz mentettél térképkoordinátát."
-
-msgid "Consistent Traveler"
-msgstr "Következetes utazó"
-
-msgid "Completed at least one visited trip in 5 different years."
-msgstr "Legalább 5 különböző évben teljesítettél legalább egy meglátogatott utat."
-
-msgid "Monthly Momentum"
-msgstr "Havi lendület"
-
-msgid "Visited trips in at least 8 different months of the year."
-msgstr "Az év legalább 8 különböző hónapjában volt meglátogatott utad."
-
-msgid "journey window"
-msgstr "útvonal időablaka"
-
-msgid "from %(start)s to %(end)s"
-msgstr "%(start)s - %(end)s"
-
-msgid "No fixed dates"
-msgstr "Nincs rögzített dátum"
-
-msgid "%(days)s days"
-msgstr "%(days)s nap"
-
-msgid "to prepare"
-msgstr "előkészítendő"
-
-msgid "Visa checks needed for %(count)s stop(s)"
-msgstr "%(count)s állomásnál szükséges vízumellenőrzés"
-
-msgid "Itinerary highlights added for %(count)s stop(s)"
-msgstr "%(count)s állomáshoz tartozik kiemelt program"
-
-msgid "Published on %(date)s"
-msgstr "Közzétéve: %(date)s"
-
-msgid "1 %(foreign)s = %(rate)s %(local)s"
-msgstr "1 %(foreign)s = %(rate)s %(local)s"
-
-msgid "Exchange Rate"
-msgstr "Átváltási árfolyam"
-
-msgid "cities"
-msgstr "város"
-
-msgid "next stop"
-msgstr "következő állomás"
-
-msgid "No upcoming stop"
-msgstr "Nincs közelgő állomás"
-
-msgid "Now in %(city)s"
-msgstr "Most itt: %(city)s"
-
-msgid "%(city)s on %(date)s"
-msgstr "%(city)s - %(date)s"
-
-msgid "%(city)s (flexible date)"
-msgstr "%(city)s (rugalmas dátum)"
-
-msgid "Photo albums linked for %(count)s stop(s)"
-msgstr "%(count)s állomáshoz kapcsolódik fotóalbum"
-
-msgid "View all cities (%(count)s)"
-msgstr "Összes város megtekintése (%(count)s)"
-
-msgid "Cities in this shared journey"
-msgstr "Városok ebben a megosztott útvonalban"
-
-msgid "current stop"
-msgstr "aktuális állomás"
-
-msgid "up next"
-msgstr "következő"
-
-msgid "No current stop"
-msgstr "Nincs aktuális állomás"
-
-msgid "current location"
-msgstr "aktuális hely"
-
-msgid "No active location"
-msgstr "Nincs aktív hely"
-
-msgid "No active trip right now"
-msgstr "Jelenleg nincs aktív utazás"
-
-msgid "City not specified"
-msgstr "A város nincs megadva"
-
-msgid "Green Traveler"
-msgstr "Zöld utazó"
-
-msgid "Completed 5 journeys by train or bike. Mother Earth thanks you!"
-msgstr "5 utazást teljesítettél vonattal vagy kerékpárral. Földanya köszöni neked!"
-
-msgid "Photo Enthusiast"
-msgstr "Fotó rajongó"
-
-msgid "Connected 3 trips with Immich albums. Capturing memories!"
-msgstr "3 utazást kötöttél össze Immich albumokkal. Emlékek megörökítve!"
-
-msgid "Notes Master"
-msgstr "Jegyzet mester"
-
-msgid "Wrote detailed notes for 10 different trips."
-msgstr "Részletes jegyzeteket írtál 10 különböző utazáshoz."
-
-msgid "Adventure Planner"
-msgstr "Kaland tervező"
-
-msgid "Added at least 5 attractions to a single trip."
-msgstr "Legalább 5 látnivalót adtál hozzá egyetlen utazáshoz."
-
-msgid "Cash Conscious"
-msgstr "Pénztudatos"
-
-msgid "Used a non-USD default currency to manage your nomad life."
-msgstr "Nem USD alapú alapértelmezett pénznemet használtál a nomád életed kezeléséhez."
-
-msgid "Stay"
-msgstr "Szállás"
-
-msgid "Not set"
-msgstr "Nincs megadva"
-
+#: app/templates/add_trip.html:105 app/templates/edit_trip.html:108
 msgid "e.g. Hotel name, Airbnb/Booking link..."
 msgstr "pl. Hotel neve, Airbnb/Booking link..."
 
+#: app/templates/add_trip.html:106 app/templates/edit_trip.html:109
 msgid "Links are automatically detected and marked."
 msgstr "A linkeket automatikusan felismerjük és jelöljük."
 
+#: app/templates/add_trip.html:114 app/templates/edit_trip.html:117
+#, fuzzy
+msgid "Travel and Transport"
+msgstr "Utazási naptár"
+
+#: app/templates/add_trip.html:122 app/templates/edit_trip.html:125
+msgid "Transport Segments"
+msgstr "Közlekedési szakaszok"
+
+#: app/templates/add_trip.html:123 app/templates/edit_trip.html:126
+#, fuzzy
+msgid ""
+"Build a full travel list. Shared pages only show public outbound "
+"transport."
+msgstr ""
+"Add meg a fő utazási szakaszokat. A megosztott oldalon csak az odaút "
+"jelenik meg."
+
+#: app/templates/add_trip.html:125 app/templates/edit_trip.html:128
+#, fuzzy
+msgid "Add Segment"
+msgstr "Közlekedési szakaszok"
+
+#: app/templates/add_trip.html:132 app/templates/edit_trip.html:136
+msgid "Visa Required?"
+msgstr "Vízum szükséges?"
+
+#: app/templates/add_trip.html:141 app/templates/edit_trip.html:145
+msgid "Plans and Notes"
+msgstr ""
+
+#: app/templates/add_trip.html:147 app/templates/edit_trip.html:151
+msgid "Attractions / Plans"
+msgstr "Látnivalók / Tervek"
+
+#: app/templates/add_trip.html:148 app/templates/edit_trip.html:152
+msgid "What do you want to see?"
+msgstr "Mit szeretnél megnézni?"
+
+#: app/templates/add_trip.html:151 app/templates/edit_trip.html:156
+msgid "Packing List"
+msgstr "Csomagolási lista"
+
+#: app/templates/add_trip.html:152 app/templates/edit_trip.html:157
+msgid "Clothes, tech, documents..."
+msgstr "Ruhák, tech, okmányok..."
+
+#: app/templates/add_trip.html:155 app/templates/edit_trip.html:161
+msgid "Expense Estimate"
+msgstr "Költségbecslés"
+
+#: app/templates/add_trip.html:156 app/templates/edit_trip.html:162
+msgid "Food, transport, activities..."
+msgstr "Étel, utazás, programok..."
+
+#: app/templates/add_trip.html:159 app/templates/calendar.html:163
+#: app/templates/edit_trip.html:166
+msgid "Notes"
+msgstr "Megjegyzések"
+
+#: app/templates/add_trip.html:168 app/templates/edit_trip.html:175
+msgid "Images and Gallery"
+msgstr ""
+
+#: app/templates/add_trip.html:180 app/templates/edit_trip.html:188
+msgid "Save Adventure"
+msgstr "Kaland mentése"
+
+#: app/templates/add_trip.html:203 app/templates/edit_trip.html:214
+#: app/templates/settings.html:99 app/templates/settings.html:121
+msgid "Select..."
+msgstr "Válassz..."
+
+#: app/templates/add_trip.html:227 app/templates/edit_trip.html:238
+#, fuzzy
+msgid "Transport Item"
+msgstr "Közlekedési mód"
+
+#: app/templates/add_trip.html:228 app/templates/edit_trip.html:239
+msgid "Remove"
+msgstr ""
+
+#: app/templates/add_trip.html:232 app/templates/edit_trip.html:243
+msgid "Type"
+msgstr ""
+
+#: app/templates/add_trip.html:238 app/templates/edit_trip.html:249
+msgid "Mode"
+msgstr ""
+
+#: app/templates/add_trip.html:244 app/templates/edit_trip.html:255
+#, fuzzy
+msgid "Label"
+msgstr "Repülő"
+
+#: app/templates/add_trip.html:245 app/templates/edit_trip.html:256
+msgid "e.g. Budapest to Warsaw"
+msgstr ""
+
+#: app/templates/add_trip.html:248 app/templates/edit_trip.html:259
+msgid "Visibility"
+msgstr ""
+
+#: app/templates/add_trip.html:250 app/templates/edit_trip.html:261
+#, fuzzy
+msgid "Private (sensitive)"
+msgstr "Szállás (Szenzitív)"
+
+#: app/templates/add_trip.html:251 app/templates/edit_trip.html:262
+#, fuzzy
+msgid "Public (safe to share)"
+msgstr "Nyilvános kalandok"
+
+#: app/templates/add_trip.html:255 app/templates/edit_trip.html:266
+#, fuzzy
+msgid "Carrier"
+msgstr "Térképész"
+
+#: app/templates/add_trip.html:256 app/templates/edit_trip.html:267
+msgid "e.g. Wizz Air / MAV"
+msgstr ""
+
+#: app/templates/add_trip.html:259 app/templates/edit_trip.html:270
+#, fuzzy
+msgid "Public Ref"
+msgstr "Nyilvános kalandok"
+
+#: app/templates/add_trip.html:260 app/templates/edit_trip.html:271
+msgid "e.g. W62231 or IC712"
+msgstr ""
+
+#: app/templates/add_trip.html:263 app/templates/edit_trip.html:274
+msgid "Ticket Ref (private)"
+msgstr ""
+
+#: app/templates/add_trip.html:264 app/templates/edit_trip.html:275
+msgid "PNR / booking / ticket id"
+msgstr ""
+
+#: app/templates/add_trip.html:267 app/templates/edit_trip.html:278
+msgid "Document Ref (Paperless)"
+msgstr ""
+
+#: app/templates/add_trip.html:268 app/templates/edit_trip.html:279
+msgid "paperless:doc-id or URL"
+msgstr ""
+
+#: app/templates/badges.html:10 app/templates/profile.html:250
+msgid "Your Achievements"
+msgstr "Kitüntetéseid"
+
+#: app/templates/badges.html:14 app/templates/stats.html:13
+msgid "Back to Dashboard"
+msgstr "Vissza az irányítópultra"
+
+#: app/templates/badges.html:23
+msgid "Unlocked Badges"
+msgstr "Megszerzett kitüntetések"
+
+#: app/templates/badges.html:28
+msgid "of total achievements completed"
+msgstr "a kitüntetések közül teljesítve"
+
+#: app/templates/badges.html:35
+msgid "Road to Legend"
+msgstr "Út a legendává váláshoz"
+
+#: app/templates/badges.html:37
+msgid ""
+"Explore more countries, track your budget, and share your adventures to "
+"unlock all specialized badges. Each badge represents a milestone in your "
+"nomadic journey."
+msgstr ""
+"Fedezz fel több országot, kövesd a költségvetésedet, és oszd meg "
+"kalandjaidat, hogy feloldd az összes speciális kitüntetést. Minden "
+"jelvény egy mérföldkövet jelent a nomád utazásod során."
+
+#: app/templates/badges.html:75
+msgid "Progress"
+msgstr "Haladás"
+
+#: app/templates/badges.html:98 app/templates/badges.html:100
+#: app/templates/profile.html:300
+#, fuzzy
+msgid "Completed"
+msgstr "befejezve"
+
+#: app/templates/base.html:19
+#, fuzzy
+msgid "Nomad Travels"
+msgstr "Bejelentkezés a Nomad Travels-be"
+
+#: app/templates/base.html:29 app/templates/settings.html:172
+#, fuzzy
+msgid "Dashboard"
+msgstr "Ugrás az irányítópultra"
+
+#: app/templates/base.html:32
+msgid "Badges"
+msgstr "Kitüntetések"
+
+#: app/templates/base.html:35 app/templates/settings.html:174
+msgid "Stats"
+msgstr "Statisztika"
+
+#: app/templates/base.html:38 app/templates/settings.html:173
+msgid "Calendar"
+msgstr "Naptár"
+
+#: app/templates/base.html:41
+#, fuzzy
+msgid "Shares"
+msgstr "Megosztott Linkek"
+
+#: app/templates/base.html:46 app/templates/settings.html:32
+#: app/templates/settings.html:34
+msgid "Profile image"
+msgstr ""
+
+#: app/templates/base.html:47
+#, fuzzy
+msgid "User"
+msgstr "EU Mester"
+
+#: app/templates/base.html:50
+#, fuzzy
+msgid "Settings"
+msgstr "Kezdés"
+
+#: app/templates/base.html:52
+msgid "Logout"
+msgstr "Kijelentkezés"
+
+#: app/templates/base.html:56 app/templates/login.html:24
+msgid "Login"
+msgstr "Bejelentkezés"
+
+#: app/templates/base.html:114 app/templates/base.html:153
+msgid "Achievement Progress!"
+msgstr "Teljesítmény növekedés!"
+
+#: app/templates/calendar.html:8
+msgid "Travel Calendar"
+msgstr "Utazási naptár"
+
+#: app/templates/calendar.html:9
+#, fuzzy
+msgid "Plan New Trip"
+msgstr "Utazás Kezelése"
+
+#: app/templates/calendar.html:16 app/templates/calendar.html:25
+msgid "All"
+msgstr ""
+
+#: app/templates/calendar.html:23
+#, fuzzy
+msgid "Time Window"
+msgstr "útvonal időablaka"
+
+#: app/templates/calendar.html:26
+msgid "Upcoming"
+msgstr "Közelgő"
+
+#: app/templates/calendar.html:27 app/templates/calendar.html:150
+#, fuzzy
+msgid "Ongoing"
+msgstr "Bejelentkezés"
+
+#: app/templates/calendar.html:28 app/templates/calendar.html:149
+msgid "Overdue"
+msgstr ""
+
+#: app/templates/calendar.html:33
+#, fuzzy
+msgid "Destination or country"
+msgstr "Úticél kurátor"
+
+#: app/templates/calendar.html:43
+#, fuzzy
+msgid "Undated Trips"
+msgstr "Tartalmazott utazások"
+
+#: app/templates/calendar.html:54
+msgid "Great, all trips already have dates."
+msgstr ""
+
+#: app/templates/calendar.html:73 app/templates/shares.html:94
+#, fuzzy
+msgid "Edit"
+msgstr "Utazás szerkesztése"
+
+#: app/templates/calendar.html:76
+#, fuzzy
+msgid "Mark Visited"
+msgstr "Meglátogatott"
+
+#: app/templates/calendar.html:107
+msgid "Today"
+msgstr "Ma"
+
+#: app/templates/calendar.html:108
+msgid "Month"
+msgstr "Hónap"
+
+#: app/templates/calendar.html:109
+msgid "Week"
+msgstr "Hét"
+
+#: app/templates/calendar.html:110
+msgid "List"
+msgstr "Lista"
+
+#: app/templates/calendar.html:152
+#, fuzzy
+msgid "days left"
+msgstr "Nap Van Hátra"
+
+#: app/templates/calendar.html:157
+#, fuzzy
+msgid "Destination"
+msgstr "Következő úticélok"
+
+#: app/templates/calendar.html:158
+#, fuzzy
+msgid "Checklist"
+msgstr "Checklist profi"
+
+#: app/templates/calendar.html:159 app/templates/shared_trip.html:255
+#: app/templates/shared_trip.html:257 app/templates/shared_trip.html:284
+#: app/templates/shared_trip.html:286
+msgid "Transport"
+msgstr "Közlekedés"
+
+#: app/templates/calendar.html:160 app/templates/settings.html:122
+msgid "Flight"
+msgstr "Repülő"
+
+#: app/templates/calendar.html:161
+#, fuzzy
+msgid "Visa required"
+msgstr "Vízum szükséges"
+
+#: app/templates/calendar.html:162
+#, fuzzy
+msgid "Plan"
+msgstr "Repülő"
+
+#: app/templates/edit_trip.html:9 app/templates/profile.html:142
+msgid "Edit Trip"
+msgstr "Utazás szerkesztése"
+
+#: app/templates/edit_trip.html:10
+msgid "Are you sure you want to delete this trip?"
+msgstr "Biztosan törölni szeretnéd ezt az utazást?"
+
+#: app/templates/edit_trip.html:11
+msgid "Delete Trip"
+msgstr "Utazás törlése"
+
+#: app/templates/edit_trip.html:24
+msgid "Update Location"
+msgstr "Helyszín frissítése"
+
+#: app/templates/edit_trip.html:38 app/templates/shared_trip.html:280
+msgid "Country"
+msgstr "Ország"
+
+#: app/templates/edit_trip.html:71
+msgid "Start Date"
+msgstr "Kezdés dátuma"
+
+#: app/templates/edit_trip.html:76
+msgid "End Date"
+msgstr "Befejezés dátuma"
+
+#: app/templates/edit_trip.html:92
+msgid "Budget (approx.)"
+msgstr "Költségvetés (kb.)"
+
+#: app/templates/edit_trip.html:107
+msgid "Accommodation (Sensitive)"
+msgstr "Szállás (Szenzitív)"
+
+#: app/templates/edit_trip.html:189 app/templates/shares.html:158
+msgid "Cancel"
+msgstr "Mégse"
+
+#: app/templates/index.html:6
+msgid "Your Journey, <span class=\"text-primary\">Simplified.</span>"
+msgstr "Utazásaid, <span class=\"text-primary\">egyszerűen.</span>"
+
+#: app/templates/index.html:7
+msgid ""
+"The ultimate companion for digital nomads to plan, track, and share their"
+" global adventures."
+msgstr ""
+"A tökéletes társ digitális nomádoknak kalandjaik tervezéséhez, "
+"követéséhez és megosztásához."
+
+#: app/templates/index.html:10
+msgid "Start Your Journey"
+msgstr "Kezdd el az utazást"
+
+#: app/templates/index.html:11
+msgid "Learn More"
+msgstr "Tudj meg többet"
+
+#: app/templates/index.html:14
+msgid "Go to Dashboard"
+msgstr "Ugrás az irányítópultra"
+
+#: app/templates/index.html:21
+msgid "Everything you need"
+msgstr "Minden, amire szükséged van"
+
+#: app/templates/index.html:22
+msgid "Professional tools for the modern traveler"
+msgstr "Professzionális eszközök a modern utazóknak"
+
+#: app/templates/index.html:31
+msgid "Dynamic Mapping"
+msgstr "Dinamikus térképek"
+
+#: app/templates/index.html:32
+msgid ""
+"Visualize your routes with professional journey lines and interactive "
+"markers."
+msgstr ""
+"Vizualizáld útvonalaidat professzionális vonalakkal és interaktív "
+"jelölőkkel."
+
+#: app/templates/index.html:42
+msgid "Travel Analytics"
+msgstr "Utazási analitika"
+
+#: app/templates/index.html:43
+msgid ""
+"Track your progress against global statistics and manage your nomad "
+"budget."
+msgstr ""
+"Kövesd a haladásodat a globális statisztikák alapján, és kezeld a nomád "
+"költségvetésedet."
+
+#: app/templates/index.html:53
+msgid "Smart Sharing"
+msgstr "Okos megosztás"
+
+#: app/templates/index.html:54
+msgid ""
+"Share collections of trips with friends through secure, beautiful landing"
+" pages."
+msgstr ""
+"Oszd meg utazásaid gyűjteményét barátaiddal biztonságos és gyönyörű "
+"oldalakon keresztül."
+
+#: app/templates/login.html:9
+msgid "Sign In to Nomad Travels"
+msgstr "Bejelentkezés a Nomad Travels-be"
+
+#: app/templates/login.html:13
+msgid "Email Address"
+msgstr "E-mail cím"
+
+#: app/templates/login.html:17
+msgid "Password"
+msgstr "Jelszó"
+
+#: app/templates/login.html:22
+msgid "Remember me"
+msgstr "Emlékezz rám"
+
+#: app/templates/login.html:27
+msgid "Quick Access"
+msgstr "Gyors elérés"
+
+#: app/templates/login.html:30
+msgid "Note: Use the CLI to seed demo data if needed:"
+msgstr "Megjegyzés: Használd a CLI-t a demó adatok feltöltéséhez, ha szükséges:"
+
+#: app/templates/profile.html:15 app/templates/shared_trip.html:14
 msgid "Jump to Current"
 msgstr "Ugrás az aktuálishoz"
 
-msgid "Exchange Rate"
-msgstr "Átváltási árfolyam"
+#: app/templates/profile.html:36
+#, fuzzy
+msgid "Ongoing Adventure"
+msgstr "Következő kaland"
 
-msgid "Dial Code"
-msgstr "Hívószám"
+#: app/templates/profile.html:40
+#, fuzzy
+msgid "Upcoming Adventure"
+msgstr "Következő kaland"
 
-msgid "Achievement Progress!"
-msgstr "Teljesítmény folyamat!"
+#: app/templates/profile.html:68
+#, fuzzy
+msgid "Live Weather"
+msgstr "Időjárás betöltése..."
+
+#: app/templates/profile.html:76 app/templates/profile.html:486
+msgid "Capital"
+msgstr ""
+
+#: app/templates/profile.html:88
+#, fuzzy
+msgid "Language"
+msgstr "Repülő"
+
+#: app/templates/profile.html:94 app/templates/profile.html:496
+msgid "Region"
+msgstr ""
+
+#: app/templates/profile.html:100 app/templates/profile.html:500
+#, fuzzy
+msgid "Population"
+msgstr "Gyűjtemény"
+
+#: app/templates/profile.html:106
+msgid "Timezone"
+msgstr ""
+
+#: app/templates/profile.html:116 app/templates/profile.html:520
+msgid "Stay"
+msgstr "Szállás"
+
+#: app/templates/profile.html:134 app/templates/profile.html:396
+#: app/templates/profile.html:408 app/templates/shared_trip.html:225
+#: app/templates/shared_trip.html:226
+msgid "View Details"
+msgstr "Részletek"
+
+#: app/templates/profile.html:138
+#, fuzzy
+msgid "Mark as Visited"
+msgstr "Meglátogatott"
+
+#: app/templates/profile.html:163
+msgid "Adventure Begins In"
+msgstr "Kaland kezdete"
+
+#: app/templates/profile.html:172 app/templates/stats.html:57
+#: app/templates/stats.html:60 app/templates/stats.html:117
+#: app/templates/stats.html:134
+msgid "days"
+msgstr "nap"
+
+#: app/templates/profile.html:206
+msgid "Visited Countries"
+msgstr "Meglátogatott országok"
+
+#: app/templates/profile.html:208
+#, python-format
+msgid "%(visited)s of %(total)s countries"
+msgstr "%(visited)s / %(total)s ország"
+
+#: app/templates/profile.html:215
+msgid "World Explorer"
+msgstr "Világjáró"
+
+#: app/templates/profile.html:226
+msgid "Next Destinations"
+msgstr "Következő úticélok"
+
+#: app/templates/profile.html:228
+msgid "Future plans"
+msgstr "Jövőbeli tervek"
+
+#: app/templates/profile.html:235
+msgid "Remaining"
+msgstr "Hátralévő"
+
+#: app/templates/profile.html:237
+msgid "Countries to explore"
+msgstr "Felfedezésre váró országok"
+
+#: app/templates/profile.html:252 app/templates/profile.html:269
+msgid "NEW"
+msgstr "ÚJ"
+
+#: app/templates/profile.html:257
+msgid "All Achievements"
+msgstr "Összes kitüntetés"
+
+#: app/templates/profile.html:260
+msgid "Detailed Statistics"
+msgstr "Részletes statisztika"
+
+#: app/templates/profile.html:417 app/templates/profile.html:423
+#: app/templates/shared_trip.html:154 app/templates/shared_trip.html:237
+#: app/templates/shares.html:77 app/templates/shares.html:139
+#: app/templates/stats.html:83 app/templates/stats.html:111
+#: app/templates/stats.html:128 app/templates/trip_detail.html:11
+#, python-format
+msgid "Country: %(country)s"
+msgstr "Ország: %(country)s"
+
+#: app/templates/profile.html:439 app/templates/shared_trip.html:133
+#: app/templates/shared_trip.html:247 app/templates/shared_trip.html:249
+#: app/templates/shared_trip.html:282
+msgid "Flexible"
+msgstr "Rugalmas"
+
+#: app/templates/profile.html:530
+msgid "Not set"
+msgstr "Nincs megadva"
+
+#: app/templates/settings.html:6
+msgid "User settings"
+msgstr ""
+
+#: app/templates/settings.html:7
+#, fuzzy
+msgid "Back to dashboard"
+msgstr "Vissza az irányítópultra"
+
+#: app/templates/settings.html:15 app/templates/settings.html:27
+msgid "Personal"
+msgstr ""
+
+#: app/templates/settings.html:18 app/templates/settings.html:234
+#, fuzzy
+msgid "Security"
+msgstr "Város kiválasztása"
+
+#: app/templates/settings.html:21 app/templates/settings.html:260
+msgid "Services"
+msgstr ""
+
+#: app/templates/settings.html:28
+msgid "Manage your profile and default trip preferences."
+msgstr ""
+
+#: app/templates/settings.html:35
+msgid "Profile icon is generated automatically from your name."
+msgstr ""
+
+#: app/templates/settings.html:39
+msgid "Name"
+msgstr ""
+
+#: app/templates/settings.html:44
+msgid "Email"
+msgstr ""
+
+#: app/templates/settings.html:49
+#, fuzzy
+msgid "Save account"
+msgstr "Ország kiválasztása"
+
+#: app/templates/settings.html:58
+msgid "Regional defaults"
+msgstr ""
+
+#: app/templates/settings.html:59
+msgid "Set language and formatting defaults for your planning workflow."
+msgstr ""
+
+#: app/templates/settings.html:62
+msgid "App language"
+msgstr ""
+
+#: app/templates/settings.html:70
+msgid "Default currency"
+msgstr ""
+
+#: app/templates/settings.html:80
+#, fuzzy
+msgid "Week starts on"
+msgstr "Kezdés"
+
+#: app/templates/settings.html:82
+#, fuzzy
+msgid "Monday"
+msgstr "Ma"
+
+#: app/templates/settings.html:83
+#, fuzzy
+msgid "Sunday"
+msgstr "Szállás"
+
+#: app/templates/settings.html:88
+#, fuzzy
+msgid "Date format"
+msgstr "Helyszín frissítése"
+
+#: app/templates/settings.html:97
+#, fuzzy
+msgid "Home country"
+msgstr "Ország"
+
+#: app/templates/settings.html:110
+#, fuzzy
+msgid "Default trip status"
+msgstr "Utazás törlése"
+
+#: app/templates/settings.html:119
+#, fuzzy
+msgid "Default transport mode"
+msgstr "Közlekedési mód"
+
+#: app/templates/settings.html:123
+msgid "Train"
+msgstr "Vonat"
+
+#: app/templates/settings.html:124
+msgid "Bus"
+msgstr "Busz"
+
+#: app/templates/settings.html:125
+msgid "Car"
+msgstr "Autó"
+
+#: app/templates/settings.html:126
+msgid "Ferry"
+msgstr "Komp"
+
+#: app/templates/settings.html:134
+msgid "Planning defaults"
+msgstr ""
+
+#: app/templates/settings.html:135
+msgid "Tune how trips and shared plans are pre-filled."
+msgstr ""
+
+#: app/templates/settings.html:138
+msgid "Distance unit"
+msgstr ""
+
+#: app/templates/settings.html:140
+msgid "Metric (km)"
+msgstr ""
+
+#: app/templates/settings.html:141
+msgid "Imperial (mi)"
+msgstr ""
+
+#: app/templates/settings.html:146
+msgid "Planning horizon"
+msgstr ""
+
+#: app/templates/settings.html:148 app/templates/settings.html:161
+#, fuzzy
+msgid "30 days"
+msgstr "nap"
+
+#: app/templates/settings.html:149
+#, fuzzy
+msgid "60 days"
+msgstr "nap"
+
+#: app/templates/settings.html:150 app/templates/settings.html:162
+#, fuzzy
+msgid "90 days"
+msgstr "nap"
+
+#: app/templates/settings.html:151
+#, fuzzy
+msgid "180 days"
+msgstr "nap"
+
+#: app/templates/settings.html:152
+#, fuzzy
+msgid "365 days"
+msgstr "nap"
+
+#: app/templates/settings.html:157
+msgid "Default share expiration"
+msgstr ""
+
+#: app/templates/settings.html:159
+#, fuzzy
+msgid "Never expires"
+msgstr "Lejár"
+
+#: app/templates/settings.html:160
+#, fuzzy
+msgid "7 days"
+msgstr "nap"
+
+#: app/templates/settings.html:170
+msgid "Start page after login"
+msgstr ""
+
+#: app/templates/settings.html:175 app/templates/shares.html:6
+msgid "Shared Links"
+msgstr "Megosztott Linkek"
+
+#: app/templates/settings.html:181
+msgid "Privacy defaults"
+msgstr ""
+
+#: app/templates/settings.html:182
+msgid "Protect sensitive travel details by default."
+msgstr ""
+
+#: app/templates/settings.html:185
+#, fuzzy
+msgid "Trip details"
+msgstr "Részletek"
+
+#: app/templates/settings.html:188
+msgid "Keep notes private by default"
+msgstr ""
+
+#: app/templates/settings.html:193
+#, fuzzy
+msgid "Transport details"
+msgstr "Közlekedési mód"
+
+#: app/templates/settings.html:196
+msgid "Hide sensitive transport references by default"
+msgstr ""
+
+#: app/templates/settings.html:201
+#, fuzzy
+msgid "Lifecycle"
+msgstr "Kerékpár"
+
+#: app/templates/settings.html:204
+msgid "Auto-archive visited trips"
+msgstr ""
+
+#: app/templates/settings.html:212
+msgid "Layout density"
+msgstr ""
+
+#: app/templates/settings.html:215
+msgid "Use compact cards and tighter spacing"
+msgstr ""
+
+#: app/templates/settings.html:220
+#, fuzzy
+msgid "Notifications"
+msgstr "Nincs aktív hely"
+
+#: app/templates/settings.html:223
+#, fuzzy
+msgid "Disable achievement toast popups"
+msgstr "Összes kitüntetés"
+
+#: app/templates/settings.html:228
+msgid "Save preferences"
+msgstr ""
+
+#: app/templates/settings.html:235
+msgid "Change your password to keep your account safe."
+msgstr ""
+
+#: app/templates/settings.html:239
+#, fuzzy
+msgid "Current password"
+msgstr "aktuális állomás"
+
+#: app/templates/settings.html:244
+#, fuzzy
+msgid "New password"
+msgstr "Jelszó"
+
+#: app/templates/settings.html:249
+msgid "Confirm new password"
+msgstr ""
+
+#: app/templates/settings.html:254
+#, fuzzy
+msgid "Update password"
+msgstr "Jelszó"
+
+#: app/templates/settings.html:261
+msgid "Configure external integrations used by the application."
+msgstr ""
+
+#: app/templates/settings.html:295
+msgid "Leave empty to keep existing key"
+msgstr ""
+
+#: app/templates/settings.html:298
+msgid "Clear stored API key"
+msgstr ""
+
+#: app/templates/settings.html:310
+#, fuzzy
+msgid "Test connection"
+msgstr "Gyűjtemény szerkesztése"
+
+#: app/templates/settings.html:312
+#, fuzzy
+msgid "Save settings"
+msgstr "Módosítások mentése"
+
+#: app/templates/shared_trip.html:45
+#, fuzzy
+msgid "Dates"
+msgstr "nap"
+
+#: app/templates/shared_trip.html:52
+#, fuzzy
+msgid "Flexible dates"
+msgstr "Rugalmas"
+
+#: app/templates/shared_trip.html:59
+#, fuzzy
+msgid "Current Time"
+msgstr "aktuális állomás"
+
+#: app/templates/shared_trip.html:68
+#, fuzzy
+msgid "Weather"
+msgstr "EU Mester"
+
+#: app/templates/shared_trip.html:73 app/templates/shared_trip.html:372
+#, fuzzy
+msgid "Loading..."
+msgstr "Időjárás betöltése..."
+
+#: app/templates/shared_trip.html:80
+#, fuzzy
+msgid "Travel Mode"
+msgstr "Utazási megjegyzések"
+
+#: app/templates/shared_trip.html:116
+msgid "Public Adventures"
+msgstr "Nyilvános kalandok"
+
+#: app/templates/shared_trip.html:131 app/templates/shared_trip.html:282
+#, python-format
+msgid "%(days)s days"
+msgstr "%(days)s nap"
+
+#: app/templates/shared_trip.html:136
+msgid "journey window"
+msgstr "útvonal időablaka"
+
+#: app/templates/shared_trip.html:139
+#, python-format
+msgid "from %(start)s to %(end)s"
+msgstr "%(start)s - %(end)s"
+
+#: app/templates/shared_trip.html:141
+msgid "No fixed dates"
+msgstr "Nincs rögzített dátum"
+
+#: app/templates/shared_trip.html:148
+msgid "countries"
+msgstr "ország"
+
+#: app/templates/shared_trip.html:164
+msgid "cities"
+msgstr "város"
+
+#: app/templates/shared_trip.html:172
+msgid "No active location"
+msgstr "Nincs aktív hely"
+
+#: app/templates/shared_trip.html:176
+msgid "current location"
+msgstr "aktuális hely"
+
+#: app/templates/shared_trip.html:182
+msgid "City not specified"
+msgstr "A város nincs megadva"
+
+#: app/templates/shared_trip.html:184
+msgid "No active trip right now"
+msgstr "Jelenleg nincs aktív utazás"
+
+#: app/templates/shared_trip.html:190
+#, python-format
+msgid "Published on %(date)s"
+msgstr "Közzétéve: %(date)s"
+
+#: app/templates/shared_trip.html:192
+#, python-format
+msgid "Itinerary highlights added for %(count)s stop(s)"
+msgstr "%(count)s állomáshoz tartozik kiemelt program"
+
+#: app/templates/shared_trip.html:194
+#, python-format
+msgid "Photo albums linked for %(count)s stop(s)"
+msgstr "%(count)s állomáshoz kapcsolódik fotóalbum"
+
+#: app/templates/shared_trip.html:257 app/templates/shared_trip.html:286
+msgid "Private"
+msgstr ""
+
+#: app/templates/shared_trip.html:260
+msgid "Visa Required"
+msgstr "Vízum szükséges"
+
+#: app/templates/shared_trip.html:272
+msgid "Open photo gallery"
+msgstr "Fotógaléria megnyitása"
+
+#: app/templates/shared_trip.html:279
+msgid "Trip snapshot"
+msgstr ""
+
+#: app/templates/shared_trip.html:282
+#, fuzzy
+msgid "Duration"
+msgstr "Vonat"
+
+#: app/templates/shared_trip.html:288
+msgid "Visa"
+msgstr "Vízum"
+
+#: app/templates/shared_trip.html:288
+#, fuzzy
+msgid "Required"
+msgstr "Vízum szükséges"
+
+#: app/templates/shared_trip.html:288
+#, fuzzy
+msgid "Not required"
+msgstr "Vízum szükséges"
+
+#: app/templates/shared_trip.html:292
+msgid "The Plan"
+msgstr "A terv"
+
+#: app/templates/shared_trip.html:305
+msgid "Photos"
+msgstr "Fotók"
+
+#: app/templates/shared_trip.html:317
+msgid "Click an image to open and navigate with arrows."
+msgstr "Kattints egy képre a megnyitáshoz, majd lapozz a nyilakkal."
+
+#: app/templates/shared_trip.html:328
+msgid "Inspired by this journey?"
+msgstr "Inspirált ez az utazás?"
+
+#: app/templates/shared_trip.html:329
+msgid "Start planning your own global adventures with Nomad Travels."
+msgstr ""
+"Kezdd el tervezni saját globális kalandjaidat a Nomad Travels "
+"segítségével."
+
+#: app/templates/shared_trip.html:331
+msgid "Start Planning"
+msgstr "Tervezés indítása"
+
+#: app/templates/shared_trip.html:332
+msgid "Print View"
+msgstr "Nyomtatási nézet"
+
+#: app/templates/shared_trip.html:335
+msgid ""
+"This is a secure, read-only public view. Personal data like exact "
+"accommodation or budget details are protected."
+msgstr ""
+"Ez egy biztonságos, csak olvasható nyilvános nézet. A személyes adatok, "
+"mint a pontos szállás vagy a költségvetés részletei, védettek."
+
+#: app/templates/shared_trip.html:390
+msgid "N/A"
+msgstr ""
+
+#: app/templates/shared_trip.html:395
+#, fuzzy
+msgid "Error"
+msgstr "Komp"
+
+#: app/templates/shares.html:7
+msgid "Manage your collections of shared travel experiences."
+msgstr "Kezeld a megosztott utazási élményeid gyűjteményét."
+
+#: app/templates/shares.html:16
+msgid "No shared links yet"
+msgstr "Még nincsek megosztott linkek"
+
+#: app/templates/shares.html:17
+msgid ""
+"Select trips on your dashboard and click \"Share Selected\" to create "
+"your first public collection."
+msgstr ""
+"Válassz ki utazásokat az irányítópulton, és kattints a \"Kijelöltek "
+"megosztása\" gombra az első nyilvános gyűjteményed létrehozásához."
+
+#: app/templates/shares.html:28
+msgid "Collection"
+msgstr "Gyűjtemény"
+
+#: app/templates/shares.html:31
+msgid "Created on"
+msgstr "Létrehozva"
+
+#: app/templates/shares.html:36
+msgid "Expires"
+msgstr "Lejár"
+
+#: app/templates/shares.html:48
+msgid "Total Views"
+msgstr "Összes megtekintés"
+
+#: app/templates/shares.html:53
+msgid "Unique Visitors"
+msgstr "Egyedi látogatók"
+
+#: app/templates/shares.html:58
+msgid "Shareable URL"
+msgstr "Megosztható URL"
+
+#: app/templates/shares.html:66
+msgid "Included Trips"
+msgstr "Tartalmazott utazások"
+
+#: app/templates/shares.html:93
+msgid "View Public Page"
+msgstr "Nyilvános oldal megtekintése"
+
+#: app/templates/shares.html:95
+#, fuzzy
+msgid "Are you sure?"
+msgstr "Kezdd el az utazást"
+
+#: app/templates/shares.html:96
+#, fuzzy
+msgid "Delete"
+msgstr "Utazás törlése"
+
+#: app/templates/shares.html:108
+msgid "Edit Collection"
+msgstr "Gyűjtemény szerkesztése"
+
+#: app/templates/shares.html:114
+msgid "Collection Title"
+msgstr "Gyűjtemény címe"
+
+#: app/templates/shares.html:115
+msgid "e.g. My Summer in Europe"
+msgstr ""
+
+#: app/templates/shares.html:118
+msgid "Notes / Story"
+msgstr "Megjegyzések / Történet"
+
+#: app/templates/shares.html:119
+msgid "Tell your viewers about this collection..."
+msgstr ""
+
+#: app/templates/shares.html:122
+msgid "Expiration Date"
+msgstr "Lejárati dátum"
+
+#: app/templates/shares.html:124
+msgid "Leave empty for no expiration"
+msgstr ""
+
+#: app/templates/shares.html:128
+msgid "Trips to Include"
+msgstr "Belefoglalandó utazások"
+
+#: app/templates/shares.html:159
+msgid "Save Changes"
+msgstr "Módosítások mentése"
+
+#: app/templates/stats.html:10
+msgid "Detailed Travel Statistics"
+msgstr "Részletes utazási statisztika"
+
+#: app/templates/stats.html:20
+#, fuzzy
+msgid "Countries Visited"
+msgstr "ország"
+
+#: app/templates/stats.html:32
+msgid "Total Trips"
+msgstr "Összes utazás"
+
+#: app/templates/stats.html:34
+msgid "done"
+msgstr ""
+
+#: app/templates/stats.html:34
+#, fuzzy
+msgid "planned"
+msgstr "Tervezett"
+
+#: app/templates/stats.html:39
+#, fuzzy
+msgid "Days Traveled"
+msgstr "nap / kaland"
+
+#: app/templates/stats.html:41
+msgid "days avg/trip"
+msgstr ""
+
+#: app/templates/stats.html:46
+msgid "Financials"
+msgstr ""
+
+#: app/templates/stats.html:49
+#, fuzzy
+msgid "day"
+msgstr "nap"
+
+#: app/templates/stats.html:49
+msgid "avg"
+msgstr ""
+
+#: app/templates/stats.html:56
+#, fuzzy
+msgid "Avg trips/year"
+msgstr "átlag / út"
+
+#: app/templates/stats.html:57
+msgid "Longest break"
+msgstr ""
+
+#: app/templates/stats.html:60
+#, fuzzy
+msgid "Next trip in"
+msgstr "következő állomás"
+
+#: app/templates/stats.html:62
+#, fuzzy
+msgid "No upcoming planned trip"
+msgstr "Nincs közelgő állomás"
+
+#: app/templates/stats.html:73
+#, fuzzy
+msgid "Popular Destinations"
+msgstr "Következő úticélok"
+
+#: app/templates/stats.html:81 app/templates/stats.html:108
+#: app/templates/stats.html:125
+msgid "Unknown"
+msgstr ""
+
+#: app/templates/stats.html:90
+#, fuzzy
+msgid "visits"
+msgstr "látogató"
+
+#: app/templates/stats.html:95
+#, fuzzy
+msgid "No destinations yet."
+msgstr "Következő úticélok"
+
+#: app/templates/stats.html:101
+msgid "Journey Highlights"
+msgstr ""
+
+#: app/templates/stats.html:106
+#, fuzzy
+msgid "Longest Trip"
+msgstr "Utazás Kezelése"
+
+#: app/templates/stats.html:123
+#, fuzzy
+msgid "Shortest Trip"
+msgstr "Utazás szerkesztése"
+
+#: app/templates/stats.html:147
+msgid "Travel Frequency"
+msgstr "Utazási gyakoriság"
+
+#: app/templates/stats.html:162
+msgid "Plan more trips to see history..."
+msgstr "Tervezz több utat az előzmények megtekintéséhez..."
+
+#: app/templates/stats.html:172
+#, fuzzy
+msgid "Transportation"
+msgstr "Közlekedés"
+
+#: app/templates/stats.html:191
+#, fuzzy
+msgid "No transport data."
+msgstr "Nincs rögzített közlekedési adat"
+
+#: app/templates/stats.html:199
+#, fuzzy
+msgid "Annual Status"
+msgstr "Állapot"
+
+#: app/templates/stats.html:206
+msgid "trips"
+msgstr "utazás"
+
+#: app/templates/stats.html:211
+#, fuzzy
+msgid "No history."
+msgstr "Megjegyzések / Történet"
+
+#~ msgid "No details available."
+#~ msgstr "Nincs elérhető részlet."
+
+#~ msgid "Outbound"
+#~ msgstr "Odaút"
+
+#~ msgid "Intercity"
+#~ msgstr "Helyközi"
+
+#~ msgid "Local"
+#~ msgstr "Helyi"
+
+#~ msgid "Outbound Ref (optional)"
+#~ msgstr "Odaút azonosító (opcionális)"
+
+#~ msgid "Intercity Ref (optional)"
+#~ msgstr "Helyközi azonosító (opcionális)"
+
+#~ msgid "Local Ref (optional)"
+#~ msgstr "Helyi azonosító (opcionális)"
+
+#~ msgid "Days"
+#~ msgstr "Nap"
+
+#~ msgid "Hours"
+#~ msgstr "Óra"
+
+#~ msgid "Minutes"
+#~ msgstr "Perc"
+
+#~ msgid "Seconds"
+#~ msgstr "Másodperc"
+
+#~ msgid "Trip Progress"
+#~ msgstr "Utazás Haladása"
+
+#~ msgid "Globetrotter"
+#~ msgstr "Világutazó"
+
+#~ msgid "25 countries visited. You're practically living out of a suitcase!"
+#~ msgstr "25 meglátogatott ország. Gyakorlatilag a bőrödből élsz!"
+
+#~ msgid "Sky Captain"
+#~ msgstr "Égi Kapitány"
+
+#~ msgid "15 flights completed. The sky is your second home."
+#~ msgstr "15 repülés teljesítve. Az ég a második otthonod."
+
+#~ msgid "Train Enthusiast"
+#~ msgstr "Vonat Rajongó"
+
+#~ msgid "Loving the rhythm of the rails. 5 train journeys completed."
+#~ msgstr "Szereted a sínek ritmusát. 5 vonatút teljesítve."
+
+#~ msgid "Weekend Warrior"
+#~ msgstr "Hétvégi Harcos"
+
+#~ msgid "5 short trips (less than 4 days) completed."
+#~ msgstr "5 rövid utazás (kevesebb mint 4 nap) teljesítve."
+
+#~ msgid "Long Hauler"
+#~ msgstr "Hosszútávú Utazó"
+
+#~ msgid "You've completed a trip longer than 14 days. True nomad!"
+#~ msgstr "Teljesítettél egy 14 napnál hosszabb utat. Igazi nomád!"
+
+#~ msgid "Yearly Breakdown"
+#~ msgstr "Éves bontás"
+
+#~ msgid "No years recorded."
+#~ msgstr "Még nincsenek rögzített évek."
+
+#~ msgid "Total Budget"
+#~ msgstr "Teljes költségkeret"
+
+#~ msgid "Total journey time"
+#~ msgstr "Teljes utazási idő"
+
+#~ msgid "Average Trip"
+#~ msgstr "Átlagos utazás"
+
+#~ msgid "Travel Frequency (Trips per Month)"
+#~ msgstr "Utazási gyakoriság (utazás / hónap)"
+
+#~ msgid "Top Transportation Modes"
+#~ msgstr "Leggyakoribb közlekedési eszközök"
+
+#~ msgid "No transport data recorded yet."
+#~ msgstr "Még nincs rögzített közlekedési adat."
+
+#~ msgid "Until adventure begins"
+#~ msgstr "a kaland kezdetéig"
+
+#~ msgid "of {total} countries"
+#~ msgstr "/ {total} ország"
+
+#~ msgid "Your Achievements & Statistics"
+#~ msgstr "Eredményeid és statisztikák"
+
+#~ msgid "Advanced Stats"
+#~ msgstr "Részletes statisztika"
+
+#~ msgid "Total Days"
+#~ msgstr "Összes nap"
+
+#~ msgid "Avg. Length"
+#~ msgstr "Átlagos hossz"
+
+#~ msgid "Top Transport"
+#~ msgstr "Kedvenc közlekedés"
+
+#~ msgid "Ship"
+#~ msgstr "Hajó"
+
+#~ msgid "Walking"
+#~ msgstr "Gyalog"
+
+#~ msgid "stops"
+#~ msgstr "megálló"
+
+#~ msgid "Early Bird"
+#~ msgstr "Korai madár"
+
+#~ msgid "Congratulations on creating your first travel plan!"
+#~ msgstr "Gratulálunk az első utazási terved elkészítéséhez!"
+
+#~ msgid "First Steps"
+#~ msgstr "Első lépések"
+
+#~ msgid "The ice is broken, the exploration of the world has begun!"
+#~ msgstr "A jég megtört, a világ felfedezése elkezdődött!"
+
+#~ msgid "You are already considered a seasoned traveler in the world."
+#~ msgstr "Már tapasztalt utazónak számítasz a világban."
+
+#~ msgid "Euro-Traveler"
+#~ msgstr "Európa-utazó"
+
+#~ msgid "The gates of Europe are open before you."
+#~ msgstr "Európa kapui nyitva állnak előtted."
+
+#~ msgid "Frequent Flyer"
+#~ msgstr "Törzsutas"
+
+#~ msgid "You spend more time in the air than on the ground!"
+#~ msgstr "Több időt töltesz a levegőben, mint a földön!"
+
+#~ msgid "Road Warrior"
+#~ msgstr "Az utak királya"
+
+#~ msgid "Nothing beats a good old road trip."
+#~ msgstr "Semmi sem ér fel egy régi jó autós úttal."
+
+#~ msgid "You are the uncrowned king of the European Union!"
+#~ msgstr "Te vagy az Európai Unió koronázatlan királya!"
+
+#~ msgid "Are you sure you want to delete this sharing link?"
+#~ msgstr "Biztosan törölni szeretnéd ezt a megosztási linket?"
+
+#~ msgid "Published on {date}"
+#~ msgstr "Közzétéve: {date}"
+
+#~ msgid "Travel Details & Logistics"
+#~ msgstr "Utazási részletek és logisztika"
+
+#~ msgid "Expected Expenses"
+#~ msgstr "Várható költségek"
+
+#~ msgid "Events & Milestones"
+#~ msgstr "Események és mérföldkövek"
+
+#~ msgid "Select a country first..."
+#~ msgstr "Előbb válassz országot..."
+
+#~ msgid "Or type manually if not in list:"
+#~ msgstr "Vagy írd be kézzel, ha nincs a listában:"
+
+#~ msgid "Type city name..."
+#~ msgstr "Írd be a város nevét..."
+
+#~ msgid "e.g. Hotel, Airbnb address... (Private)"
+#~ msgstr "pl. Hotel, Airbnb cím... (Privát)"
+
+#~ msgid "Flight/Ticket #"
+#~ msgstr "Járat/Jegy szám"
+
+#~ msgid "e.g. LH1234"
+#~ msgstr "pl. LH1234"
+
+#~ msgid ""
+#~ "Explore more countries, track your "
+#~ "budget, and share your adventures to "
+#~ "unlock all 20+ specialized badges. Each"
+#~ " badge represents a milestone in your"
+#~ " nomadic journey."
+#~ msgstr ""
+#~ "Fedezz fel több országot, kövesd a "
+#~ "költségvetésedet és oszd meg kalandjaidat, "
+#~ "hogy feloldd mind a 20+ speciális "
+#~ "kitüntetést. Minden jelvény egy mérföldkövet"
+#~ " jelent a nomád utad során."
+
+#~ msgid "Early Adopter"
+#~ msgstr "Korai felhasználó"
+
+#~ msgid "Created your account in the early days of Nomad Planner."
+#~ msgstr "A Nomad Planner korai napjaiban hoztad létre a fiókodat."
+
+#~ msgid "Budget Master"
+#~ msgstr "Költségvetés mestere"
+
+#~ msgid "Tracked expenses for at least 10 trips."
+#~ msgstr "Legalább 10 utazásnál rögzítettél költségeket."
+
+#~ msgid "Completed all items in a packing list for 5 different trips."
+#~ msgstr "Minden tételt kipipáltál a csomagolási listán 5 különböző utazásnál."
+
+#~ msgid "Planner Addict"
+#~ msgstr "Tervezés függő"
+
+#~ msgid "Have at least 15 planned (not yet visited) trips in your account."
+#~ msgstr "Legalább 15 tervezett (még nem meglátogatott) utazásod van."
+
+#~ msgid "Social Butterfly"
+#~ msgstr "Társasági pillangó"
+
+#~ msgid "Created and shared 5 public travel links."
+#~ msgstr "5 nyilvános utazási linket hoztál létre és osztottál meg."
+
+#~ msgid "Africa Explorer"
+#~ msgstr "Afrika felfedezője"
+
+#~ msgid "Visited 3 different countries in Africa."
+#~ msgstr "3 különböző afrikai országban jártál."
+
+#~ msgid "Asia Adventurer"
+#~ msgstr "Ázsiai kalandor"
+
+#~ msgid "Visited 5 different countries in Asia."
+#~ msgstr "5 különböző ázsiai országban jártál."
+
+#~ msgid "America Voyager"
+#~ msgstr "Amerika vándora"
+
+#~ msgid "Visited 5 different countries across the Americas."
+#~ msgstr "5 különböző országban jártál az amerikai kontinensen."
+
+#~ msgid "Oceania Discoverer"
+#~ msgstr "Óceánia felfedezője"
+
+#~ msgid "Visited 3 different countries in Oceania."
+#~ msgstr "3 különböző országban jártál Óceániában."
+
+#~ msgid "Discovery of America"
+#~ msgstr "Amerika felfedezése"
+
+#~ msgid "Visited both the United States and Canada."
+#~ msgstr "Meglátogattad az Egyesült Államokat és Kanadát is."
+
+#~ msgid "Latino Traveler"
+#~ msgstr "Latino utazó"
+
+#~ msgid "Visited 3 different countries in South or Central America."
+#~ msgstr "3 különböző országban jártál Dél- vagy Közép-Amerikában."
+
+#~ msgid "Nomad Legend"
+#~ msgstr "Nomád legenda"
+
+#~ msgid "Completed 50 trips in total. You are a legend!"
+#~ msgstr "Összesen 50 utazást teljesítettél. Te egy legenda vagy!"
+
+#~ msgid "Night Owl"
+#~ msgstr "Éjszakai bagoly"
+
+#~ msgid "Logged into the app 5 times between midnight and 4 AM."
+#~ msgstr "5 alkalommal jelentkeztél be éjfél és hajnali 4 óra között."
+
+#~ msgid "Share Ambassador"
+#~ msgstr "Megosztási nagykövet"
+
+#~ msgid "Created 10 shared travel links."
+#~ msgstr "10 megosztott utazási linket hoztál létre."
+
+#~ msgid "Visa Navigator"
+#~ msgstr "Vízum navigátor"
+
+#~ msgid "Completed 5 trips where a visa was required."
+#~ msgstr "5 olyan utat teljesítettél, ahol vízumra volt szükség."
+
+#~ msgid "Logged map coordinates for 10 visited trips."
+#~ msgstr "10 meglátogatott útnál rögzítetted a térképkoordinátákat."
+
+#~ msgid "Itinerary Architect"
+#~ msgstr "Útiterv építész"
+
+#~ msgid "Added detailed attractions to 12 trips."
+#~ msgstr "12 utazáshoz adtál meg részletes látnivalókat."
+
+#~ msgid "Multi-modal Master"
+#~ msgstr "Többmódos mester"
+
+#~ msgid "Used at least 4 different transport modes on visited trips."
+#~ msgstr ""
+#~ "Legalább 4 különböző közlekedési módot "
+#~ "használtál a meglátogatott utakon."
+
+#~ msgid "Season Hopper"
+#~ msgstr "Évszakugró"
+
+#~ msgid "Completed visited trips in all four seasons."
+#~ msgstr "Mind a négy évszakban teljesítettél meglátogatott utat."
+
+#~ msgid "Year Rounder"
+#~ msgstr "Egész éves utazó"
+
+#~ msgid "Visited trips across at least 3 different years."
+#~ msgstr "Legalább 3 különböző évben volt meglátogatott utad."
+
+#~ msgid "Journey Marathon"
+#~ msgstr "Utazási maraton"
+
+#~ msgid "Completed 10 long trips (7+ days each)."
+#~ msgstr "10 hosszú utat teljesítettél (mindegyik legalább 7 napos)."
+
+#~ msgid "Continent Collector"
+#~ msgstr "Kontinens gyűjtő"
+
+#~ msgid "Visited at least 3 different world regions."
+#~ msgstr "Legalább 3 különböző világrégióban jártál."
+
+#~ msgid "Continent Conqueror"
+#~ msgstr "Kontinens hódító"
+
+#~ msgid "Visited countries in all tracked world regions."
+#~ msgstr "Minden nyomon követett világrégióban jártál országokban."
+
+#~ msgid "Bus Explorer"
+#~ msgstr "Buszos felfedező"
+
+#~ msgid "Ferry Rider"
+#~ msgstr "Komputazó"
+
+#~ msgid "Completed 3 visited trips by ferry."
+#~ msgstr "3 meglátogatott utat teljesítettél komppal."
+
+#~ msgid "Draft Strategist"
+#~ msgstr "Piszkozat stratéga"
+
+#~ msgid "Built up 10 draft trip ideas."
+#~ msgstr "10 piszkozat utazási ötletet gyűjtöttél össze."
+
+#~ msgid "Saved 20 trips with clear destination and country data."
+#~ msgstr "20 utazást mentettél egyértelmű úti cél- és országinformációval."
+
+#~ msgid "Checklist Commander"
+#~ msgstr "Checklist parancsnok"
+
+#~ msgid "Fully completed checklists for 12 different trips."
+#~ msgstr "12 különböző utazáshoz teljesen kitöltötted a checklistet."
+
+#~ msgid "Map Archivist"
+#~ msgstr "Térkép archivista"
+
+#~ msgid "Saved map coordinates on 20 trips."
+#~ msgstr "20 utazáshoz mentettél térképkoordinátát."
+
+#~ msgid "Consistent Traveler"
+#~ msgstr "Következetes utazó"
+
+#~ msgid "Completed at least one visited trip in 5 different years."
+#~ msgstr ""
+#~ "Legalább 5 különböző évben teljesítettél "
+#~ "legalább egy meglátogatott utat."
+
+#~ msgid "Monthly Momentum"
+#~ msgstr "Havi lendület"
+
+#~ msgid "Visited trips in at least 8 different months of the year."
+#~ msgstr "Az év legalább 8 különböző hónapjában volt meglátogatott utad."
+
+#~ msgid "to prepare"
+#~ msgstr "előkészítendő"
+
+#~ msgid "Visa checks needed for %(count)s stop(s)"
+#~ msgstr "%(count)s állomásnál szükséges vízumellenőrzés"
+
+#~ msgid "1 %(foreign)s = %(rate)s %(local)s"
+#~ msgstr "1 %(foreign)s = %(rate)s %(local)s"
+
+#~ msgid "Exchange Rate"
+#~ msgstr "Átváltási árfolyam"
+
+#~ msgid "Now in %(city)s"
+#~ msgstr "Most itt: %(city)s"
+
+#~ msgid "%(city)s on %(date)s"
+#~ msgstr "%(city)s - %(date)s"
+
+#~ msgid "%(city)s (flexible date)"
+#~ msgstr "%(city)s (rugalmas dátum)"
+
+#~ msgid "View all cities (%(count)s)"
+#~ msgstr "Összes város megtekintése (%(count)s)"
+
+#~ msgid "Cities in this shared journey"
+#~ msgstr "Városok ebben a megosztott útvonalban"
+
+#~ msgid "up next"
+#~ msgstr "következő"
+
+#~ msgid "No current stop"
+#~ msgstr "Nincs aktuális állomás"
+
+#~ msgid "Green Traveler"
+#~ msgstr "Zöld utazó"
+
+#~ msgid "Completed 5 journeys by train or bike. Mother Earth thanks you!"
+#~ msgstr ""
+#~ "5 utazást teljesítettél vonattal vagy "
+#~ "kerékpárral. Földanya köszöni neked!"
+
+#~ msgid "Photo Enthusiast"
+#~ msgstr "Fotó rajongó"
+
+#~ msgid "Connected 3 trips with Immich albums. Capturing memories!"
+#~ msgstr "3 utazást kötöttél össze Immich albumokkal. Emlékek megörökítve!"
+
+#~ msgid "Notes Master"
+#~ msgstr "Jegyzet mester"
+
+#~ msgid "Wrote detailed notes for 10 different trips."
+#~ msgstr "Részletes jegyzeteket írtál 10 különböző utazáshoz."
+
+#~ msgid "Adventure Planner"
+#~ msgstr "Kaland tervező"
+
+#~ msgid "Added at least 5 attractions to a single trip."
+#~ msgstr "Legalább 5 látnivalót adtál hozzá egyetlen utazáshoz."
+
+#~ msgid "Cash Conscious"
+#~ msgstr "Pénztudatos"
+
+#~ msgid "Used a non-USD default currency to manage your nomad life."
+#~ msgstr ""
+#~ "Nem USD alapú alapértelmezett pénznemet "
+#~ "használtál a nomád életed kezeléséhez."
+
+#~ msgid "Dial Code"
+#~ msgstr "Hívószám"
+
