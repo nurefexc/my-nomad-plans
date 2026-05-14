@@ -105,7 +105,8 @@
 
                                 <div class="mb-0">
                                     <label for="accommodation" class="form-label fw-bold">{{ _('Accommodation (Sensitive)') }}</label>
-                                    <input type="text" name="accommodation" class="form-control" id="accommodation" value="{{ trip.accommodation }}" placeholder="{{ _('e.g. Hotel, Airbnb address... (Private)') }}">
+                                    <input type="text" name="accommodation" class="form-control" id="accommodation" value="{{ trip.accommodation }}" placeholder="{{ _('e.g. Hotel name, Airbnb/Booking link...') }}">
+                                    <small class="text-muted">{{ _('Links are automatically detected and marked.') }}</small>
                                 </div>
                             </div>
                         </div>

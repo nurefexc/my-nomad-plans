@@ -86,6 +86,81 @@
         }
     }
 
+    class Carousel {
+        constructor(element, options) {
+            this.element = element;
+            this.options = options || {};
+            this.items = qsa('.carousel-item', this.element);
+            this.isAnimating = false;
+            this.activeIndex = this.items.findIndex(item => item.classList.contains('active'));
+            if (this.activeIndex === -1 && this.items.length > 0) {
+                this.activeIndex = 0;
+                this.items[0].classList.add('active');
+            }
+        }
+
+        static getOrCreateInstance(element) {
+            if (!element) return null;
+            if (!element.__nomadCarouselInstance) {
+                element.__nomadCarouselInstance = new Carousel(element);
+            }
+            return element.__nomadCarouselInstance;
+        }
+
+        to(index) {
+            if (index < 0 || index >= this.items.length || index === this.activeIndex || this.isAnimating) return;
+            this.isAnimating = true;
+            
+            let isForward = index > this.activeIndex;
+            if (this._forceDirection === 'next') isForward = true;
+            if (this._forceDirection === 'prev') isForward = false;
+            // Handle wrap around direction logic if needed, but simple is better here
+            
+            const direction = isForward ? 'next' : 'prev';
+            const nextItem = this.items[index];
+            const activeItem = this.items[this.activeIndex];
+
+            activeItem.classList.add(`carousel-item-${isForward ? 'start' : 'end'}`);
+            nextItem.classList.add(`carousel-item-${direction}`);
+            
+            // Trigger reflow
+            nextItem.offsetHeight;
+
+            nextItem.classList.add(`carousel-item-${isForward ? 'start' : 'end'}`);
+
+            setTimeout(() => {
+                activeItem.classList.remove('active', 'carousel-item-start', 'carousel-item-end');
+                nextItem.classList.remove(`carousel-item-${direction}`, 'carousel-item-start', 'carousel-item-end');
+                nextItem.classList.add('active');
+                this.activeIndex = index;
+                this.updateIndicators();
+                this.isAnimating = false;
+            }, 1200); // Matching CSS transition
+        }
+
+        next() {
+            let nextIndex = (this.activeIndex + 1) % this.items.length;
+            this._forceDirection = 'next';
+            this.to(nextIndex);
+            this._forceDirection = null;
+        }
+
+        prev() {
+            let prevIndex = (this.activeIndex - 1 + this.items.length) % this.items.length;
+            this._forceDirection = 'prev';
+            this.to(prevIndex);
+            this._forceDirection = null;
+        }
+
+        updateIndicators() {
+            const indicators = qsa('.carousel-indicators [data-bs-target]', this.element);
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === this.activeIndex);
+                indicator.setAttribute('aria-current', index === this.activeIndex ? 'true' : 'false');
+            });
+        }
+    }
+
     function toggleCollapse(button) {
         var targetSel = button.getAttribute('data-bs-target');
         var target = targetSel ? qs(targetSel) : null;
@@ -211,6 +286,26 @@
             } else if (mode === 'modal') {
                 event.preventDefault();
                 openModalBySelector(toggle.getAttribute('data-bs-target'));
+            } else if (mode === 'carousel') {
+                // Let the Carousel class handle it if initialized, or handle basic slide
+            }
+        }
+
+        var slide = event.target.closest('[data-bs-slide], [data-bs-slide-to]');
+        if (slide) {
+            event.preventDefault();
+            const targetSel = slide.getAttribute('data-bs-target');
+            const targetEl = qs(targetSel);
+            if (targetEl) {
+                const carousel = Carousel.getOrCreateInstance(targetEl);
+                if (slide.hasAttribute('data-bs-slide')) {
+                    const action = slide.getAttribute('data-bs-slide');
+                    if (action === 'next') carousel.next();
+                    if (action === 'prev') carousel.prev();
+                } else if (slide.hasAttribute('data-bs-slide-to')) {
+                    const index = parseInt(slide.getAttribute('data-bs-slide-to'));
+                    carousel.to(index);
+                }
             }
         }
 
@@ -234,10 +329,48 @@
         }
     });
 
+    /**
+     * Auto-updating local time display based on timezone
+     */
+    function updateLocalTimes() {
+        const timeDisplays = qsa('.local-time-display');
+        if (timeDisplays.length === 0) return;
+
+        const now = new Date();
+        timeDisplays.forEach(function(el) {
+            const tz = el.getAttribute('data-timezone');
+            if (!tz) return;
+
+            try {
+                // Formatting: "14:36:00 (Europe/Budapest)"
+                const timeString = now.toLocaleTimeString('en-GB', {
+                    timeZone: tz,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                });
+                el.textContent = timeString + ' (' + tz + ')';
+            } catch (e) {
+                // Fallback if timezone is invalid
+                console.error('Invalid timezone:', tz);
+            }
+        });
+    }
+
+    // Initialize time updates if needed
+    document.addEventListener('DOMContentLoaded', function() {
+        if (qs('.local-time-display')) {
+            updateLocalTimes();
+            setInterval(updateLocalTimes, 1000);
+        }
+    });
+
     window.bootstrap = {
         Modal: Modal,
         Toast: Toast,
         Tooltip: Tooltip,
+        Carousel: Carousel,
     };
 })();
 

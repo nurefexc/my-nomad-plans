@@ -125,6 +125,27 @@ Main app UI files:
 - Share links use random tokens
 - Sensitive transport fields are hidden from shared pages when marked private
 
+## Service Layer Integrations
+
+External APIs are wrapped in dedicated service classes under `app/services/` to keep routes/controllers thin and resilient:
+
+- `app/services/weather_service.py` (`WeatherService`)
+  - Open-Meteo current weather lookup
+  - hard timeout: `3s`
+  - returns `None` on request failure
+- `app/services/country_service.py` (`CountryService`)
+  - REST Countries metadata lookup (`flag_svg`, `currency_code`, `dial_code`, `iso_code`)
+  - in-memory TTL caching (`30 days`)
+  - graceful fallback to `None` for metadata lookup failures
+  - also provides cached regional country sets used by badge evaluation
+- `app/services/image_service.py` (`ImageService`)
+  - deterministic Unsplash Source URL generator
+  - no backend network call/API key required
+
+Service registry/factory entrypoint:
+
+- `app/services/__init__.py` (`build_service_registry`, `services`)
+
 ## License
 
 MIT License. See `LICENSE.md`.

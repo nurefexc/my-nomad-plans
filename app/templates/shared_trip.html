@@ -1,6 +1,110 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Shared Adventures Slider -->
+<div class="row mb-5 pb-4">
+    <div class="col-12 carousel-adventure-container">
+        <div id="sharedAdventureCarousel" class="carousel slide" data-bs-ride="false" data-bs-touch="true">
+            <div class="carousel-nav-top d-flex justify-content-center align-items-center gap-3 mb-4">
+                <button class="btn btn-white shadow-sm rounded-circle d-flex align-items-center justify-content-center" type="button" data-bs-target="#sharedAdventureCarousel" data-bs-slide="prev" style="width: 44px; height: 44px;">
+                    <span class="ui-icon">←</span>
+                </button>
+                
+                <button class="btn btn-primary shadow-sm rounded-pill px-3 fw-bold jump-to-current-btn" type="button" data-bs-target="#sharedAdventureCarousel" style="height: 44px;">
+                    <span class="ui-icon me-1">🎯</span> {{ _('Jump to Current') }}
+                </button>
+
+                <button class="btn btn-white shadow-sm rounded-circle d-flex align-items-center justify-content-center" type="button" data-bs-target="#sharedAdventureCarousel" data-bs-slide="next" style="width: 44px; height: 44px;">
+                    <span class="ui-icon">→</span>
+                </button>
+            </div>
+
+            <div class="carousel-inner shadow-lg">
+                {% for trip in carousel_trips %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <div class="card border-0 shadow-lg bg-white overflow-hidden" style="height: 100%; border-radius: 28px;">
+                        <div class="card-body p-0">
+                            <div class="row g-0">
+                                <div class="col-md-7 p-4 p-md-5 d-flex flex-column justify-content-center">
+                                    <div class="d-flex align-items-center gap-2 mb-3">
+                                        <span class="badge rounded-pill {% if trip.status == 'visited' %}bg-secondary{% else %}bg-success{% endif %} bg-opacity-10 {% if trip.status == 'visited' %}text-secondary{% else %}text-success{% endif %} px-3 py-2 fw-bold text-uppercase">
+                                            {{ _('Visited') if trip.status == 'visited' else _('Planned') }}
+                                        </span>
+                                    </div>
+                                    <h1 class="display-5 fw-bold text-dark mb-4 d-flex align-items-center gap-3">
+                                        {% set ccode = get_country_code(trip.country) %}
+                                        {% if ccode %}
+                                        <span class="fi fi-{{ ccode }} rounded shadow-sm flex-shrink-0" style="width: 1.5em; height: 1em; margin-right: 0.2em;" title="{{ localize_country(trip.country) }}"></span>
+                                        {% endif %}
+                                        {{ trip.destination }}
+                                    </h1>
+                                    
+                                    <div class="gnome-group mb-4">
+                                        <div class="gnome-row">
+                                            <div class="gnome-row-icon"><span class="ui-icon">📅</span></div>
+                                            <div class="gnome-row-title">{{ _('Dates') }}</div>
+                                            <div class="fw-bold small">
+                                                {% if trip.start_date and trip.end_date %}
+                                                    {{ trip.start_date.strftime('%b %d') }} - {{ trip.end_date.strftime('%b %d, %Y') }}
+                                                {% elif trip.start_date %}
+                                                    {{ trip.start_date.strftime('%b %d, %Y') }}
+                                                {% else %}
+                                                    {{ _('Flexible dates') }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% if trip.timezone %}
+                                        <div class="gnome-row">
+                                            <div class="gnome-row-icon"><span class="ui-icon">🕒</span></div>
+                                            <div class="gnome-row-title">{{ _('Current Time') }}</div>
+                                            <div class="fw-bold small local-time-display" data-timezone="{{ trip.timezone }}">
+                                                {{ trip.timezone }}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <div class="gnome-row weather-container" data-weather-endpoint="{{ trip.weather_endpoint }}">
+                                            <div class="gnome-row-icon"><span class="ui-icon">🌡</span></div>
+                                            <div class="gnome-row-title">{{ _('Weather') }}</div>
+                                            <div class="fw-bold small weather-content" data-trip-id="{{ trip.id }}">
+                                                {% if trip.current_weather %}
+                                                    {{ trip.current_weather.temperature }}°C, {{ trip.current_weather.description }}
+                                                {% else %}
+                                                    <span class="text-muted italic small">{{ _('Loading...') }}</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% if trip.outbound_transport_mode %}
+                                        <div class="gnome-row">
+                                            <div class="gnome-row-icon"><span class="ui-icon">🚗</span></div>
+                                            <div class="gnome-row-title">{{ _('Travel Mode') }}</div>
+                                            <div class="fw-bold">{{ trip.outbound_transport_mode }}</div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-5 position-relative overflow-hidden" style="min-height: 400px;">
+                                    {% if trip.cover_image_url %}
+                                    <img src="{{ trip.cover_image_url }}" 
+                                         onerror="this.src='{{ trip.cover_fallback_url }}'; this.onerror=null;"
+                                         class="position-absolute w-100 h-100 object-fit-cover" 
+                                         alt="{{ trip.destination }}">
+                                    {% else %}
+                                    <div class="position-absolute w-100 h-100 bg-light d-flex align-items-center justify-content-center text-muted">
+                                        <span class="display-1">🌍</span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row mb-5 shared-hero">
     <div class="col-12 text-center shared-hero-inner">
         {% if share.title %}
@@ -99,7 +203,15 @@
         <div class="shared-trip-grid">
             {% for trip in trips %}
             <div class="trip-card-wrapper shared-card-wrapper">
-                <article class="card h-100 border-0 shadow-sm shared-trip-card">
+                <article class="card h-100 border-0 shadow-sm shared-trip-card overflow-hidden">
+                    {% if trip.cover_image_url %}
+                    <div class="shared-card-image-wrapper position-relative" style="height: 180px; overflow: hidden;">
+                        <img src="{{ trip.cover_image_url }}" 
+                             onerror="this.src='{{ trip.cover_fallback_url }}'; this.onerror=null;"
+                             class="w-100 h-100 object-fit-cover" 
+                             alt="{{ trip.destination }}">
+                    </div>
+                    {% endif %}
                     <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center px-4 pt-4 shared-trip-header">
                         <span class="badge {% if trip.status == 'visited' %}bg-secondary{% elif trip.status == 'planned' %}bg-success{% else %}bg-info text-dark{% endif %} shadow-sm">
                             {% if trip.status == 'visited' %}{{ _('Visited') }}{% elif trip.status == 'planned' %}{{ _('Planned') }}{% else %}{{ _('Draft') }}{% endif %}
@@ -250,8 +362,41 @@
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/map_routes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/immich_gallery.js') }}"></script>
+<script src="{{ url_for('static', filename='js/profile_carousel.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Async weather loader for shared carousel items
+        const weatherContainers = document.querySelectorAll('.weather-container');
+        weatherContainers.forEach(container => {
+            const content = container.querySelector('.weather-content');
+            if (content && content.innerText.trim() === '{{ _("Loading...") }}') {
+                const endpoint = container.dataset.weatherEndpoint;
+                if (!endpoint) return;
+                
+                fetch(endpoint)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.current_weather) {
+                            content.innerText = `${data.current_weather.temperature}°C, ${data.current_weather.description}`;
+                            
+                            // Notify carousel if it exists
+                            const carouselEl = document.getElementById('sharedAdventureCarousel');
+                            if (carouselEl) {
+                                carouselEl.dispatchEvent(new CustomEvent('weatherUpdated', {
+                                    detail: { tripId: container.querySelector('.weather-content').dataset.tripId, weather: data.current_weather }
+                                }));
+                            }
+                        } else {
+                            content.innerText = '{{ _("N/A") }}';
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Failed to fetch weather:', err);
+                        content.innerText = '{{ _("Error") }}';
+                    });
+            }
+        });
+
         const tripsData = [
             {% for trip in trips %}
             {

@@ -8,6 +8,7 @@ services:
       - "5000:5000"
     volumes:
       - ../instance:/app/instance
+      - ../cache:/app/cache
       - ../seed_demo.py:/app/seed_demo.py
     environment:
       - DEMO=0

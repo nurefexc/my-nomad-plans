@@ -14,6 +14,9 @@ from itsdangerous import URLSafeSerializer, BadSignature
 from sqlalchemy.exc import IntegrityError
 
 from .services.immich_service import ImmichService, ImmichError, ImmichNotConfigured, ImmichNotFound
+from .services.country_service import CountryService
+from .services.weather_service import WeatherService
+from .services.image_service import ImageService
 
 
 main = Blueprint('main', __name__)
@@ -185,6 +188,29 @@ def _settings_services_status(user):
     ]
 
 
+def _build_trip_ui_payload(trip, share_token_value=None):
+    country_metadata = CountryService.get_country_metadata(trip.country or "") or {}
+    location_label = ", ".join([part for part in [trip.destination, trip.country] if part])
+
+    weather_url_kwargs = {'trip_id': trip.id}
+    if share_token_value:
+        weather_url_kwargs['share_token'] = share_token_value
+
+    return {
+        'cover_image_url': ImageService.generate_cover_image_url(location_label, resolution="600x300"),
+        'cover_fallback_url': ImageService.generate_fallback_cover_image_url(location_label, resolution="600x300"),
+        'country_meta': {
+            'currency_code': country_metadata.get('currency_code') or '',
+            'currency_name': country_metadata.get('currency_name') or '',
+            'spoken_language': country_metadata.get('spoken_language') or '',
+            'dial_code': country_metadata.get('dial_code') or '',
+            'iso_code': country_metadata.get('iso_code') or '',
+            'timezone': country_metadata.get('timezone') or '',
+        },
+        'weather_endpoint': url_for('main.get_trip_weather', **weather_url_kwargs),
+    }
+
+
 def _avatar_url_for_user(user):
     display_name = ((getattr(user, 'name', '') or '').strip() if user else '') or 'Nomad User'
     initials = ''.join(part[:1] for part in display_name.split()[:2]).upper() or 'N'
@@ -233,10 +259,50 @@ def inject_version():
         except Exception:
             return country_name
 
+    def parse_accommodation(value):
+        if not value:
+            return None
+        
+        import re
+        url_pattern = re.compile(r'(https?://[^\s]+)')
+        match = url_pattern.search(value)
+        
+        if match:
+            url = match.group(1)
+            icon = '🏠'
+            provider = 'Link'
+            
+            if 'booking.com' in url.lower():
+                icon = '🏨'
+                provider = 'Booking.com'
+            elif 'airbnb' in url.lower():
+                icon = '🏘️'
+                provider = 'Airbnb'
+            
+            # Clean up the text part
+            text = value.replace(url, '').strip()
+            if not text:
+                text = provider
+                
+            return {
+                'url': url,
+                'text': text,
+                'icon': icon,
+                'is_link': True
+            }
+        
+        return {
+            'url': None,
+            'text': value,
+            'icon': '🏠',
+            'is_link': False
+        }
+
     return dict(
         app_version=get_version(),
         get_country_code=get_country_code,
         localize_country=localize_country,
+        parse_accommodation=parse_accommodation,
         avatar_url_for=_avatar_url_for_user,
     )
 
@@ -308,84 +374,8 @@ WHERE {
         }
 
 def get_regional_countries():
-    """Returns sets of countries for different regions, attempting to fetch from an API first."""
-    import json, os, requests
-    from flask import current_app
-    
-    cache_path = os.path.join(current_app.instance_path, 'regional_countries.json')
-    
-    # Check if we have a fresh cache (less than 30 days old)
-    import time
-    if os.path.exists(cache_path) and (time.time() - os.path.getmtime(cache_path) < 30 * 24 * 60 * 60):
-        try:
-            with open(cache_path, 'r') as f:
-                return {k: set(v) for k, v in json.load(f).items()}
-        except Exception:
-            pass
-
-    # Try to fetch from API
-    try:
-        # Using restcountries.com API
-        response = requests.get("https://restcountries.com/v3.1/all?fields=name,region", timeout=10)
-        response.raise_for_status()
-        data = response.json()
-        
-        regional = {
-            'africa': set(),
-            'asia': set(),
-            'americas': set(),
-            'oceania': set()
-        }
-        
-        for country in data:
-            name = country.get('name', {}).get('common')
-            region = country.get('region', '').lower()
-            if name and region in regional:
-                regional[region].add(name)
-        
-        # Cache the results
-        try:
-            with open(cache_path, 'w') as f:
-                json.dump({k: list(v) for k, v in regional.items()}, f)
-        except Exception:
-            pass
-            
-        return regional
-    except Exception as e:
-        current_app.logger.error(f"Error fetching regional countries: {e}")
-        # Fallback to hardcoded list
-        return {
-            'africa': {
-                'Algeria', 'Angola', 'Benin', 'Botswana', 'Burkina Faso', 'Burundi', 'Cabo Verde', 'Cameroon',
-                'Central African Republic', 'Chad', 'Comoros', 'Congo', 'Congo, Democratic Republic of the',
-                'Djibouti', 'Egypt', 'Equatorial Guinea', 'Eritrea', 'Eswatini', 'Ethiopia', 'Gabon', 'Gambia',
-                'Ghana', 'Guinea', 'Guinea-Bissau', 'Ivory Coast', 'Kenya', 'Lesotho', 'Liberia', 'Libya',
-                'Madagascar', 'Malawi', 'Mali', 'Mauritania', 'Mauritius', 'Morocco', 'Mozambique', 'Namibia',
-                'Niger', 'Nigeria', 'Rwanda', 'Sao Tome and Principe', 'Senegal', 'Seychelles', 'Sierra Leone',
-                'Somalia', 'South Africa', 'South Sudan', 'Sudan', 'Tanzania', 'Togo', 'Tunisia', 'Uganda',
-                'Zambia', 'Zimbabwe'
-            },
-            'asia': {
-                'Afghanistan', 'Armenia', 'Azerbaijan', 'Bahrain', 'Bangladesh', 'Bhutan', 'Brunei', 'Cambodia',
-                'China', 'Cyprus', 'Georgia', 'India', 'Indonesia', 'Iran', 'Iraq', 'Israel', 'Japan', 'Jordan',
-                'Kazakhstan', 'Kuwait', 'Kyrgyzstan', 'Laos', 'Lebanon', 'Malaysia', 'Maldives', 'Mongolia',
-                'Myanmar', 'Nepal', 'North Korea', 'Oman', 'Pakistan', 'Palestine', 'Philippines', 'Qatar',
-                'Saudi Arabia', 'Singapore', 'South Korea', 'Sri Lanka', 'Syria', 'Taiwan', 'Tajikistan',
-                'Thailand', 'Timor-Leste', 'Turkey', 'Turkmenistan', 'United Arab Emirates', 'Uzbekistan',
-                'Vietnam', 'Yemen'
-            },
-            'americas': {
-                'Antigua and Barbuda', 'Argentina', 'Bahamas', 'Barbados', 'Belize', 'Bolivia', 'Brazil', 'Canada',
-                'Chile', 'Colombia', 'Costa Rica', 'Cuba', 'Dominica', 'Dominican Republic', 'Ecuador', 'El Salvador',
-                'Grenada', 'Guatemala', 'Guyana', 'Haiti', 'Honduras', 'Jamaica', 'Mexico', 'Nicaragua', 'Panama',
-                'Paraguay', 'Peru', 'Saint Kitts and Nevis', 'Saint Lucia', 'Saint Vincent and the Grenadines',
-                'Suriname', 'Trinidad and Tobago', 'United States', 'Uruguay', 'Venezuela'
-            },
-            'oceania': {
-                'Australia', 'Fiji', 'Kiribati', 'Marshall Islands', 'Micronesia', 'Nauru', 'New Zealand', 'Palau',
-                'Papua New Guinea', 'Samoa', 'Solomon Islands', 'Tonga', 'Tuvalu', 'Vanuatu'
-            }
-        }
+    """Return regional country sets from service layer."""
+    return CountryService.get_regional_countries()
 
 def evaluate_user_badges(user):
     """Evaluates and awards badges to a user based on their trip history and JSON definitions."""
@@ -423,6 +413,7 @@ def evaluate_user_badges(user):
         'car': sum(1 for m in visited_transport_modes if m == 'car'),
         'bus': sum(1 for m in visited_transport_modes if m == 'bus'),
         'ferry': sum(1 for m in visited_transport_modes if m == 'ferry'),
+        'bike': sum(1 for m in visited_transport_modes if m == 'bike'),
     }
     share_count = len(getattr(user, 'share_tokens', []) or [])
     
@@ -808,53 +799,62 @@ def profile():
     # Evaluate badges on profile view (initial or refresh)
     badge_data = evaluate_user_badges(current_user)
 
-    # Collect one-time toast events so the UI can explain exactly what changed.
+    # Progress toasts are intentionally disabled to keep the UI cleaner.
     badge_toasts = []
-
-    for b in badge_data:
-        if not b.get('is_new'):
-            continue
-        progress_pct = int(round(float(b.get('progress') or 0)))
-        current_val = b.get('current')
-        target_val = b.get('target')
-        badge_title = _(b.get('title') or 'Achievement')
-
-        if current_val is not None and target_val not in (None, 0, '0'):
-            message = _('%(badge)s - %(current)s/%(target)s (%(progress)s%%)',
-                        badge=badge_title, current=current_val, target=target_val, progress=progress_pct)
-        else:
-            message = _('%(badge)s - %(progress)s%% completed', badge=badge_title, progress=progress_pct)
-
-        badge_toasts.append({
-            'icon': b.get('icon') or '🏆',
-            'title': _('Achievement Progress!'),
-            'message': message,
-        })
-
-    if not bool(current_user.show_badge_toasts):
-        badge_toasts = []
 
     # Mark new badges as not new anymore after we've passed them to template.
     user_badges = current_user.user_badges
     new_badges_count = sum(1 for ub in user_badges if ub.is_new)
 
+    # Countries statistics
+    visited_countries = set([t.country for t in current_user.trips if t.status == 'visited' and t.country])
+    all_planned_countries = set([t.country for t in current_user.trips if t.status == 'planned' and t.country])
+
     # Sort trips by start_date, moving None dates to the end
     trips = sorted(current_user.trips, key=lambda x: (x.start_date is None, x.start_date))
-
-    # Calculate countdown for the next planned trip
-    next_trip = None
-    from datetime import datetime
-    now = datetime.now().date()
     for trip in trips:
-        if trip.status == 'planned' and trip.start_date and trip.start_date >= now:
-            next_trip = trip
-            break
+        trip.ui = _build_trip_ui_payload(trip)
 
-    # Statistics
-    visited_trips = [t for t in trips if t.status == 'visited']
-    visited_countries = set([t.country for t in visited_trips])
-    planned_trips = [t for t in trips if t.status == 'planned']
-    all_planned_countries = set([t.country for t in planned_trips])
+    # Calculate current and next trips
+    active_trip = None
+    next_trip = None
+    from datetime import datetime, date, timedelta
+    now = datetime.now().date()
+    
+    # Check for active trip (ongoing today)
+    active_trips = []
+    for trip in trips:
+        if trip.start_date and trip.end_date:
+            if trip.start_date <= now <= trip.end_date:
+                active_trips.append(trip)
+        elif trip.start_date == now:
+            active_trips.append(trip)
+    
+    active_trip = active_trips[0] if active_trips else None
+            
+    # Collect all future trips
+    upcoming_trips = [t for t in trips if t.status == 'planned' and t.start_date and t.start_date > now]
+    # Filter out active trips if they were also in planned status
+    active_ids = [t.id for t in active_trips]
+    upcoming_trips = [t for t in upcoming_trips if t.id not in active_ids]
+    
+    # Highlight trips for carousel: active trips + upcoming trips (limit to 10 to allow more "leafing")
+    highlight_trips = (active_trips + upcoming_trips)[:10]
+
+    # Weather and metadata for carousel trips
+    for trip in highlight_trips:
+        # Note: Weather fetching is kept here for the carousel, but limited by count
+        if trip.latitude is not None and trip.longitude is not None:
+            trip.weather = WeatherService.get_current_weather(trip.latitude, trip.longitude)
+        else:
+            trip.weather = None
+        trip.country_meta = CountryService.get_country_metadata(trip.country)
+
+    active_trip_ui = active_trip.ui if active_trip else None
+
+    # Enrich trips with metadata
+    for trip in trips:
+        trip.country_meta = CountryService.get_country_metadata(trip.country)
     
     # World visited count
     available_countries = countries_for_language('en')
@@ -877,7 +877,7 @@ def profile():
                            stats=stats, 
                            badges=badge_data[:6], 
                            badge_toasts=badge_toasts,
-                           next_trip=next_trip,
+                           highlight_trips=highlight_trips,
                            now_date=datetime.now().date(), 
                            new_badges_count=new_badges_count)
 
@@ -1600,6 +1600,9 @@ def shared_view(token):
         else:
             viewed_shares = [token]
         session['viewed_shares'] = viewed_shares
+    
+    # Update last viewed
+    share_token.updated_at = datetime.utcnow()
         
     db.session.commit()
     
@@ -1607,6 +1610,33 @@ def shared_view(token):
     trips = Trip.query.filter(Trip.id.in_(trip_ids)).all()
     # Sort shared trips by start_date
     trips = sorted(trips, key=lambda x: (x.start_date is None, x.start_date))
+
+    # Calculate current and next trips
+    today = datetime.utcnow().date()
+    
+    # Check for active trip (ongoing today)
+    active_trips = []
+    for trip in trips:
+        if trip.start_date and trip.end_date:
+            if trip.start_date <= today <= trip.end_date:
+                active_trips.append(trip)
+        elif trip.start_date == today:
+            active_trips.append(trip)
+    
+    # Sort active trips to have the most recent first
+    active_trips.sort(key=lambda t: t.start_date or date.min, reverse=True)
+    
+    # Collect all future trips
+    upcoming_trips = [t for t in trips if t.status == 'planned' and t.start_date and t.start_date > today]
+    # Filter out active trips if they were also in planned status
+    active_ids = [t.id for t in active_trips]
+    upcoming_trips = [t for t in upcoming_trips if t.id not in active_ids]
+    # Sort upcoming trips by start date
+    upcoming_trips.sort(key=lambda t: t.start_date)
+
+    # All trips for carousel (Ongoing first, then Upcoming, then others)
+    other_trips = [t for t in trips if t.id not in active_ids and t not in upcoming_trips]
+    highlight_trips = (active_trips + upcoming_trips + other_trips)[:15]
 
     cities_preview_limit = 5
     journey_start = None
@@ -1618,7 +1648,6 @@ def shared_view(token):
     unique_countries = []
     seen_city_keys = set()
     seen_country_keys = set()
-    today = datetime.utcnow().date()
 
     for trip in trips:
         city = (trip.destination or '').strip()
@@ -1641,15 +1670,7 @@ def shared_view(token):
         if journey_end >= journey_start:
             journey_total_days = (journey_end - journey_start).days + 1
 
-    active_candidates = [
-        trip for trip in trips
-        if trip.start_date
-        and trip.start_date <= today
-        and (trip.end_date or trip.start_date) >= today
-        and trip.status in ('planned', 'visited')
-    ]
-    active_candidates.sort(key=lambda t: t.start_date or date.min, reverse=True)
-    active_trip = active_candidates[0] if active_candidates else None
+    active_trip = active_trips[0] if active_trips else None
     current_stop = None
     if active_trip:
         current_stop = {
@@ -1660,6 +1681,55 @@ def shared_view(token):
         }
     
     shared_trips_data = []
+    # Use highlight_trips for the carousel part of the data if needed, 
+    # but the template uses 'trips' for the carousel and the grid.
+    # To satisfy "it should take the current one and be able to step", 
+    # we should probably reorder the trips list or provide a separate highlights list.
+    # Let's reorder 'trips' for the carousel but keep the original for the grid? 
+    # Actually, if we reorder 'trips' here, it affects both.
+    
+    # Let's create a specific list for the carousel to match profile.html logic
+    carousel_trips = []
+    for i, trip in enumerate(highlight_trips):
+        trip_ui = _build_trip_ui_payload(trip, share_token_value=share_token.token)
+        
+        # Server-side weather fetch for the first few trips to avoid timeout
+        weather = None
+        if i < 5 and trip.latitude is not None and trip.longitude is not None:
+            from app.services.weather_service import WeatherService
+            weather = WeatherService.get_current_weather(float(trip.latitude), float(trip.longitude))
+
+        # Determine transport mode
+        ordered_segments = sorted(trip.transport_segments, key=lambda s: (s.order_index, s.id))
+        public_segments = [seg for seg in ordered_segments if not seg.is_sensitive]
+        outbound_segment = next((seg for seg in public_segments if seg.segment_type == 'outbound'), None)
+        
+        outbound_transport_mode = None
+        transport_hidden = False
+        if ordered_segments:
+            if outbound_segment:
+                outbound_transport_mode = outbound_segment.mode
+            else:
+                transport_hidden = True
+        else:
+            outbound_transport_mode = trip.transport_mode or None
+
+        carousel_trips.append({
+            'id': trip.id,
+            'destination': trip.destination,
+            'country': trip.country,
+            'start_date': trip.start_date,
+            'end_date': trip.end_date,
+            'status': trip.status,
+            'outbound_transport_mode': outbound_transport_mode,
+            'transport_hidden': transport_hidden,
+            'cover_image_url': trip_ui['cover_image_url'],
+            'cover_fallback_url': trip_ui['cover_fallback_url'],
+            'timezone': trip_ui['country_meta'].get('timezone'),
+            'current_weather': weather,
+            'weather_endpoint': trip_ui['weather_endpoint']
+        })
+
     for trip in trips:
         ordered_segments = sorted(trip.transport_segments, key=lambda s: (s.order_index, s.id))
         public_segments = [seg for seg in ordered_segments if not seg.is_sensitive]
@@ -1677,6 +1747,8 @@ def shared_view(token):
         else:
             outbound_transport_mode = trip.transport_mode or None
 
+        trip_ui = _build_trip_ui_payload(trip, share_token_value=share_token.token)
+
         shared_trips_data.append({
             'id': trip.id,
             'destination': trip.destination,
@@ -1692,6 +1764,11 @@ def shared_view(token):
             'transport_hidden': transport_hidden,
             'visa_required': trip.visa_required,
             'immich_album_id': trip.immich_album_id,
+            'cover_image_url': trip_ui['cover_image_url'],
+            'cover_fallback_url': trip_ui['cover_fallback_url'],
+            'country_meta': trip_ui['country_meta'],
+            'weather_endpoint': trip_ui['weather_endpoint'],
+            'timezone': trip_ui['country_meta'].get('timezone'),
         })
     
     share_metadata = {
@@ -1715,7 +1792,22 @@ def shared_view(token):
         'gallery_count': gallery_count,
     }
     
-    return render_template('shared_trip.html', trips=shared_trips_data, share=share_metadata)
+    return render_template('shared_trip.html', trips=shared_trips_data, carousel_trips=carousel_trips, share=share_metadata)
+
+
+@main.route('/api/trips/<int:trip_id>/weather')
+def get_trip_weather(trip_id):
+    """Return current weather for a trip using server-side Open-Meteo integration."""
+    trip = Trip.query.get_or_404(trip_id)
+    share_token_value = request.args.get('share_token')
+    if not _can_access_trip(trip, share_token_value):
+        abort(403)
+
+    if trip.latitude is None or trip.longitude is None:
+        return jsonify({'trip_id': trip.id, 'current_weather': None})
+
+    weather = WeatherService.get_current_weather(float(trip.latitude), float(trip.longitude))
+    return jsonify({'trip_id': trip.id, 'current_weather': weather})
 
 
 @main.route('/trip/<int:trip_id>')
@@ -1725,7 +1817,8 @@ def trip_detail(trip_id):
     trip = Trip.query.get_or_404(trip_id)
     if trip.owner != current_user:
         abort(403)
-    return render_template('trip_detail.html', trip=trip)
+    trip_ui = _build_trip_ui_payload(trip)
+    return render_template('trip_detail.html', trip=trip, trip_ui=trip_ui)
 
 
 @main.route('/api/trips/<int:trip_id>/immich-gallery')

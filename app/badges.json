@@ -428,5 +428,55 @@
         "progress": "0",
         "current": 0,
         "target": 5
+    },
+    {
+        "code": "GREEN_TRAVELER",
+        "title": "Green Traveler",
+        "icon": "🌿",
+        "description": "Completed 5 journeys by train or bike. Mother Earth thanks you!",
+        "criteria": "visited_by_transport.get('train', 0) + visited_by_transport.get('bike', 0) >= 5",
+        "progress": "min(100, ((visited_by_transport.get('train', 0) + visited_by_transport.get('bike', 0)) / 5) * 100)",
+        "current": "visited_by_transport.get('train', 0) + visited_by_transport.get('bike', 0)",
+        "target": 5
+    },
+    {
+        "code": "PHOTO_ENTHUSIAST",
+        "title": "Photo Enthusiast",
+        "icon": "📸",
+        "description": "Connected 3 trips with Immich albums. Capturing memories!",
+        "criteria": "len([t for t in trips if t.immich_album_id]) >= 3",
+        "progress": "min(100, (len([t for t in trips if t.immich_album_id]) / 3) * 100)",
+        "current": "len([t for t in trips if t.immich_album_id])",
+        "target": 3
+    },
+    {
+        "code": "NOTES_MASTER",
+        "title": "Notes Master",
+        "icon": "📝",
+        "description": "Wrote detailed notes for 10 different trips.",
+        "criteria": "len([t for t in trips if t.notes and len(t.notes.strip()) > 50]) >= 10",
+        "progress": "min(100, (len([t for t in trips if t.notes and len(t.notes.strip()) > 50]) / 10) * 100)",
+        "current": "len([t for t in trips if t.notes and len(t.notes.strip()) > 50])",
+        "target": 10
+    },
+    {
+        "code": "ADVENTURE_PLANNER",
+        "title": "Adventure Planner",
+        "icon": "🧗",
+        "description": "Added at least 5 attractions to a single trip.",
+        "criteria": "any([len([a for a in (t.attractions or '').split('\\n') if a.strip()]) >= 5 for t in trips])",
+        "progress": "100 if any([len([a for a in (t.attractions or '').split('\\n') if a.strip()]) >= 5 for t in trips]) else min(100, (max([len([a for a in (t.attractions or '').split('\\n') if a.strip()]) for t in trips] + [0]) / 5) * 100)",
+        "current": "max([len([a for a in (t.attractions or '').split('\\n') if a.strip()]) for t in trips] + [0])",
+        "target": 5
+    },
+    {
+        "code": "CASH_CONSCIOUS",
+        "title": "Cash Conscious",
+        "icon": "💸",
+        "description": "Used a non-USD default currency to manage your nomad life.",
+        "criteria": "user.default_currency != 'USD'",
+        "progress": "100 if user.default_currency != 'USD' else 0",
+        "current": "1 if user.default_currency != 'USD' else 0",
+        "target": 1
     }
 ]

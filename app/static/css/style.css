@@ -32,10 +32,64 @@ body::before {
 }
 
 .navbar {
-    background: color-mix(in srgb, var(--gnome-header) 92%, #ffffff 8%) !important;
-    padding: 0.7rem 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    margin: 10px 20px;
+    border-radius: 999px;
+    padding: 0.5rem 1rem !important;
+    position: sticky;
+    top: 15px;
+    z-index: 1030;
+}
+
+@media (max-width: 991.98px) {
+    .navbar {
+        margin: 10px 10px;
+        border-radius: 24px;
+    }
+    
+    .navbar-collapse {
+        background: rgba(255, 255, 255, 0.95);
+        margin-top: 10px;
+        padding: 15px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+}
+
+.brand-icon-wrapper {
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover .brand-icon-wrapper {
+    transform: rotate(15deg) scale(1.1);
+}
+
+.nav-link {
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+    transform: translateY(-1px);
+}
+
+.app-profile-trigger, .app-language-trigger {
+    transition: all 0.2s ease;
+}
+
+.app-profile-trigger:hover, .app-language-trigger:hover {
+    background: #fff !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+    transform: translateY(-1px);
+}
+
+.object-fit-cover {
+    object-fit: cover;
 }
 
 .navbar .container {
@@ -81,6 +135,147 @@ body::before {
     background: rgba(53, 132, 228, 0.14);
     border-color: rgba(53, 132, 228, 0.24);
 }
+
+/* Carousel Customization - Book Leafing Effect */
+.carousel-adventure-container {
+    perspective: 3000px;
+    padding: 20px 0;
+    min-height: 620px;
+}
+
+#adventureCarousel .carousel-inner,
+#sharedAdventureCarousel .carousel-inner {
+    overflow: visible;
+    transform-style: preserve-3d;
+    position: relative;
+    height: 500px; /* Fixed height for the card area */
+}
+
+@media (max-width: 768px) {
+    #adventureCarousel .carousel-inner,
+    #sharedAdventureCarousel .carousel-inner {
+        height: 700px; /* More height for stacked mobile layout */
+    }
+    
+    .carousel-adventure-container {
+        padding: 10px 0;
+        min-height: 820px;
+    }
+}
+
+#adventureCarousel .carousel-item,
+#sharedAdventureCarousel .carousel-item {
+    transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block !important;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1;
+}
+
+#adventureCarousel .carousel-item.active,
+#sharedAdventureCarousel .carousel-item.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+    transform: rotateY(0deg) translateZ(0.1px); /* Slight Z to avoid flicker */
+}
+
+/* Book flip transition logic */
+#adventureCarousel .carousel-item-next.carousel-item-start,
+#adventureCarousel .carousel-item-prev.carousel-item-end,
+#sharedAdventureCarousel .carousel-item-next.carousel-item-start,
+#sharedAdventureCarousel .carousel-item-prev.carousel-item-end {
+    transform: rotateY(0deg) translateZ(0);
+    opacity: 1;
+    visibility: visible;
+    z-index: 15;
+}
+
+/* Flip forward - leafing left */
+#adventureCarousel .carousel-item.active.carousel-item-start,
+#sharedAdventureCarousel .carousel-item.active.carousel-item-start {
+    transform: rotateY(-180deg) translateZ(0);
+    transform-origin: left center;
+    opacity: 1;
+    visibility: visible;
+    z-index: 5;
+}
+
+/* Flip backward - leafing right */
+#adventureCarousel .carousel-item.active.carousel-item-end,
+#sharedAdventureCarousel .carousel-item.active.carousel-item-end {
+    transform: rotateY(180deg) translateZ(0);
+    transform-origin: right center;
+    opacity: 1;
+    visibility: visible;
+    z-index: 5;
+}
+
+#adventureCarousel .carousel-item-next,
+#sharedAdventureCarousel .carousel-item-next {
+    transform: rotateY(0deg);
+    opacity: 1;
+    visibility: visible;
+    z-index: 1;
+}
+
+#adventureCarousel .carousel-item-prev,
+#sharedAdventureCarousel .carousel-item-prev {
+    transform: rotateY(0deg);
+    opacity: 1;
+    visibility: visible;
+    z-index: 1;
+}
+
+/* Controls removed from here as they are moved to top in HTML */
+#adventureCarousel .carousel-control-prev,
+#adventureCarousel .carousel-control-next,
+#adventureCarousel .carousel-indicators,
+#sharedAdventureCarousel .carousel-control-prev,
+#sharedAdventureCarousel .carousel-control-next,
+#sharedAdventureCarousel .carousel-indicators {
+    display: none !important;
+}
+
+.carousel-indicators-top .indicator-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--gnome-accent);
+    opacity: 0.3;
+    border: none;
+    padding: 0;
+    transition: all 0.3s ease;
+}
+
+.carousel-indicators-top .indicator-dot.active {
+    opacity: 1;
+    width: 24px;
+    border-radius: 4px;
+}
+
+.btn-white {
+    background: white;
+    color: var(--gnome-text);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.btn-white:hover {
+    background: #f8f9fa;
+    transform: scale(1.05);
+}
+
+.carousel-item {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* Replaced by book leafing effect above */
 
 a {
     color: color-mix(in srgb, var(--gnome-accent) 88%, #124487 12%);
@@ -1773,7 +1968,20 @@ body {
 .h2 { font-size: 2rem !important; }
 .h4 { font-size: 1.5rem !important; }
 .display-1 { font-size: clamp(2.5rem, 6vw, 4.5rem) !important; }
-.display-4 { font-size: clamp(1.8rem, 4vw, 2.8rem) !important; }
+.display-4, .display-5 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem) !important;
+}
+
+/* Enhanced Carousel Flags */
+.carousel-item .fi {
+    width: 2em !important;
+    height: 1.33em !important;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.carousel-nav-top {
+    z-index: 100;
+}
 .lead { font-size: 1.1rem; }
 
 .m-0 { margin: 0 !important; }
@@ -2303,7 +2511,76 @@ body.modal-open { overflow: hidden; }
     }
 }
 
-/* Compact mode can be enabled from settings for denser list/card usage. */
+.trip-card-styled {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.trip-card-styled:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1) !important;
+}
+
+.btn-floating-action {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-floating-action:hover {
+    background: #f8f9fa;
+    transform: scale(1.1);
+}
+
+.trip-card-image-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.trip-card-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.trip-card-styled:hover .trip-card-image-wrapper img {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .trip-card-wrapper {
+        padding-left: 8px;
+        padding-right: 8px;
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+    
+    .next-trip-dest-title {
+        font-size: 2.2rem;
+    }
+    
+    .profile-header h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .trip-card-wrapper {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    
+    .next-trip-dest-title, .active-trip-dest-title {
+        font-size: 1.8rem;
+    }
+}
 body.compact-mode .container {
     width: min(1200px, 100% - 1.2rem);
 }
